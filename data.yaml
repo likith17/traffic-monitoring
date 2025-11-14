@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['bus', 'car', 'truck', 'van']
+
+roboflow:
+  workspace: rjacaac1
+  project: ua-detrac-dataset-10k
+  version: 1
+  license: Private
+  url: https://universe.roboflow.com/rjacaac1/ua-detrac-dataset-10k/dataset/1
