@@ -8,14 +8,15 @@ This project provides a full setup for performing traffic analysis using a pretr
 
 Ensure the following files and directories exist in the project root:
 
+```text
 root/
-├── train/ # Training dataset
-├── test/ # Test dataset
-├── valid/ # Validation dataset
-├── data.yaml # Dataset configuration file
-├── Traffic_Analysis.ipynb # Jupyter notebook for traffic analysis
-├── yolo11s.pt # Pretrained YOLOv11 model weights
-
+├── train/                   # Training dataset
+├── test/                    # Test dataset
+├── valid/                   # Validation dataset
+├── data.yaml                # Dataset configuration file
+├── Traffic_Analysis.ipynb   # Jupyter notebook for traffic analysis
+└── yolo11s.pt               # Pretrained YOLOv11 model weights
+```
 
 Replicate the same structure if working from Google Drive or Google Colab.
 
