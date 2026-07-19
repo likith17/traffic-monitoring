@@ -1,0 +1,16 @@
+# Keep the image small: no virtual envs, no git history, no datasets.
+.venv/
+.vv/
+.git/
+__pycache__/
+*.zip
+videos/
+report/
+*.tex
+train/
+valid/
+test/
+processed videos/
+*.ipynb
+*.pdf
+yolo11s.pt

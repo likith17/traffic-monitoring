@@ -1,250 +1,134 @@
-# Manhattan Traffic – YOLOv12 + Streamlit
+# Emergency Routing for Smart Response
 
-Pulls live NYC DOT webcam snapshots for Manhattan, runs YOLOv12-S on each image to count vehicles/pedestrians/signals, stores the results, and displays everything in a Streamlit dashboard with an optional LLM chat tab.
+Real-time emergency vehicle routing for Manhattan that combines **reinforcement
+learning (Q-learning)** with classical graph algorithms (**Dijkstra, A\***),
+confirms route feasibility with a **YOLOv12 vision check** on live NYC DOT
+traffic cameras, and explains every decision in plain English through an
+**LLM module**. Ships with a Streamlit dashboard and a Docker image for
+reproducible Linux deployment.
 
----
+Benchmark over 30 simulated emergencies with hidden road blockages
+(`python -m routing.simulate`):
 
-## Table of contents
-
-1. [Project overview](#project-overview)
-2. [File layout](#file-layout)
-3. [Requirements](#requirements)
-4. [One-time setup](#one-time-setup)
-5. [Running the pipeline](#running-the-pipeline)
-6. [Running the dashboard](#running-the-dashboard)
-7. [LLM chat tab](#llm-chat-tab)
-8. [Offline video segments (optional)](#offline-video-segments-optional)
-9. [Troubleshooting](#troubleshooting)
-
----
-
-## Project overview
-
-```
-NYC DOT API  →  fetch_cameras.py  →  manhattan_cameras.csv
-                                            │
-                                  update_camera_stats.py  →  camera_stats.csv
-                                            │
-                                       dashboard.py  (Streamlit)
-                                            │
-                              (optional) compute_stats.py  →  segment_stats.csv
-```
-
-The dashboard has four tabs:
-
-| Tab | What it shows |
-|-----|---------------|
-| **Overview** | Map of all cameras + sortable congestion table |
-| **Camera explorer** | Live YOLO snapshot for any single camera |
-| **Segments** | Averaged congestion scores from pre-recorded video clips |
-| **Ask traffic (LLM)** | Chat with an LLM about the current congestion data |
+| Strategy | Mean response time | vs baseline |
+|---|---|---|
+| Static shortest-path baseline | 26.9 min | — |
+| A* + vision gate | 21.8 min | **-18.8%** |
+| Q-learning + vision gate | 22.5 min | **-16.4%** |
 
 ---
 
-## File layout
+## How it works
 
 ```
-traffic-final/
-├── fetch_cameras.py        # Step 1 – download camera list from NYC DOT API
-├── update_camera_stats.py  # Step 2 – run YOLO on every live camera image
-├── compute_stats.py        # Optional – run YOLO on local video files
-├── dashboard.py            # Streamlit dashboard (all four tabs)
-├── traffic_llm.py          # LLM helpers used by the chat tab
-│
-├── weights/
-│   └── yolov12s.pt         # YOLOv12-S model weights  ← you must supply this
-│
-├── videos/                 # Only needed for compute_stats.py  ← you must supply these
-│   ├── seg_a.mp4
-│   ├── seg_b.mp4
-│   └── seg_c.mp4
-│
-├── manhattan_cameras.csv   # Created by fetch_cameras.py
-├── camera_stats.csv        # Created by update_camera_stats.py
-└── segment_stats.csv       # Created by compute_stats.py
+NYC DOT cameras ──> fetch_cameras.py ──> manhattan_cameras.csv
+                                                │
+                              update_camera_stats.py (YOLOv12 per camera)
+                                                │
+                                         camera_stats.csv
+                                                │
+                    ┌───────────────────────────┴───────────────────────────┐
+                    │                    routing/ package                    │
+                    │                                                       │
+                    │  graph.py ──── road grid, congestion-weighted edges    │
+                    │  planners.py ─ Dijkstra / A* / static baseline         │
+                    │  rl_agent.py ─ Q-learning trained under traffic noise  │
+                    │  vision_gate.py ─ YOLO re-check of cameras on route,   │
+                    │                   re-plans around blocked streets      │
+                    │  explain.py ── LLM route justification (w/ fallback)   │
+                    │  simulate.py ─ benchmark vs static baseline            │
+                    └───────────────────────────┬───────────────────────────┘
+                                                │
+                                    dashboard.py (Streamlit, 5 tabs)
 ```
+
+1. **Perception** – every Manhattan DOT camera snapshot is scored by YOLOv12
+   (vehicles ×1.0, pedestrians ×0.3, signals ×0.5) into a congestion score.
+2. **World model** – a directed road grid is stretched over the real camera
+   bounding box; each camera snaps to its nearest intersection and slows down
+   the streets feeding it.
+3. **Planning** – Dijkstra and A* minimise congestion-aware travel time; the
+   tabular Q-learning agent trains across episodes with randomly perturbed
+   edge times, learning routes that stay fast when traffic is uncertain.
+4. **Vision confirmation** – before dispatch, every camera along the candidate
+   route is re-checked (fresh YOLO inference in live mode, stored scores in
+   offline mode). Blocked intersections are cut out and the planner re-runs
+   until the route is confirmed clear.
+5. **Explanation** – the route facts (time saved, blockages avoided, vision
+   verdict) are handed to an LLM that writes a short dispatcher-friendly
+   justification; a template fallback answers when no API key is configured.
 
 ---
 
-## Requirements
+## Quick start (local)
 
-- **Python 3.10 or 3.11** (YOLOv12 / ultralytics may not support 3.12 yet)
-- A virtual environment (the repo ships with `.venv/`)
-- Internet access to reach the NYC DOT API and your chosen LLM endpoint
-
-Install dependencies (if starting fresh):
+Requires Python 3.11 and the YOLOv12 weights at `weights/yolov12s.pt`
+(included in this repo).
 
 ```bash
-pip install ultralytics streamlit opencv-python-headless pandas requests numpy
-```
+pip install -r requirements.txt
 
-> If you already have the `.venv` in this folder, activate it and skip the install:
-> ```powershell
-> # Windows PowerShell
-> .\.venv\Scripts\Activate.ps1
-> ```
-> ```bash
-> # macOS / Linux
-> source .venv/bin/activate
-> ```
-
----
-
-## One-time setup
-
-### 1. Place the model weights
-
-Copy or download `yolov12s.pt` into the `weights/` folder:
-
-```
-weights/yolov12s.pt
-```
-
-The file must be named exactly `yolov12s.pt`. If you have a different variant (e.g. `yolov12n.pt`), update the `WEIGHTS_PATH` constant at the top of both `compute_stats.py` and `update_camera_stats.py`.
-
-### 2. Fetch the camera list
-
-```bash
+# 1. Refresh the camera list and congestion scores (optional - CSVs included)
 python fetch_cameras.py
-```
-
-This calls the public NYC DOT API and writes `manhattan_cameras.csv` (~200 rows). It takes only a few seconds. Re-run it whenever you want a refreshed list of cameras (cameras go offline or change URLs occasionally).
-
----
-
-## Running the pipeline
-
-### Step 1 – fetch cameras (one-time or periodic)
-
-```bash
-python fetch_cameras.py
-```
-
-Output: `manhattan_cameras.csv`
-
-### Step 2 – score every camera with YOLO
-
-```bash
 python update_camera_stats.py
-```
 
-This downloads a live JPEG from each of the ~200 Manhattan cameras, runs YOLO on it, and writes `camera_stats.csv`. Expect it to take **5–15 minutes** depending on network speed and your hardware. A 0.5-second pause between cameras prevents overloading the NYC DOT image server.
+# 2. Run the routing benchmark
+python -m routing.simulate --episodes 30
 
-Output: `camera_stats.csv`
-
-> **Tip:** Run this step again any time you want updated congestion numbers. The dashboard reads whichever CSV is on disk when it starts.
-
----
-
-## Running the dashboard
-
-```bash
+# 3. Launch the dashboard
 streamlit run dashboard.py
 ```
 
-Streamlit will print a local URL (usually `http://localhost:8501`). Open it in your browser. The app reads `manhattan_cameras.csv` and `camera_stats.csv` at startup — make sure you have run Steps 1 and 2 first.
+Every routing module also runs standalone as a self-test, e.g.
+`python -m routing.vision_gate`.
 
-If `camera_stats.csv` is missing, the Overview tab will show a warning but the app will still load. The Camera Explorer tab can still perform live YOLO inference on demand.
+## Quick start (Docker)
+
+```bash
+docker build -t emergency-routing .
+docker run -p 8501:8501 emergency-routing
+```
+
+Open http://localhost:8501. The image is CPU-only and bundles the weights and
+pre-computed camera data, so it works fully offline out of the box.
 
 ---
 
-## LLM chat tab
+## Dashboard tabs
 
-The **Ask traffic** tab sends the current congestion data as context to an LLM so you can ask plain-English questions like *"Which area is most congested right now?"*
+| Tab | What it shows |
+|---|---|
+| **Overview** | Map of all cameras + sortable congestion table |
+| **Camera explorer** | Live YOLO inference on any single camera |
+| **Segments** | Averaged congestion from pre-recorded clips (`compute_stats.py`) |
+| **Ask traffic (LLM)** | Chat with an LLM grounded in the current congestion data |
+| **Emergency routing** | Plan a route (Dijkstra / A* / RL), vision-confirm it, see the map, time saved vs baseline, and the LLM explanation |
 
-Set **one** of the following sets of environment variables before launching the dashboard:
+## LLM configuration (optional)
 
-### Option A – OpenAI (or any OpenAI-compatible endpoint)
-
-```powershell
-# Windows PowerShell
-$env:OPENAI_API_KEY = "sk-..."
-# Optional overrides:
-$env:OPENAI_MODEL    = "gpt-4o"           # default: gpt-4o-mini
-$env:OPENAI_BASE_URL = "https://..."      # default: https://api.openai.com/v1
-```
+The chat tab and the route explanations use one of:
 
 ```bash
-# macOS / Linux
-export OPENAI_API_KEY="sk-..."
-export OPENAI_MODEL="gpt-4o"           # optional
-export OPENAI_BASE_URL="https://..."   # optional
-```
+# OpenAI-compatible (OpenAI, OpenRouter, Ollama, ...)
+export OPENAI_API_KEY="sk-..."           # required
+export OPENAI_MODEL="gpt-4o-mini"        # optional
+export OPENAI_BASE_URL="https://..."     # optional
 
-Works with **OpenAI**, **OpenRouter**, and **Ollama** (set `OPENAI_BASE_URL=http://localhost:11434/v1` and any non-empty key).
-
-### Option B – Anthropic Claude
-
-```powershell
-$env:LLM_PROVIDER    = "anthropic"
-$env:ANTHROPIC_API_KEY = "sk-ant-..."
-# Optional overrides:
-$env:ANTHROPIC_MODEL      = "claude-haiku-4-5"  # default
-$env:ANTHROPIC_MAX_TOKENS = "2048"              # default
-```
-
-```bash
+# or Anthropic
 export LLM_PROVIDER="anthropic"
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
-If no API key is set, the chat tab will display a clear error message explaining what is missing.
+Without a key everything still works - explanations fall back to an
+automatic template.
 
 ---
 
-## Offline video segments (optional)
+## Repository notes
 
-`compute_stats.py` analyses pre-recorded MP4 clips and writes `segment_stats.csv`, which appears in the **Segments** tab of the dashboard.
-
-### Why the script reports "Video not found"
-
-The script expects MP4 files at these exact paths relative to the project root:
-
-```
-videos/seg_a.mp4   (Midtown segment)
-videos/seg_b.mp4   (7th Avenue segment)
-videos/seg_c.mp4   (Broadway segment)
-```
-
-**The `videos/` folder and its contents are not included in this repository** — you must supply your own recordings. These can be any traffic footage you have captured (or downloaded from a legal source) for the corresponding Manhattan locations.
-
-### How to set it up
-
-1. Create the `videos/` directory:
-
-    ```powershell
-    # Windows
-    mkdir videos
-    ```
-
-    ```bash
-    # macOS / Linux
-    mkdir videos
-    ```
-
-2. Copy your MP4 files into it, named `seg_a.mp4`, `seg_b.mp4`, and `seg_c.mp4`.
-
-    > If you want to use different filenames or add more segments, edit the `SEGMENTS` list at the top of `compute_stats.py` — each entry just needs a `segment_id`, `name`, `lat`, `lon`, and `video_path`.
-
-3. Run the script:
-
-    ```bash
-    python compute_stats.py
-    ```
-
-    Output: `segment_stats.csv`. The script samples every 10th frame up to 60 frames per clip, so even a 30-second clip works fine.
-
----
-
-## Troubleshooting
-
-| Symptom | Likely cause | Fix |
-|---------|-------------|-----|
-| `[WARN] Video not found for seg_a` | `videos/` folder or the MP4 file is missing | Create the folder and place your MP4 files inside it (see above) |
-| `[ERROR] No segment stats produced` | All three video files are missing | Same as above |
-| `FileNotFoundError: weights/yolov12s.pt` | Model weights not present | Copy `yolov12s.pt` into the `weights/` folder |
-| Camera map is empty | `camera_stats.csv` has no valid lat/lon rows | Re-run `fetch_cameras.py` then `update_camera_stats.py` |
-| LLM tab shows "Set OPENAI_API_KEY" | API key env var not set | Set the appropriate env var before running `streamlit run dashboard.py` |
-| Dashboard shows stale scores | `camera_stats.csv` is old | Re-run `update_camera_stats.py` and restart the dashboard |
-| `FlashAttention is not available` log line | Your GPU/CPU doesn't support Flash Attention | Safe to ignore — PyTorch falls back to `scaled_dot_product_attention` automatically |
-| Camera frames fail to load in the explorer | Camera is offline or the NYC DOT URL changed | Try a different camera; re-run `fetch_cameras.py` to refresh URLs |
+- `routing_benchmark.csv` - per-episode results behind the table above.
+- The YOLO training assets from the earlier phase of this project (the
+  `train/ valid/ test` dataset, `Traffic_Analysis.ipynb`, `yolo11s.pt`) remain
+  in the repository history and are excluded from the Docker image.
+- `compute_stats.py` scores your own MP4 clips into `segment_stats.csv`; place
+  them under `videos/` (see the `SEGMENTS` list at the top of the script).
