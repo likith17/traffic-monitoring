@@ -1,0 +1,10 @@
+# The routing package: everything needed to plan emergency routes on a
+# congestion-aware road graph built from the Manhattan camera data.
+#
+# Modules:
+#   graph       - builds the road network and attaches camera congestion
+#   planners    - classical Dijkstra / A* shortest-path planners
+#   rl_agent    - tabular Q-learning agent trained under traffic uncertainty
+#   vision_gate - YOLO check that a route is actually passable before dispatch
+#   explain     - plain-English route justification (LLM with offline fallback)
+#   simulate    - benchmark of the full pipeline vs a static baseline
