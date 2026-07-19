@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 import pandas as pd
@@ -20,6 +21,19 @@ NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 # Nominatim usage policy requires an identifying agent.
 USER_AGENT = "emergency-routing-smart-response/1.0"
 REQUEST_TIMEOUT_S = 8
+
+# Nominatim allows at most 1 request/second; space our calls accordingly so a
+# start+destination pair never gets rate-limited into a fake "not found".
+_MIN_INTERVAL_S = 1.05
+_last_request_at = 0.0
+
+
+def _throttle() -> None:
+    global _last_request_at
+    wait = _MIN_INTERVAL_S - (time.monotonic() - _last_request_at)
+    if wait > 0:
+        time.sleep(wait)
+    _last_request_at = time.monotonic()
 
 # Coverage box around the DOT cameras (west, south, east, north), padded a
 # touch so riverside addresses still hit.
@@ -34,6 +48,7 @@ def in_coverage(lat: float, lon: float) -> bool:
 def _nominatim(query: str) -> dict[str, Any] | None:
     """One bounded Nominatim lookup.  Returns None on any failure."""
     try:
+        _throttle()
         r = requests.get(
             NOMINATIM_URL,
             params={
@@ -114,6 +129,7 @@ def geocode_manhattan(query: str) -> dict[str, Any]:
         # Did the place exist somewhere else?  Unbounded probe purely to give
         # the user the right error message ("outside" vs "not found").
         try:
+            _throttle()
             r = requests.get(
                 NOMINATIM_URL,
                 params={"q": query, "format": "json", "limit": 1},

@@ -1,8 +1,14 @@
-# Streamlit dashboard for Emergency Routing for Smart Response.
+# Emergency Routing for Smart Response — public Streamlit app.
 # Launch with: streamlit run dashboard.py
-# Prerequisites: run fetch_cameras.py once, then update_camera_stats.py for live scores.
+#
+# Three views:
+#   Route planner - type any two Manhattan places (like Google Maps), watch the
+#                   vision-confirmed route drive and recalculate around blockages
+#   Live cameras  - the YOLO congestion picture across all NYC DOT cameras
+#   Ask the city  - LLM chat grounded in the current congestion data
 
 import time
+from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -19,96 +25,116 @@ from routing.rl_agent import rl_route
 from routing.navigator import drive_route
 from routing.explain import explain_route
 from routing.geo import path_to_latlon, route_map_payload
-from routing.map_view import build_route_map
+from routing.geocode import geocode_manhattan
+from routing.map_view import build_cameras_map, build_route_map
 from routing.external_route import external_crosses_blockages, fetch_external_route
 from traffic_llm import build_traffic_context, chat_completion
 
 st.set_page_config(
     page_title="Emergency Routing — Smart Response",
-    page_icon="·",
+    page_icon="◉",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# Minimal public-facing visual system: calm navy / asphalt / signal red.
+# ── Mission-control visual system ─────────────────────────────────────────────
 st.markdown(
     """
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
       :root {
-        --ink: #0f172a;
-        --muted: #64748b;
-        --navy: #0b3d91;
-        --signal: #b91c1c;
-        --surface: #f1f5f9;
-        --line: #e2e8f0;
+        --bg: #0B1220;
+        --panel: rgba(148, 163, 184, 0.07);
+        --line: rgba(148, 163, 184, 0.18);
+        --ink: #E2E8F0;
+        --muted: #94A3B8;
+        --cyan: #22D3EE;
+        --red: #F87171;
+        --green: #34D399;
+        --amber: #FBBF24;
       }
 
-      html, body, [class*="css"] {
-        font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
-        color: var(--ink);
-      }
+      html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
 
       .stApp {
         background:
-          radial-gradient(1200px 600px at 10% -10%, #dbe7f5 0%, transparent 55%),
-          radial-gradient(900px 500px at 100% 0%, #e8eef5 0%, transparent 50%),
-          linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      }
-
-      h1, h2, h3, .brand-mark {
-        font-family: 'Fraunces', Georgia, serif !important;
-        letter-spacing: -0.02em;
-      }
-
-      .hero {
-        padding: 0.4rem 0 1.2rem 0;
-        border-bottom: 1px solid var(--line);
-        margin-bottom: 1.2rem;
-      }
-      .brand-mark {
-        font-size: 2.35rem;
-        font-weight: 700;
+          radial-gradient(900px 500px at 85% -10%, rgba(34, 211, 238, 0.10) 0%, transparent 55%),
+          radial-gradient(700px 420px at 0% 0%, rgba(248, 113, 113, 0.07) 0%, transparent 50%),
+          linear-gradient(180deg, #0B1220 0%, #0D1526 60%, #0B1220 100%);
         color: var(--ink);
-        line-height: 1.15;
-        margin: 0;
       }
-      .brand-mark span { color: var(--navy); }
+
+      h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif !important; letter-spacing: -0.01em; }
+
+      /* Hero */
+      .hero { padding: 0.6rem 0 0.4rem 0; }
+      .hero-eyebrow {
+        font-size: 0.78rem; font-weight: 600; letter-spacing: 0.22em;
+        color: var(--cyan); text-transform: uppercase; margin: 0 0 0.35rem 0;
+      }
+      .hero-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.6rem; font-weight: 700; line-height: 1.08;
+        color: #F8FAFC; margin: 0;
+      }
+      .hero-title em { color: var(--cyan); font-style: normal; }
       .hero-sub {
-        margin: 0.45rem 0 0 0;
-        max-width: 42rem;
-        color: var(--muted);
-        font-size: 1.05rem;
-        line-height: 1.45;
+        margin: 0.55rem 0 0 0; max-width: 46rem;
+        color: var(--muted); font-size: 1.02rem; line-height: 1.55;
       }
 
+      /* Live status chips */
+      .chips { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 1.05rem 0 0.4rem 0; }
+      .chip {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 999px; padding: 0.38rem 0.9rem;
+        font-size: 0.85rem; color: var(--ink);
+        backdrop-filter: blur(4px);
+      }
+      .chip b { font-family: 'Space Grotesk', sans-serif; }
+      .chip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+                   margin-right: 6px; vertical-align: 1px; }
+      .pulse { animation: pulse 2.2s infinite; }
+      @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+      /* Tabs as pill nav */
+      div[data-testid="stTabs"] div[role="tablist"] {
+        gap: 0.4rem; border-bottom: none; margin-top: 0.6rem;
+      }
       div[data-testid="stTabs"] button[role="tab"] {
-        font-family: 'Source Sans 3', sans-serif;
-        font-weight: 600;
-        letter-spacing: 0.01em;
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 999px; padding: 0.35rem 1.1rem;
+        color: var(--muted); font-weight: 600;
       }
+      div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+        color: #06222B; background: var(--cyan); border-color: var(--cyan);
+      }
+      div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p { color: #06222B; }
 
+      /* Cards & metrics */
       div[data-testid="stMetric"] {
-        background: #ffffff;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 0.85rem 1rem;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 14px; padding: 0.9rem 1.05rem;
+        backdrop-filter: blur(4px);
       }
-      div[data-testid="stMetric"] label,
+      div[data-testid="stMetric"] label { color: var(--muted) !important; }
       div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-        color: var(--ink) !important;
-      }
-      div[data-testid="stMetric"] [data-testid="stMetricDelta"] svg {
-        fill: #15803d;
+        color: #F8FAFC !important; font-family: 'Space Grotesk', sans-serif;
       }
 
-      .compare-note {
-        color: var(--muted);
-        font-size: 0.92rem;
-        margin-top: -0.4rem;
-        margin-bottom: 0.8rem;
+      .section-note { color: var(--muted); font-size: 0.93rem; margin: -0.3rem 0 0.9rem 0; }
+
+      /* Inputs */
+      div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
+        background: rgba(15, 23, 42, 0.75) !important;
+        border-color: var(--line) !important;
+      }
+
+      .stButton > button[kind="primary"] {
+        background: linear-gradient(90deg, #EF4444 0%, #F87171 100%);
+        border: none; font-weight: 700; letter-spacing: 0.02em;
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
       }
     </style>
     """,
@@ -116,59 +142,52 @@ st.markdown(
 )
 
 
-# --- Data loaders (cached so they don't re-read CSV on every Streamlit interaction) ---
+# ── Data loaders ──────────────────────────────────────────────────────────────
 
 @st.cache_data
 def load_cameras():
-    """Load the base camera list written by fetch_cameras.py."""
     return pd.read_csv("manhattan_cameras.csv")
 
 
 @st.cache_data
 def load_stats():
-    """Load the per-camera congestion scores written by update_camera_stats.py.
-    Returns None if the file doesn't exist yet (scores haven't been computed).
-    """
     path = Path("camera_stats.csv")
     if not path.exists():
-        return None
-    return pd.read_csv(path)
-
-
-@st.cache_data
-def load_segment_stats():
-    """Load the offline segment analysis written by compute_stats.py.
-    Returns None if the file doesn't exist yet.
-    """
-    path = Path("segment_stats.csv")
-    if not path.exists():
-        return None
-    return pd.read_csv(path)
+        return None, None
+    updated = datetime.fromtimestamp(path.stat().st_mtime)
+    return pd.read_csv(path), updated
 
 
 @st.cache_resource
 def get_model():
-    """Load the YOLOv12 weights once and keep them in memory across re-renders.
-    st.cache_resource is correct here because the model object is not serialisable
-    (as required by st.cache_data), but it's safe to share between sessions.
-    """
     return YOLO("weights/yolov12s.pt")
 
 
-def fetch_frame(url: str):
-    """Download a camera snapshot and decode it into a BGR NumPy array.
+@st.cache_data(ttl=24 * 3600, show_spinner=False)
+def geocode_cached(query: str) -> dict:
+    """Cache place lookups so repeat searches never re-hit Nominatim."""
+    return geocode_manhattan(query)
 
-    Shows a Streamlit warning and returns None on any failure, including cases
-    where the server responds 200 but the body is not a valid image.
-    """
+
+@st.cache_resource
+def get_route_graph():
+    """Real OSM street network (cached GraphML) with camera congestion.
+    Falls back to the synthetic grid only if the cache is missing."""
+    try:
+        from routing.streets import build_street_graph
+        return build_street_graph(), True
+    except FileNotFoundError:
+        return build_default_graph(), False
+
+
+def fetch_frame(url: str):
     try:
         r = requests.get(url, timeout=8)
         r.raise_for_status()
         arr = np.frombuffer(r.content, np.uint8)
         frame = cv2.imdecode(arr, cv2.IMREAD_COLOR)
         if frame is None:
-            # imdecode silently returns None for corrupt or non-image content.
-            raise ValueError("cv2.imdecode returned None — response may not be an image")
+            raise ValueError("response is not a decodable image")
         return frame
     except Exception as e:
         st.warning(f"Failed to fetch frame: {e}")
@@ -176,266 +195,415 @@ def fetch_frame(url: str):
 
 
 def run_yolo_on_camera(cam_row: pd.Series):
-    """Fetch a live snapshot for the given camera and run YOLO on it.
-
-    Returns (annotated_image, result) on success, or (None, None) if the frame
-    couldn't be fetched or inference failed.
-    """
     model = get_model()
     frame = fetch_frame(cam_row["image_url"])
     if frame is None:
         return None, None
-
     res = model(frame, imgsz=640)[0]
-    annotated = res.plot()  # draws bounding boxes and labels onto the frame
-    return annotated, res
+    return res.plot(), res
 
-
-# --- App-level data: loaded once at startup and shared across all tabs ---
 
 cams_df = load_cameras()
-stats_df = load_stats()
+stats_df, stats_updated = load_stats()
 
 if stats_df is not None:
-    # Join the pre-computed scores onto the camera list so every tab can use merged.
     merged = cams_df.merge(
-        stats_df[
-            [
-                "camera_id",
-                "score",
-                "level",
-                "vehicles",
-                "pedestrians",
-                "signals",
-            ]
-        ],
+        stats_df[["camera_id", "score", "level", "vehicles", "pedestrians", "signals"]],
         on="camera_id",
-        how="left",  # keep cameras that have no score yet (will show NaN)
+        how="left",
     )
 else:
-    # No scores yet — create the score columns as NaN so downstream code
-    # doesn't have to branch on whether the columns exist.
     merged = cams_df.copy()
-    merged["score"] = np.nan
+    for col in ("score", "vehicles", "pedestrians", "signals"):
+        merged[col] = np.nan
     merged["level"] = None
-    merged["vehicles"] = np.nan
-    merged["pedestrians"] = np.nan
-    merged["signals"] = np.nan
+
+
+# ── Hero + live status chips ──────────────────────────────────────────────────
+
+n_high = int((merged["level"] == "high").sum())
+n_scored = int(merged["score"].notna().sum())
+freshness = stats_updated.strftime("%b %d, %H:%M") if stats_updated else "n/a"
 
 st.markdown(
-    """
+    f"""
     <div class="hero">
-      <p class="brand-mark">Emergency Routing <span>Smart Response</span></p>
+      <p class="hero-eyebrow">Vision-confirmed dispatch · Manhattan</p>
+      <p class="hero-title">Routes that <em>see</em> the road ahead.</p>
       <p class="hero-sub">
-        RL-optimised path planning with live camera vision confirmation —
-        compared side-by-side against standard map directions.
+        Type any two places in Manhattan. We plan on real streets, check every
+        traffic camera along the way with YOLOv12, and recalculate mid-drive the
+        moment one shows a blockage — then show you what standard map directions
+        would have done.
       </p>
+      <div class="chips">
+        <span class="chip"><span class="dot pulse" style="background:var(--green);"></span>
+          <b>{len(cams_df)}</b>&nbsp;DOT cameras</span>
+        <span class="chip"><span class="dot" style="background:var(--cyan);"></span>
+          <b>{n_scored}</b>&nbsp;scored by YOLO</span>
+        <span class="chip"><span class="dot" style="background:var(--red);"></span>
+          <b>{n_high}</b>&nbsp;heavy congestion</span>
+        <span class="chip"><span class="dot" style="background:var(--amber);"></span>
+          updated&nbsp;<b>{freshness}</b></span>
+      </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-tab_route, tab1, tab2, tab3, tab4 = st.tabs(
-    [
-        "Emergency routing",
-        "Overview",
-        "Camera explorer",
-        "Segments",
-        "Ask traffic (LLM)",
-    ]
-)
+tab_route, tab_cams, tab_ask = st.tabs(["Route planner", "Live cameras", "Ask the city"])
 
-# ── Tab 1: city-wide overview with a map and sortable table ───────────────────
-with tab1:
-    st.subheader("Manhattan cameras")
 
+# ── Route planner ─────────────────────────────────────────────────────────────
+with tab_route:
+    route_g, on_real_streets = get_route_graph()
+    if not on_real_streets:
+        st.warning(
+            "Street network cache missing — run `python -m routing.streets --build` "
+            "for real Manhattan streets."
+        )
+
+    col_from, col_to = st.columns(2)
+    with col_from:
+        start_q = st.text_input(
+            "From",
+            value="Times Square",
+            placeholder="e.g. Columbus Circle, 350 5th Ave, Harlem Hospital",
+            key="start_query",
+        )
+    with col_to:
+        dest_q = st.text_input(
+            "To (the incident)",
+            value="Wall Street",
+            placeholder="Any address or landmark in Manhattan",
+            key="dest_query",
+        )
+
+    with st.expander("Routing options", expanded=False):
+        col_c, col_d, col_e = st.columns(3)
+        with col_c:
+            strategy = st.selectbox("Strategy", ["A*", "Dijkstra", "Q-learning (RL)"])
+        with col_d:
+            vision_mode = st.selectbox(
+                "Vision check",
+                ["Offline (stored camera scores)", "Live (fresh YOLO per camera)"],
+            )
+        with col_e:
+            simulate_incident = st.selectbox(
+                "En-route demo",
+                ["Off", "Simulate a blockage mid-route"],
+                help=(
+                    "Stages a severe blockage on a camera along the initial "
+                    "route after departure, so you can watch the route "
+                    "recalculate from the vehicle's position."
+                ),
+            )
+
+    plan_clicked = st.button("Find vision-confirmed route", type="primary")
+
+    if not plan_clicked:
+        # Landing visual: the live congestion picture, not an empty form.
+        st_folium(
+            build_cameras_map(merged),
+            width=None, height=460, returned_objects=[],
+            key="landing_map",
+        )
+    else:
+        with st.spinner("Locating places..."):
+            start_geo = geocode_cached(start_q)
+            dest_geo = geocode_cached(dest_q)
+
+        geo_ok = True
+        for label, geo, q in (("Start", start_geo, start_q), ("Destination", dest_geo, dest_q)):
+            if geo["outcome"] == "outside":
+                st.error(
+                    f"**{label} is outside Manhattan.** \u201c{q}\u201d exists, but this "
+                    "system covers Manhattan only — try a place on the island."
+                )
+                geo_ok = False
+            elif geo["outcome"] == "not_found":
+                st.error(
+                    f"**Couldn't find \u201c{q}\u201d within Manhattan.** This system "
+                    "covers Manhattan only — try a landmark, an address, or an "
+                    "intersection like \u201cAmsterdam Ave @ 60 St\u201d."
+                )
+                geo_ok = False
+
+        if geo_ok:
+            start_lat, start_lon = start_geo["lat"], start_geo["lon"]
+            end_lat, end_lon = dest_geo["lat"], dest_geo["lon"]
+            st.caption(
+                f"From **{start_geo['label']}** to **{dest_geo['label']}** "
+                f"({'live search' if start_geo['source'] == 'nominatim' else 'camera match'})"
+            )
+
+            src = nearest_node(route_g, start_lat, start_lon)
+            dst = nearest_node(route_g, end_lat, end_lon)
+
+            if src == dst:
+                st.error("Start and destination snap to the same intersection — pick places further apart.")
+                st.stop()
+
+            if strategy == "Dijkstra":
+                planner = dijkstra_route
+            elif strategy == "Q-learning (RL)":
+                planner = rl_route
+            else:
+                planner = astar_route
+
+            mode = "live" if vision_mode.startswith("Live") else "offline"
+            yolo_model = get_model() if mode == "live" else None
+
+            # The navigation loop mutates camera scores in the incident demo,
+            # so work on a copy and leave the shared cached graph untouched.
+            nav_g = route_g.copy()
+            nav_g.graph.update(route_g.graph)
+
+            with st.spinner(
+                f"Planning with {strategy}, driving with camera lookahead, "
+                "and fetching standard map directions..."
+            ):
+                if simulate_incident != "Off":
+                    from routing.vision_gate import cameras_on_route
+
+                    initial = planner(nav_g, src, dst)
+                    cams_ahead = [
+                        n for n in cameras_on_route(nav_g, initial) if n not in (src, dst)
+                    ]
+                    if cams_ahead:
+                        staged = cams_ahead[len(cams_ahead) // 2]
+                        nav_g.nodes[staged]["cam_score"] = 99.0
+
+                trace = drive_route(
+                    nav_g, src, dst, planner=planner, mode=mode, model=yolo_model
+                )
+                external = fetch_external_route(
+                    nav_g, start_lat, start_lon, end_lat, end_lon,
+                    src_node=src, dst_node=dst,
+                )
+
+            route = trace["driven"] if trace["confirmed"] else trace["final_path"]
+            gate_info = {
+                "confirmed": trace["confirmed"],
+                "attempts": len(trace["segments"]),
+                "blocked_cameras": [
+                    {"node": r["blocked_node"], "camera": r["blocked_camera"], "score": r["score"]}
+                    for r in trace["reroutes"]
+                ],
+                "endpoint_warnings": [],
+            }
+
+            m_route = route_metrics(nav_g, route)
+            our_min = m_route["travel_time_s"] / 60.0
+            ext_cong_min = external["congested_time_s"] / 60.0
+            ext_provider_min = external["duration_s"] / 60.0
+            saved_s = external["congested_time_s"] - m_route["travel_time_s"]
+
+            blocked_nodes = {
+                cam["node"] for cam in gate_info["blocked_cameras"] if "node" in cam
+            }
+            ext_hits = external_crosses_blockages(nav_g, external["coords"], blocked_nodes)
+
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("Our ETA (vision-confirmed)", f"{our_min:.1f} min")
+            col2.metric(f"{external['provider']} ETA", f"{ext_provider_min:.1f} min")
+            col3.metric("Their path in our traffic model", f"{ext_cong_min:.1f} min")
+            col4.metric(
+                "Advantage vs map path",
+                f"{max(saved_s, 0) / 60:.1f} min",
+                delta="faster under congestion" if saved_s > 0 else "similar",
+            )
+
+            if gate_info["confirmed"]:
+                if trace["reroutes"]:
+                    st.success(
+                        f"Arrived via {strategy} after {len(trace['reroutes'])} "
+                        "en-route recalculation(s) — the route redrew from the "
+                        "vehicle's position when a camera ahead reported a blockage."
+                    )
+                else:
+                    st.success(
+                        f"Arrived via {strategy}; every camera ahead was checked "
+                        "before entering and stayed clear the whole drive."
+                    )
+            else:
+                st.warning("Route could not be fully confirmed — dispatch with caution.")
+
+            if external["source"] == "google_directions":
+                st.caption("Comparison baseline: live Google Directions API.")
+            elif external["source"] == "osrm":
+                st.caption(
+                    "Comparison baseline: OSRM public router (OpenStreetMap). "
+                    "Set GOOGLE_MAPS_API_KEY to compare against Google Maps directly."
+                )
+            else:
+                st.caption("Comparison baseline: offline naive free-flow path.")
+
+            for r in trace["reroutes"]:
+                st.warning(
+                    f"Recalculated en route: camera {r['blocked_camera']} ahead "
+                    f"reported score {r['score']:.0f} — rerouted from the vehicle's position."
+                )
+            if ext_hits:
+                names = ", ".join(h["camera"] for h in ext_hits)
+                st.error(
+                    f"{external['provider']} still passes near blocked camera(s): "
+                    f"{names}. That is the gap vision confirmation closes."
+                )
+
+            payload = route_map_payload(
+                nav_g, route,
+                baseline_path=None,
+                start=(start_lat, start_lon), end=(end_lat, end_lon),
+                gate_info=gate_info,
+            )
+            payload["baseline_route"] = external["coords"]
+
+            abandoned = []
+            for seg, reroute in zip(trace["segments"][:-1], trace["reroutes"]):
+                leg = seg["path"]
+                if reroute["at_node"] in leg:
+                    unused = leg[leg.index(reroute["at_node"]):]
+                    if len(unused) >= 2:
+                        abandoned.append({
+                            "coords": path_to_latlon(nav_g, unused),
+                            "label": f"Abandoned: {reroute['blocked_camera']} blocked",
+                        })
+            payload["abandoned_routes"] = abandoned
+
+            all_pts = payload["our_route"] + payload["baseline_route"]
+            for leg in abandoned:
+                all_pts = all_pts + leg["coords"]
+            payload["bounds"] = [
+                [min(p[0] for p in all_pts), min(p[1] for p in all_pts)],
+                [max(p[0] for p in all_pts), max(p[1] for p in all_pts)],
+            ]
+
+            fmap = build_route_map(
+                payload,
+                our_label=f"Vision-confirmed ({strategy})",
+                baseline_label=external["provider"],
+            )
+            st_folium(fmap, width=None, height=560, returned_objects=[], key="route_map")
+
+            st.markdown(
+                '<p class="section-note">Cyan = the path actually driven · dashed slate = '
+                "standard map directions · dotted amber = legs abandoned when the route "
+                "recalculated · black markers = blockages avoided.</p>",
+                unsafe_allow_html=True,
+            )
+
+            left, right = st.columns(2)
+            with left:
+                st.markdown("#### Our route")
+                st.write(
+                    f"{m_route['length_km']:.2f} km · {m_route['hops']} street segments · "
+                    f"worst congestion ×{m_route['worst_congestion']:.2f}"
+                )
+            with right:
+                st.markdown(f"#### {external['provider']}")
+                st.write(
+                    f"{external['distance_km']:.2f} km · provider ETA {ext_provider_min:.1f} min · "
+                    f"in our model {ext_cong_min:.1f} min"
+                )
+
+            graph_baseline = (
+                external.get("graph_path") or static_baseline_route(nav_g, src, dst)
+            )
+            with st.spinner("Writing explanation..."):
+                explanation = explain_route(
+                    nav_g, route, graph_baseline, gate_info,
+                    strategy=f"{strategy} + vision vs {external['provider']}",
+                )
+            st.markdown("### Why this route")
+            st.write(explanation)
+
+
+# ── Live cameras ──────────────────────────────────────────────────────────────
+with tab_cams:
     if stats_df is None:
         st.warning("No camera_stats.csv found. Run update_camera_stats.py first.")
     else:
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Total Cameras with Data", len(stats_df))
-        col2.metric("High Congestion", (stats_df["level"] == "high").sum())
-        col3.metric("Medium Congestion", (stats_df["level"] == "medium").sum())
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Cameras scored", n_scored)
+        c2.metric("High congestion", n_high)
+        c3.metric("Medium congestion", int((merged["level"] == "medium").sum()))
+        c4.metric("Average score", f"{merged['score'].mean():.1f}")
 
-        st.markdown("### Map of Cameras")
-
-        # Make a copy so we don't mutate the shared merged dataframe.
-        stats_map = merged.copy()
-        stats_map["lat"] = pd.to_numeric(stats_map["lat"], errors="coerce")
-        stats_map["lon"] = pd.to_numeric(stats_map["lon"], errors="coerce")
-        # Drop rows with missing coordinates — st.map raises an error on NaN lat/lon.
-        stats_map = stats_map.dropna(subset=["lat", "lon"])
-
-        if stats_map.empty:
-            st.warning("No valid lat/lon data available to plot on the map.")
-        else:
-            st.map(stats_map[["lat", "lon"]])
-
-        st.markdown("### Camera Congestion Table")
-        st.dataframe(
-            stats_map[
-                [
-                    "camera_id",
-                    "name",
-                    "area",
-                    "score",
-                    "level",
-                    "vehicles",
-                    "pedestrians",
-                    "signals",
-                ]
-            ]
-            .sort_values("score", ascending=False)
-            .reset_index(drop=True)
+        st_folium(
+            build_cameras_map(merged),
+            width=None, height=440, returned_objects=[],
+            key="cams_map",
         )
 
-
-# ── Tab 2: drill into a single camera with live YOLO inference ────────────────
-with tab2:
-    st.subheader("Single camera")
-
-    def area_bucket(lat: float) -> str:
-        """Assign a coarse Manhattan zone based on latitude.
-        Thresholds chosen to roughly match Upper (above 96th St), Midtown, Lower.
-        """
-        if lat > 40.78:
-            return "Upper Manhattan"
-        elif lat > 40.75:
-            return "Midtown"
-        else:
-            return "Lower Manhattan"
-
-    # Work on a local copy so the cached cams_df is not mutated.
-    tab2_cams = cams_df.copy()
-    tab2_cams["zone"] = tab2_cams["lat"].apply(area_bucket)
-
-    zone = st.selectbox(
-        "Select Manhattan zone:", ["All", "Upper Manhattan", "Midtown", "Lower Manhattan"]
+    st.markdown("#### Inspect a camera")
+    st.markdown(
+        '<p class="section-note">Pick any DOT camera and run YOLOv12 on its '
+        "latest snapshot — the same inference the router uses to confirm "
+        "routes.</p>",
+        unsafe_allow_html=True,
     )
 
-    if zone != "All":
-        filtered = tab2_cams[tab2_cams["zone"] == zone]
-    else:
-        filtered = tab2_cams
-
-    st.write(f"{len(filtered)} cameras in this selection.")
-
+    cam_pick = cams_df.dropna(subset=["lat", "lon"])
     cam_choice = st.selectbox(
-        "Choose a camera:",
-        options=filtered["camera_id"].tolist(),
-        format_func=lambda cid: filtered.loc[
-            filtered["camera_id"] == cid, "name"
-        ].iloc[0],
+        "Camera",
+        options=cam_pick["camera_id"].tolist(),
+        format_func=lambda cid: cam_pick.loc[cam_pick["camera_id"] == cid, "name"].iloc[0],
     )
+    cam_row = cam_pick[cam_pick["camera_id"] == cam_choice].iloc[0]
 
-    cam_row = filtered[filtered["camera_id"] == cam_choice].iloc[0]
-
-    st.write(f"**Camera:** {cam_row['name']}")
-    st.write(f"**Location:** lat={cam_row['lat']:.5f}, lon={cam_row['lon']:.5f}")
-
-    mode = st.radio(
-        "View mode:",
-        ["Single snapshot", "Continuous live view"],
-        horizontal=True,
-    )
-
+    view_mode = st.radio("View", ["Single snapshot", "Live view (15 frames)"], horizontal=True)
     placeholder = st.empty()
-    model = get_model()
-    names = model.names
 
-    if mode == "Single snapshot":
-        if st.button("Get latest frame"):
-            with st.spinner("Running YOLO..."):
+    if view_mode == "Single snapshot":
+        if st.button("Run YOLO on latest frame"):
+            with st.spinner("Running YOLOv12..."):
                 annotated, res = run_yolo_on_camera(cam_row)
-
             if annotated is not None:
-                placeholder.image(
-                    annotated, channels="BGR", caption="Detections"
-                )
-
-                # Build a class-count dict from the detection results for display.
+                placeholder.image(annotated, channels="BGR", caption=cam_row["name"])
+                names = get_model().names
                 counts: dict[str, int] = {}
                 for box in res.boxes:
-                    cls_id = int(box.cls[0])
-                    name = names.get(cls_id, str(cls_id))
+                    name = names.get(int(box.cls[0]), "?")
                     counts[name] = counts.get(name, 0) + 1
-
-                st.markdown("**Detections:**")
                 st.json(counts)
             else:
-                st.error("Could not fetch or process frame for this camera.")
-
-    else:  # Continuous live view — loops up to 15 frames, 2 seconds apart
-        run_live = st.checkbox("Start continuous live view (updates every 2s)")
-
-        if run_live:
-            for i in range(15):
-                with st.spinner(f"Frame {i+1}/15..."):
-                    annotated, res = run_yolo_on_camera(cam_row)
-                if annotated is None:
-                    st.error("Could not fetch or process frame. Stopping.")
-                    break
-
-                placeholder.image(
-                    annotated,
-                    channels="BGR",
-                    caption=f"Frame {i+1}",
-                )
-
-                time.sleep(2)
-
-            st.info("Live demo finished. Uncheck and re-check to run again.")
-
-
-# ── Tab 3: results from the offline video segment analysis ────────────────────
-with tab3:
-    st.subheader("Recorded Segment Evaluation")
-
-    seg_df = load_segment_stats()
-    if seg_df is None:
-        st.warning("No segment_stats.csv found. Run compute_stats.py first.")
+                st.error("Could not fetch or process a frame for this camera.")
     else:
-        st.markdown("### Segment Summary Table")
-        st.dataframe(
-            seg_df[
-                [
-                    "segment_id",
-                    "name",
-                    "lat",
-                    "lon",
-                    "avg_score",
-                    "level",
-                    "avg_vehicles",
-                    "avg_pedestrians",
-                    "avg_signals",
+        if st.checkbox("Start live view (updates every 2s)"):
+            for i in range(15):
+                annotated, _ = run_yolo_on_camera(cam_row)
+                if annotated is None:
+                    st.error("Could not fetch a frame. Stopping.")
+                    break
+                placeholder.image(annotated, channels="BGR", caption=f"{cam_row['name']} — frame {i + 1}/15")
+                time.sleep(2)
+            st.info("Live view finished. Re-check to run again.")
+
+    if stats_df is not None:
+        with st.expander("Full congestion table"):
+            st.dataframe(
+                merged.dropna(subset=["lat", "lon"])[
+                    ["name", "score", "level", "vehicles", "pedestrians", "signals"]
                 ]
-            ].reset_index(drop=True)
-        )
-
-        st.markdown("### Average Congestion per Segment")
-        chart_df = seg_df.set_index("name")[["avg_score"]]
-        st.bar_chart(chart_df)
+                .sort_values("score", ascending=False)
+                .reset_index(drop=True)
+            )
 
 
-# ── Tab 4: chat with an LLM about the current traffic data ───────────────────
-with tab4:
-    st.subheader("Traffic Q&A (LLM)")
-    st.caption(
-        "Uses merged stats from this repo (plus segments if you have them). "
-        "Keys: OPENAI_API_KEY and optional OPENAI_BASE_URL / OPENAI_MODEL; "
-        "or LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY."
+# ── Ask the city (LLM) ────────────────────────────────────────────────────────
+with tab_ask:
+    st.markdown(
+        '<p class="section-note">Chat with an LLM grounded strictly in the '
+        "current camera congestion data. Configure OPENAI_API_KEY (or "
+        "LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY) to enable it.</p>",
+        unsafe_allow_html=True,
     )
 
-    # Build the context string from the current in-memory dataframes so the LLM
-    # always reflects the data loaded at app startup.
-    seg_ctx = load_segment_stats()
-    context_text = build_traffic_context(merged, seg_ctx)
-
+    context_text = build_traffic_context(merged, None)
     with st.expander("Show text sent to the model"):
-        # Truncate the preview to 12 000 chars so it doesn't overwhelm the UI.
         st.text(context_text[:12000] + ("..." if len(context_text) > 12000 else ""))
 
-    # Persist conversation history across Streamlit re-runs using session state.
     if "llm_messages" not in st.session_state:
         st.session_state.llm_messages = []
 
@@ -443,14 +611,12 @@ with tab4:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    user_q = st.chat_input('e.g. "How is traffic in Midtown today?"')
+    user_q = st.chat_input('e.g. "How is traffic in Midtown right now?"')
     if user_q:
         st.session_state.llm_messages.append({"role": "user", "content": user_q})
         with st.chat_message("user"):
             st.markdown(user_q)
 
-        # The system prompt grounds the model strictly in the traffic data so it
-        # doesn't hallucinate conditions beyond what the cameras captured.
         system = (
             "You answer questions about Manhattan traffic using only the data below. "
             "If there are no scores, say so and mention update_camera_stats.py. "
@@ -458,20 +624,14 @@ with tab4:
             "Keep it short.\n\n"
             f"Data:\n{context_text}"
         )
-
-        # Prepend the system message; the model sees the full conversation history.
-        api_messages = (
-            [{"role": "system", "content": system}]
-            + [
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.llm_messages
-            ]
-        )
+        api_messages = [{"role": "system", "content": system}] + [
+            {"role": m["role"], "content": m["content"]}
+            for m in st.session_state.llm_messages
+        ]
 
         with st.chat_message("assistant"):
             with st.spinner("Calling model..."):
                 reply, err = chat_completion(api_messages)
-
             if err:
                 st.error(err)
                 st.session_state.llm_messages.append(
@@ -479,323 +639,10 @@ with tab4:
                 )
             else:
                 st.markdown(reply or "_Empty response_")
-                st.session_state.llm_messages.append({"role": "assistant", "content": reply or ""})
+                st.session_state.llm_messages.append(
+                    {"role": "assistant", "content": reply or ""}
+                )
 
     if st.button("Clear chat history", key="clear_llm_chat"):
         st.session_state.llm_messages = []
         st.rerun()
-
-
-# ── Emergency routing: public map compare (vision-confirmed vs map directions) ─
-with tab_route:
-    st.subheader("Plan an emergency response path")
-    st.markdown(
-        '<p class="compare-note">Pick start and incident locations. We plan on '
-        "real Manhattan streets, check every NYC DOT camera ahead before the "
-        "vehicle reaches it, and recalculate from the vehicle's position the "
-        "moment one reports a blockage — then overlay it all on standard map "
-        "directions.</p>",
-        unsafe_allow_html=True,
-    )
-
-    @st.cache_resource
-    def get_route_graph():
-        """Load the real OSM street network (cached GraphML) once per server
-        start, with camera congestion attached.  Falls back to the synthetic
-        grid only if the street cache is missing."""
-        try:
-            from routing.streets import build_street_graph
-            return build_street_graph(), True
-        except FileNotFoundError:
-            return build_default_graph(), False
-
-    route_g, on_real_streets = get_route_graph()
-    if not on_real_streets:
-        st.warning(
-            "Street network cache missing — routes run on the synthetic grid. "
-            "Run `python -m routing.streets --build` for real Manhattan streets."
-        )
-
-    # Start and destination are picked as cameras purely because their names
-    # are recognisable street corners; the route snaps to the nearest
-    # intersection of the road grid.
-    cam_options = cams_df.dropna(subset=["lat", "lon"])
-    col_a, col_b = st.columns(2)
-    with col_a:
-        start_cam = st.selectbox(
-            "Start (vehicle position):",
-            cam_options["camera_id"].tolist(),
-            format_func=lambda cid: cam_options.loc[
-                cam_options["camera_id"] == cid, "name"
-            ].iloc[0],
-            key="route_start",
-        )
-    with col_b:
-        end_cam = st.selectbox(
-            "Destination (incident):",
-            cam_options["camera_id"].tolist(),
-            index=len(cam_options) - 1,
-            format_func=lambda cid: cam_options.loc[
-                cam_options["camera_id"] == cid, "name"
-            ].iloc[0],
-            key="route_end",
-        )
-
-    col_c, col_d, col_e = st.columns(3)
-    with col_c:
-        strategy = st.selectbox(
-            "Routing strategy:", ["A*", "Dijkstra", "Q-learning (RL)"]
-        )
-    with col_d:
-        vision_mode = st.selectbox(
-            "Vision check:",
-            ["Offline (stored camera scores)", "Live (fresh YOLO per camera)"],
-        )
-    with col_e:
-        simulate_incident = st.selectbox(
-            "En-route demo:",
-            ["Off", "Simulate a blockage mid-route"],
-            help=(
-                "Forces a camera on the initial route to report a severe "
-                "blockage after departure, so you can watch the route "
-                "recalculate from the vehicle's position — like Google Maps "
-                "rerouting after a wrong turn."
-            ),
-        )
-
-    if st.button("Plan & compare routes", type="primary"):
-        start_row = cam_options[cam_options["camera_id"] == start_cam].iloc[0]
-        end_row = cam_options[cam_options["camera_id"] == end_cam].iloc[0]
-
-        start_lat = float(start_row["lat"])
-        start_lon = float(start_row["lon"])
-        end_lat = float(end_row["lat"])
-        end_lon = float(end_row["lon"])
-
-        src = nearest_node(route_g, start_lat, start_lon)
-        dst = nearest_node(route_g, end_lat, end_lon)
-
-        if src == dst:
-            st.error(
-                "Start and destination snap to the same intersection — "
-                "pick points further apart."
-            )
-            st.stop()
-
-        if strategy == "Dijkstra":
-            planner = dijkstra_route
-        elif strategy == "Q-learning (RL)":
-            planner = rl_route
-        else:
-            planner = astar_route
-
-        mode = "live" if vision_mode.startswith("Live") else "offline"
-        yolo_model = get_model() if mode == "live" else None
-
-        # The navigation loop mutates camera scores in the incident demo, so
-        # always work on a copy and leave the shared cached graph untouched.
-        nav_g = route_g.copy()
-        nav_g.graph.update(route_g.graph)
-
-        with st.spinner(
-            f"Planning with {strategy}, driving with camera lookahead, "
-            "and fetching standard map directions..."
-        ):
-            if simulate_incident != "Off":
-                # Stage the demo: a camera mid-way along the initial plan
-                # starts reporting a severe blockage right after departure.
-                from routing.vision_gate import cameras_on_route
-
-                initial = planner(nav_g, src, dst)
-                cams_ahead = [
-                    n for n in cameras_on_route(nav_g, initial)
-                    if n not in (src, dst)
-                ]
-                if cams_ahead:
-                    staged = cams_ahead[len(cams_ahead) // 2]
-                    nav_g.nodes[staged]["cam_score"] = 99.0
-
-            trace = drive_route(
-                nav_g, src, dst, planner=planner, mode=mode, model=yolo_model
-            )
-            external = fetch_external_route(
-                nav_g,
-                start_lat,
-                start_lon,
-                end_lat,
-                end_lon,
-                src_node=src,
-                dst_node=dst,
-            )
-
-        route = trace["driven"] if trace["confirmed"] else trace["final_path"]
-        # Adapt the drive trace to the gate_info shape the explanation
-        # module and the map markers already understand.
-        gate_info = {
-            "confirmed": trace["confirmed"],
-            "attempts": len(trace["segments"]),
-            "blocked_cameras": [
-                {
-                    "node": r["blocked_node"],
-                    "camera": r["blocked_camera"],
-                    "score": r["score"],
-                }
-                for r in trace["reroutes"]
-            ],
-            "endpoint_warnings": [],
-        }
-
-        m_route = route_metrics(nav_g, route)
-        our_min = m_route["travel_time_s"] / 60.0
-        ext_cong_min = external["congested_time_s"] / 60.0
-        ext_provider_min = external["duration_s"] / 60.0
-        saved_s = external["congested_time_s"] - m_route["travel_time_s"]
-
-        blocked_nodes = {
-            cam["node"] for cam in gate_info.get("blocked_cameras", []) if "node" in cam
-        }
-        ext_hits = external_crosses_blockages(
-            nav_g, external["coords"], blocked_nodes
-        )
-
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Our ETA (vision-confirmed)", f"{our_min:.1f} min")
-        col2.metric(
-            f"{external['provider']} (provider ETA)",
-            f"{ext_provider_min:.1f} min",
-        )
-        col3.metric(
-            f"{external['provider']} in our traffic model",
-            f"{ext_cong_min:.1f} min",
-        )
-        col4.metric(
-            "Advantage vs map path",
-            f"{max(saved_s, 0) / 60:.1f} min",
-            delta="faster under congestion" if saved_s > 0 else "similar",
-        )
-
-        if gate_info["confirmed"]:
-            if trace["reroutes"]:
-                st.success(
-                    f"Arrived via {strategy} after "
-                    f"{len(trace['reroutes'])} en-route recalculation(s) — "
-                    "the route redrew from the vehicle's position the moment "
-                    "a camera ahead reported a blockage."
-                )
-            else:
-                st.success(
-                    f"Arrived via {strategy}; every camera ahead was checked "
-                    "before entering and stayed clear the whole drive."
-                )
-        else:
-            st.warning("Route could not be fully confirmed — dispatch with caution.")
-
-        if external["source"] == "google_directions":
-            st.caption("Comparison baseline: live Google Directions API.")
-        elif external["source"] == "osrm":
-            st.caption(
-                "Comparison baseline: OSRM public router (OpenStreetMap). "
-                "Set GOOGLE_MAPS_API_KEY to compare against Google Maps directly."
-            )
-        else:
-            st.caption(
-                "Comparison baseline: offline naive free-flow path "
-                "(no network / no API key)."
-            )
-
-        for r in trace["reroutes"]:
-            st.warning(
-                f"Recalculated en route: camera {r['blocked_camera']} ahead "
-                f"reported score {r['score']:.0f} — rerouted from the "
-                "vehicle's position."
-            )
-        for cam in gate_info.get("endpoint_warnings", []):
-            st.info(
-                f"Heavy congestion at endpoint camera {cam['camera']} "
-                f"(score {cam['score']:.0f}) — unavoidable."
-            )
-        if ext_hits:
-            names = ", ".join(h["camera"] for h in ext_hits)
-            st.error(
-                f"{external['provider']} still passes near blocked camera(s): "
-                f"{names}. That is the gap vision confirmation closes."
-            )
-
-        # Interactive street map — our route vs external directions.
-        payload = route_map_payload(
-            nav_g,
-            route,
-            baseline_path=None,
-            start=(start_lat, start_lon),
-            end=(end_lat, end_lon),
-            gate_info=gate_info,
-        )
-        # Inject external polyline as the comparison route (may not be graph nodes).
-        payload["baseline_route"] = external["coords"]
-
-        # Legs abandoned when the drive recalculated: draw only the part the
-        # vehicle never used (from the reroute point onward), faded.
-        abandoned = []
-        for seg, reroute in zip(trace["segments"][:-1], trace["reroutes"]):
-            leg = seg["path"]
-            if reroute["at_node"] in leg:
-                unused = leg[leg.index(reroute["at_node"]):]
-                if len(unused) >= 2:
-                    abandoned.append({
-                        "coords": path_to_latlon(nav_g, unused),
-                        "label": f"Abandoned: {reroute['blocked_camera']} blocked",
-                    })
-        payload["abandoned_routes"] = abandoned
-
-        # Expand bounds to cover every polyline on the map.
-        all_pts = payload["our_route"] + payload["baseline_route"]
-        for leg in abandoned:
-            all_pts = all_pts + leg["coords"]
-        lats = [p[0] for p in all_pts]
-        lons = [p[1] for p in all_pts]
-        payload["bounds"] = [[min(lats), min(lons)], [max(lats), max(lons)]]
-
-        fmap = build_route_map(
-            payload,
-            our_label=f"Vision-confirmed ({strategy})",
-            baseline_label=external["provider"],
-        )
-        st_folium(fmap, width=None, height=540, returned_objects=[])
-
-        st.caption(
-            "Solid navy = the path actually driven. Dashed grey = standard "
-            "map directions. Dotted amber = legs abandoned when the route "
-            "recalculated. Black markers = blockages avoided."
-        )
-
-        # Side-by-side distance / hop summary for the public compare story.
-        left, right = st.columns(2)
-        with left:
-            st.markdown("#### Our route")
-            st.write(
-                f"{m_route['length_km']:.2f} km · {m_route['hops']} hops · "
-                f"worst congestion ×{m_route['worst_congestion']:.2f}"
-            )
-        with right:
-            st.markdown(f"#### {external['provider']}")
-            st.write(
-                f"{external['distance_km']:.2f} km · "
-                f"provider ETA {ext_provider_min:.1f} min · "
-                f"in our model {ext_cong_min:.1f} min"
-            )
-
-        # Graph free-flow baseline kept as an internal reference for the LLM.
-        graph_baseline = (
-            external.get("graph_path")
-            or static_baseline_route(nav_g, src, dst)
-        )
-        with st.spinner("Writing explanation..."):
-            explanation = explain_route(
-                nav_g,
-                route,
-                graph_baseline,
-                gate_info,
-                strategy=f"{strategy} + vision vs {external['provider']}",
-            )
-        st.markdown("### Why this route")
-        st.write(explanation)

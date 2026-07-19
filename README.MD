@@ -119,11 +119,12 @@ comparison path; with network it uses OSRM (or Google if a key is set).
 
 | Tab | What it shows |
 |---|---|
-| **Emergency routing** | Real-street map: navy = path driven, dashed grey = Google/OSRM, amber = legs abandoned when the drive recalculated; metrics compare both; LLM explanation. An en-route demo stages a mid-drive blockage so you can watch the recalculation. |
-| **Overview** | Camera map + congestion table |
-| **Camera explorer** | Live YOLO on any camera |
-| **Segments** | Offline clip scores (`compute_stats.py`) |
-| **Ask traffic (LLM)** | Chat grounded in congestion data |
+| **Route planner** | Type any two Manhattan places (Nominatim search bounded to the island, offline camera-name fallback). Dark real-street map: cyan = path driven, dashed slate = Google/OSRM, amber = legs abandoned when the drive recalculated. An en-route demo stages a mid-drive blockage so you can watch the recalculation. Searches outside Manhattan get a clear "Manhattan only" error. |
+| **Live cameras** | Congestion map of every DOT camera (colour = YOLO level), metrics, live YOLO on any camera, full sortable table |
+| **Ask the city** | LLM chat grounded in the current congestion data |
+
+Searching a place outside the island (e.g. "Newark Airport") is rejected with a
+friendly error rather than routing off-coverage.
 
 ### Map comparison providers (honest labels)
 
