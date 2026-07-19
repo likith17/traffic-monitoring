@@ -17,6 +17,7 @@ import pandas as pd
 import requests
 import streamlit as st
 from streamlit_folium import st_folium
+from streamlit_searchbox import st_searchbox
 from ultralytics import YOLO
 
 from routing.graph import build_default_graph, nearest_node
@@ -25,7 +26,7 @@ from routing.rl_agent import rl_route
 from routing.navigator import drive_route
 from routing.explain import explain_route
 from routing.geo import path_to_latlon, route_map_payload
-from routing.geocode import geocode_manhattan
+from routing.geocode import geocode_manhattan, suggest_places
 from routing.map_view import build_cameras_map, build_route_map
 from routing.external_route import external_crosses_blockages, fetch_external_route
 from traffic_llm import build_traffic_context, chat_completion
@@ -263,32 +264,68 @@ with tab_route:
             "for real Manhattan streets."
         )
 
+    def _search_manhattan(term: str) -> list:
+        """Type-ahead: instant camera-name matches + bounded Nominatim hits."""
+        return [
+            (s["label"], (s["label"], s["lat"], s["lon"]))
+            for s in suggest_places(term)
+        ]
+
+    SEARCHBOX_STYLE = {
+        "searchbox": {
+            "searchField": {
+                "backgroundColor": "rgba(15, 23, 42, 0.75)",
+                "color": "#E2E8F0",
+                "border": "1px solid rgba(148, 163, 184, 0.18)",
+                "borderRadius": "8px",
+            },
+            "menuList": {"backgroundColor": "#131C2E"},
+            "option": {
+                "color": "#E2E8F0",
+                "backgroundColor": "#131C2E",
+                "highlightColor": "rgba(34, 211, 238, 0.25)",
+            },
+        },
+    }
+
     col_from, col_to = st.columns(2)
     with col_from:
-        start_q = st.text_input(
-            "From",
-            value="Times Square",
-            placeholder="e.g. Columbus Circle, 350 5th Ave, Harlem Hospital",
-            key="start_query",
+        start_pick = st_searchbox(
+            _search_manhattan,
+            key="start_search",
+            label="From",
+            placeholder="Type a place… e.g. Columbus Circle",
+            default_searchterm="Times Square",
+            default_use_searchterm=True,
+            debounce=500,
+            style_overrides=SEARCHBOX_STYLE,
         )
     with col_to:
-        dest_q = st.text_input(
-            "To (the incident)",
-            value="Wall Street",
+        dest_pick = st_searchbox(
+            _search_manhattan,
+            key="dest_search",
+            label="To (the incident)",
             placeholder="Any address or landmark in Manhattan",
-            key="dest_query",
+            default_searchterm="Wall Street",
+            default_use_searchterm=True,
+            debounce=500,
+            style_overrides=SEARCHBOX_STYLE,
         )
 
     with st.expander("Routing options", expanded=False):
-        col_c, col_d, col_e = st.columns(3)
-        with col_c:
-            strategy = st.selectbox("Strategy", ["A*", "Dijkstra", "Q-learning (RL)"])
-        with col_d:
-            vision_mode = st.selectbox(
-                "Vision check",
-                ["Offline (stored camera scores)", "Live (fresh YOLO per camera)"],
-            )
-        with col_e:
+        vision_mode = st.selectbox(
+            "Vision check",
+            ["Live (fresh YOLO per camera)", "Offline (stored camera scores)"],
+            help=(
+                "Live re-downloads a snapshot from every camera ahead and "
+                "runs YOLOv12 on it right now; offline trusts the scores "
+                "from the last city-wide scan."
+            ),
+        )
+        mode = "live" if vision_mode.startswith("Live") else "offline"
+        # Staged blockage only makes sense against stored scores — hide it
+        # entirely in live mode so users aren't offered a dead option.
+        if mode == "offline":
             simulate_incident = st.selectbox(
                 "En-route demo",
                 ["Off", "Simulate a blockage mid-route"],
@@ -298,8 +335,18 @@ with tab_route:
                     "recalculate from the vehicle's position."
                 ),
             )
+        else:
+            simulate_incident = "Off"
 
     plan_clicked = st.button("Find vision-confirmed route", type="primary")
+
+    def _resolve_place(pick, fallback_query: str):
+        """A searchbox returns (label, lat, lon) when a suggestion was picked,
+        or the raw typed string otherwise - geocode the latter."""
+        if isinstance(pick, tuple) and len(pick) == 3:
+            return {"outcome": "ok", "label": pick[0], "lat": pick[1],
+                    "lon": pick[2], "source": "suggestion"}
+        return geocode_cached(str(pick or fallback_query))
 
     if not plan_clicked:
         # Landing visual: the live congestion picture, not an empty form.
@@ -310,9 +357,11 @@ with tab_route:
         )
     else:
         with st.spinner("Locating places..."):
-            start_geo = geocode_cached(start_q)
-            dest_geo = geocode_cached(dest_q)
+            start_geo = _resolve_place(start_pick, "Times Square")
+            dest_geo = _resolve_place(dest_pick, "Wall Street")
 
+        start_q = start_geo.get("label", str(start_pick or "Times Square"))
+        dest_q = dest_geo.get("label", str(dest_pick or "Wall Street"))
         geo_ok = True
         for label, geo, q in (("Start", start_geo, start_q), ("Destination", dest_geo, dest_q)):
             if geo["outcome"] == "outside":
@@ -332,10 +381,7 @@ with tab_route:
         if geo_ok:
             start_lat, start_lon = start_geo["lat"], start_geo["lon"]
             end_lat, end_lon = dest_geo["lat"], dest_geo["lon"]
-            st.caption(
-                f"From **{start_geo['label']}** to **{dest_geo['label']}** "
-                f"({'live search' if start_geo['source'] == 'nominatim' else 'camera match'})"
-            )
+            st.caption(f"From **{start_geo['label']}** to **{dest_geo['label']}**")
 
             src = nearest_node(route_g, start_lat, start_lon)
             dst = nearest_node(route_g, end_lat, end_lon)
@@ -344,14 +390,6 @@ with tab_route:
                 st.error("Start and destination snap to the same intersection — pick places further apart.")
                 st.stop()
 
-            if strategy == "Dijkstra":
-                planner = dijkstra_route
-            elif strategy == "Q-learning (RL)":
-                planner = rl_route
-            else:
-                planner = astar_route
-
-            mode = "live" if vision_mode.startswith("Live") else "offline"
             yolo_model = get_model() if mode == "live" else None
 
             # The navigation loop mutates camera scores in the incident demo,
@@ -359,14 +397,24 @@ with tab_route:
             nav_g = route_g.copy()
             nav_g.graph.update(route_g.graph)
 
-            with st.spinner(
-                f"Planning with {strategy}, driving with camera lookahead, "
-                "and fetching standard map directions..."
-            ):
+            ALGORITHMS = [
+                ("A*", astar_route),
+                ("Dijkstra", dijkstra_route),
+                ("Q-learning (RL)", rl_route),
+            ]
+
+            spinner_msg = (
+                "Driving the route with all three algorithms and comparing "
+                "against standard map directions..."
+                if mode == "offline"
+                else "Checking cameras live with YOLOv12 and driving the route "
+                "with all three algorithms — live mode takes a little longer..."
+            )
+            with st.spinner(spinner_msg):
                 if simulate_incident != "Off":
                     from routing.vision_gate import cameras_on_route
 
-                    initial = planner(nav_g, src, dst)
+                    initial = astar_route(nav_g, src, dst)
                     cams_ahead = [
                         n for n in cameras_on_route(nav_g, initial) if n not in (src, dst)
                     ]
@@ -374,15 +422,53 @@ with tab_route:
                         staged = cams_ahead[len(cams_ahead) // 2]
                         nav_g.nodes[staged]["cam_score"] = 99.0
 
-                trace = drive_route(
-                    nav_g, src, dst, planner=planner, mode=mode, model=yolo_model
-                )
+                # One shared cache: each camera is downloaded and YOLO-scored at
+                # most once even though three algorithms drive the network.
+                shared_scores: dict = {}
+                candidates = []
+                for algo_name, algo_fn in ALGORITHMS:
+                    t0 = time.perf_counter()
+                    try:
+                        algo_trace = drive_route(
+                            nav_g, src, dst, planner=algo_fn, mode=mode,
+                            model=yolo_model, score_cache=shared_scores,
+                        )
+                    except Exception:
+                        continue
+                    compute_s = time.perf_counter() - t0
+                    algo_route = (
+                        algo_trace["driven"] if algo_trace["confirmed"]
+                        else algo_trace["final_path"]
+                    )
+                    algo_m = route_metrics(nav_g, algo_route)
+                    candidates.append({
+                        "name": algo_name,
+                        "trace": algo_trace,
+                        "route": algo_route,
+                        "metrics": algo_m,
+                        "compute_s": compute_s,
+                    })
+
                 external = fetch_external_route(
                     nav_g, start_lat, start_lon, end_lat, end_lon,
                     src_node=src, dst_node=dst,
                 )
 
-            route = trace["driven"] if trace["confirmed"] else trace["final_path"]
+            if not candidates:
+                st.error("No algorithm could find a route between these points.")
+                st.stop()
+
+            # The winner: fastest arrival among algorithms that actually got
+            # there; if none arrived, least-bad ETA.
+            arrived = [c for c in candidates if c["trace"]["confirmed"]]
+            best = min(
+                arrived or candidates,
+                key=lambda c: c["metrics"]["travel_time_s"],
+            )
+            strategy = best["name"]
+            trace = best["trace"]
+            route = best["route"]
+
             gate_info = {
                 "confirmed": trace["confirmed"],
                 "attempts": len(trace["segments"]),
@@ -405,7 +491,7 @@ with tab_route:
             ext_hits = external_crosses_blockages(nav_g, external["coords"], blocked_nodes)
 
             col1, col2, col3, col4 = st.columns(4)
-            col1.metric("Our ETA (vision-confirmed)", f"{our_min:.1f} min")
+            col1.metric(f"Our ETA — {strategy} (best of 3)", f"{our_min:.1f} min")
             col2.metric(f"{external['provider']} ETA", f"{ext_provider_min:.1f} min")
             col3.metric("Their path in our traffic model", f"{ext_cong_min:.1f} min")
             col4.metric(
@@ -417,14 +503,16 @@ with tab_route:
             if gate_info["confirmed"]:
                 if trace["reroutes"]:
                     st.success(
-                        f"Arrived via {strategy} after {len(trace['reroutes'])} "
-                        "en-route recalculation(s) — the route redrew from the "
-                        "vehicle's position when a camera ahead reported a blockage."
+                        f"**{strategy}** won out of {len(candidates)} algorithms, "
+                        f"arriving after {len(trace['reroutes'])} en-route "
+                        "recalculation(s) — the route redrew from the vehicle's "
+                        "position when a camera ahead reported a blockage."
                     )
                 else:
                     st.success(
-                        f"Arrived via {strategy}; every camera ahead was checked "
-                        "before entering and stayed clear the whole drive."
+                        f"**{strategy}** won out of {len(candidates)} algorithms; "
+                        "every camera ahead was checked before entering and "
+                        "stayed clear the whole drive."
                     )
             else:
                 st.warning("Route could not be fully confirmed — dispatch with caution.")
@@ -495,7 +583,7 @@ with tab_route:
 
             left, right = st.columns(2)
             with left:
-                st.markdown("#### Our route")
+                st.markdown(f"#### Our route ({strategy})")
                 st.write(
                     f"{m_route['length_km']:.2f} km · {m_route['hops']} street segments · "
                     f"worst congestion ×{m_route['worst_congestion']:.2f}"
@@ -506,6 +594,28 @@ with tab_route:
                     f"{external['distance_km']:.2f} km · provider ETA {ext_provider_min:.1f} min · "
                     f"in our model {ext_cong_min:.1f} min"
                 )
+
+            st.markdown("### How the three algorithms compared")
+            st.markdown(
+                '<p class="section-note">Every plan runs A*, Dijkstra and '
+                "corridor Q-learning through the same drive simulation with the "
+                "same camera checks; the fastest arrival is what you see on the "
+                "map above.</p>",
+                unsafe_allow_html=True,
+            )
+            comp_df = pd.DataFrame([
+                {
+                    "Algorithm": c["name"] + (" — shown on map" if c is best else ""),
+                    "ETA (min)": round(c["metrics"]["travel_time_s"] / 60.0, 1),
+                    "Distance (km)": round(c["metrics"]["length_km"], 2),
+                    "Street segments": c["metrics"]["hops"],
+                    "Reroutes": len(c["trace"]["reroutes"]),
+                    "Arrived": "yes" if c["trace"]["confirmed"] else "no",
+                    "Compute (s)": round(c["compute_s"], 2),
+                }
+                for c in sorted(candidates, key=lambda c: c["metrics"]["travel_time_s"])
+            ])
+            st.dataframe(comp_df, hide_index=True, width="stretch")
 
             graph_baseline = (
                 external.get("graph_path") or static_baseline_route(nav_g, src, dst)
@@ -530,55 +640,88 @@ with tab_cams:
         c3.metric("Medium congestion", int((merged["level"] == "medium").sum()))
         c4.metric("Average score", f"{merged['score'].mean():.1f}")
 
-        st_folium(
-            build_cameras_map(merged),
-            width=None, height=440, returned_objects=[],
-            key="cams_map",
-        )
-
-    st.markdown("#### Inspect a camera")
     st.markdown(
-        '<p class="section-note">Pick any DOT camera and run YOLOv12 on its '
-        "latest snapshot — the same inference the router uses to confirm "
-        "routes.</p>",
+        '<p class="section-note">Click any camera dot on the map — its live '
+        "YOLOv12 view starts below automatically. That is the same inference "
+        "the router uses to confirm routes.</p>",
         unsafe_allow_html=True,
     )
 
-    cam_pick = cams_df.dropna(subset=["lat", "lon"])
-    cam_choice = st.selectbox(
-        "Camera",
-        options=cam_pick["camera_id"].tolist(),
-        format_func=lambda cid: cam_pick.loc[cam_pick["camera_id"] == cid, "name"].iloc[0],
+    map_state = st_folium(
+        build_cameras_map(merged),
+        width=None, height=440,
+        returned_objects=["last_object_clicked", "last_object_clicked_tooltip"],
+        key="cams_map",
     )
-    cam_row = cam_pick[cam_pick["camera_id"] == cam_choice].iloc[0]
 
-    view_mode = st.radio("View", ["Single snapshot", "Live view (15 frames)"], horizontal=True)
-    placeholder = st.empty()
+    cam_pick = cams_df.dropna(subset=["lat", "lon"]).reset_index(drop=True)
 
-    if view_mode == "Single snapshot":
-        if st.button("Run YOLO on latest frame"):
-            with st.spinner("Running YOLOv12..."):
-                annotated, res = run_yolo_on_camera(cam_row)
-            if annotated is not None:
-                placeholder.image(annotated, channels="BGR", caption=cam_row["name"])
-                names = get_model().names
-                counts: dict[str, int] = {}
-                for box in res.boxes:
-                    name = names.get(int(box.cls[0]), "?")
-                    counts[name] = counts.get(name, 0) + 1
-                st.json(counts)
-            else:
-                st.error("Could not fetch or process a frame for this camera.")
+    # Resolve the camera: a map-dot click wins, the dropdown is the fallback.
+    clicked_cam = None
+    tip = (map_state or {}).get("last_object_clicked_tooltip") or ""
+    if isinstance(tip, str) and tip.startswith("cam:"):
+        cam_id = tip.split("|", 1)[0].removeprefix("cam:")
+        hit = cam_pick[cam_pick["camera_id"].astype(str) == cam_id]
+        if not hit.empty:
+            clicked_cam = hit.iloc[0]
+    elif (map_state or {}).get("last_object_clicked"):
+        # Fallback for older folium builds that only return lat/lng.
+        clicked = map_state["last_object_clicked"]
+        if "lat" in clicked and "lng" in clicked:
+            d2 = (cam_pick["lat"].astype(float) - float(clicked["lat"])) ** 2 + (
+                cam_pick["lon"].astype(float) - float(clicked["lng"])
+            ) ** 2
+            if float(d2.min()) < (0.0004) ** 2:
+                clicked_cam = cam_pick.loc[d2.idxmin()]
+
+    if clicked_cam is not None:
+        # Keep the dropdown in sync with the clicked camera.
+        default_idx = int(
+            cam_pick.index[cam_pick["camera_id"] == clicked_cam["camera_id"]][0]
+        )
     else:
-        if st.checkbox("Start live view (updates every 2s)"):
-            for i in range(15):
-                annotated, _ = run_yolo_on_camera(cam_row)
-                if annotated is None:
-                    st.error("Could not fetch a frame. Stopping.")
-                    break
-                placeholder.image(annotated, channels="BGR", caption=f"{cam_row['name']} — frame {i + 1}/15")
-                time.sleep(2)
-            st.info("Live view finished. Re-check to run again.")
+        default_idx = 0
+
+    cam_choice = st.selectbox(
+        "…or pick a camera from the list",
+        options=cam_pick["camera_id"].tolist(),
+        index=min(default_idx, len(cam_pick) - 1),
+        format_func=lambda cid: cam_pick.loc[cam_pick["camera_id"] == cid, "name"].iloc[0],
+        key="cam_list_pick",
+    )
+
+    if clicked_cam is not None:
+        cam_row = clicked_cam
+    else:
+        cam_row = cam_pick[cam_pick["camera_id"] == cam_choice].iloc[0]
+
+    # Auto-start on a fresh map click; the button covers dropdown picks.
+    click_token = str(clicked_cam["camera_id"]) if clicked_cam is not None else None
+    fresh_click = (
+        click_token is not None
+        and st.session_state.get("last_live_cam") != click_token
+    )
+    start_live = fresh_click or st.button("Start live view (15 frames, every 2s)")
+
+    if start_live:
+        if click_token is not None:
+            st.session_state["last_live_cam"] = click_token
+        st.markdown(f"#### Live — {cam_row['name']}")
+        placeholder = st.empty()
+        failed = False
+        for i in range(15):
+            annotated, _ = run_yolo_on_camera(cam_row)
+            if annotated is None:
+                st.error("Could not fetch a frame from this camera. It may be offline.")
+                failed = True
+                break
+            placeholder.image(
+                annotated, channels="BGR",
+                caption=f"{cam_row['name']} — frame {i + 1}/15",
+            )
+            time.sleep(2)
+        if not failed:
+            st.info("Live view finished — click the camera again (or the button) to restart.")
 
     if stats_df is not None:
         with st.expander("Full congestion table"):

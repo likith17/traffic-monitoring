@@ -119,8 +119,8 @@ comparison path; with network it uses OSRM (or Google if a key is set).
 
 | Tab | What it shows |
 |---|---|
-| **Route planner** | Type any two Manhattan places (Nominatim search bounded to the island, offline camera-name fallback). Dark real-street map: cyan = path driven, dashed slate = Google/OSRM, amber = legs abandoned when the drive recalculated. An en-route demo stages a mid-drive blockage so you can watch the recalculation. Searches outside Manhattan get a clear "Manhattan only" error. |
-| **Live cameras** | Congestion map of every DOT camera (colour = YOLO level), metrics, live YOLO on any camera, full sortable table |
+| **Route planner** | Type any two Manhattan places with live suggestions (landmarks + DOT cameras + Nominatim). Runs A*, Dijkstra and corridor Q-learning together, shows the fastest arrival on the map, then a scroll-down table comparing all three. Dark real-street map: cyan = path driven, dashed slate = Google/OSRM, amber = legs abandoned when the drive recalculated. Live vision is the default; the staged-blockage demo only appears in offline mode. |
+| **Live cameras** | Congestion map of every DOT camera — click a dot to auto-start its live YOLOv12 view below. Dropdown + button as fallback. |
 | **Ask the city** | LLM chat grounded in the current congestion data |
 
 Searching a place outside the island (e.g. "Newark Airport") is rejected with a

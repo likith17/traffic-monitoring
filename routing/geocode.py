@@ -77,36 +77,137 @@ def _nominatim(query: str) -> dict[str, Any] | None:
         return None
 
 
-def _camera_match(query: str, cameras_csv: str = "manhattan_cameras.csv") -> dict[str, Any] | None:
-    """Offline fallback: substring match on DOT camera names.
+def _camera_matches(
+    query: str,
+    cameras_csv: str = "manhattan_cameras.csv",
+    limit: int = 7,
+) -> list[dict[str, Any]]:
+    """Offline substring match on DOT camera names.
 
-    'amsterdam 60' matches 'Amsterdam Ave @ 60 St' - every query token must
-    appear in the camera name.
+    'amsterdam 60' matches 'Amsterdam Ave @ 60 St' — every query token must
+    appear in the camera name.  Returns up to `limit` hits for type-ahead.
     """
     try:
         cams = pd.read_csv(cameras_csv).dropna(subset=["lat", "lon"])
     except FileNotFoundError:
-        return None
+        return []
 
     tokens = [t for t in query.lower().replace("@", " ").split() if t]
     if not tokens:
-        return None
+        return []
 
     names = cams["name"].str.lower()
     mask = pd.Series(True, index=cams.index)
     for t in tokens:
         mask &= names.str.contains(t, regex=False)
 
-    matches = cams[mask]
-    if matches.empty:
-        return None
-    hit = matches.iloc[0]
-    return {
-        "lat": float(hit["lat"]),
-        "lon": float(hit["lon"]),
-        "label": str(hit["name"]),
-        "source": "camera",
-    }
+    matches = cams[mask].head(limit)
+    return [
+        {
+            "lat": float(row["lat"]),
+            "lon": float(row["lon"]),
+            "label": str(row["name"]),
+            "source": "camera",
+        }
+        for _, row in matches.iterrows()
+    ]
+
+
+def _camera_match(query: str, cameras_csv: str = "manhattan_cameras.csv") -> dict[str, Any] | None:
+    """Best single camera-name match (used by geocode fallback)."""
+    hits = _camera_matches(query, cameras_csv=cameras_csv, limit=1)
+    return hits[0] if hits else None
+
+
+def _nominatim_suggest(query: str, limit: int = 5) -> list[dict[str, Any]]:
+    """Multi-hit bounded Nominatim lookup used for type-ahead suggestions."""
+    try:
+        _throttle()
+        r = requests.get(
+            NOMINATIM_URL,
+            params={
+                "q": query,
+                "format": "json",
+                "limit": limit,
+                "viewbox": ",".join(str(c) for c in COVERAGE),
+                "bounded": 1,
+                "countrycodes": "us",
+            },
+            headers={"User-Agent": USER_AGENT},
+            timeout=REQUEST_TIMEOUT_S,
+        )
+        r.raise_for_status()
+        out = []
+        for hit in r.json():
+            lat, lon = float(hit["lat"]), float(hit["lon"])
+            if not in_coverage(lat, lon):
+                continue
+            # "Times Square, Broadway, Manhattan, ..." -> "Times Square, Broadway"
+            label = ", ".join(hit.get("display_name", query).split(",")[:2]).strip()
+            out.append({"lat": lat, "lon": lon, "label": label, "source": "nominatim"})
+        return out
+    except Exception:
+        return []
+
+
+# Curated landmarks so typing "time" / "wall" / "columbia" always suggests
+# something useful even before Nominatim answers (and when offline).
+LANDMARKS: list[dict[str, Any]] = [
+    {"label": "Times Square", "lat": 40.7580, "lon": -73.9855},
+    {"label": "Wall Street", "lat": 40.7074, "lon": -74.0113},
+    {"label": "Columbia University", "lat": 40.8075, "lon": -73.9626},
+    {"label": "Columbus Circle", "lat": 40.7681, "lon": -73.9819},
+    {"label": "Grand Central Terminal", "lat": 40.7527, "lon": -73.9772},
+    {"label": "Empire State Building", "lat": 40.7484, "lon": -73.9857},
+    {"label": "Penn Station", "lat": 40.7506, "lon": -73.9935},
+    {"label": "Union Square", "lat": 40.7359, "lon": -73.9911},
+    {"label": "Washington Square Park", "lat": 40.7308, "lon": -73.9973},
+    {"label": "Central Park (south)", "lat": 40.7660, "lon": -73.9760},
+    {"label": "Harlem Hospital", "lat": 40.8140, "lon": -73.9405},
+    {"label": "Battery Park", "lat": 40.7033, "lon": -74.0170},
+    {"label": "Lincoln Center", "lat": 40.7725, "lon": -73.9835},
+    {"label": "Brooklyn Bridge (Manhattan)", "lat": 40.7061, "lon": -73.9969},
+    {"label": "Port Authority Bus Terminal", "lat": 40.7570, "lon": -73.9900},
+]
+
+
+def suggest_places(query: str, max_results: int = 7) -> list[dict[str, Any]]:
+    """Google-Maps-style suggestions while typing.
+
+    Priority: curated landmarks → DOT camera names (instant, offline) →
+    Nominatim (only if we still need more hits).  Every returned dict has
+    lat / lon / label inside the coverage area, so picking a suggestion can
+    never produce an "outside Manhattan" error.
+    """
+    query = (query or "").strip()
+    if len(query) < 2:
+        return []
+
+    results: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    q = query.lower()
+
+    def _add(hit: dict[str, Any]) -> None:
+        key = hit["label"].lower()
+        if key in seen or not in_coverage(hit["lat"], hit["lon"]):
+            return
+        seen.add(key)
+        results.append({**hit, "source": hit.get("source", "landmark")})
+
+    for lm in LANDMARKS:
+        if q in lm["label"].lower():
+            _add(lm)
+
+    for cam in _camera_matches(query, limit=max_results):
+        _add(cam)
+
+    # Only hit the network when local suggestions aren't enough — keeps
+    # type-ahead snappy and respects Nominatim's 1 req/s limit.
+    if len(results) < 3:
+        for hit in _nominatim_suggest(f"{query}, Manhattan, New York", limit=max_results):
+            _add(hit)
+
+    return results[:max_results]
 
 
 def geocode_manhattan(query: str) -> dict[str, Any]:
@@ -159,6 +260,10 @@ if __name__ == "__main__":
     cam = _camera_match("amsterdam 60")
     assert cam is not None and "Amsterdam" in cam["label"], cam
     print(f"Camera fallback: {cam['label']} ({cam['lat']:.5f}, {cam['lon']:.5f})")
+
+    sugg = suggest_places("union sq")
+    print(f"Suggestions for 'union sq': {[s['label'] for s in sugg]}")
+    assert all(in_coverage(s["lat"], s["lon"]) for s in sugg)
 
     # Bounded online search (tolerated to fail without network).
     ts = geocode_manhattan("Times Square")

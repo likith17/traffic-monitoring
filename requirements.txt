@@ -12,6 +12,7 @@ streamlit==1.52.1
 pydeck==0.9.1
 folium==0.20.0
 streamlit-folium==0.27.2
+streamlit-searchbox==0.1.24
 osmnx==2.1.0
 torch==2.9.1
 torchvision==0.24.1

@@ -50,6 +50,7 @@ def drive_route(
     block_threshold: float = BLOCK_THRESHOLD,
     model=None,
     max_reroutes: int = 8,
+    score_cache: dict | None = None,
 ) -> dict:
     """Simulate driving from src to dst with continuous vision checks.
 
@@ -57,6 +58,10 @@ def drive_route(
     route.  A blocked camera triggers an immediate reroute from the CURRENT
     position on a graph copy with that intersection cut out - exactly how a
     consumer navigator recalculates, but using vision instead of GPS probes.
+
+    Pass the same `score_cache` dict to several calls (e.g. one per routing
+    algorithm) to check each camera at most once - crucial in live mode where
+    every check downloads a snapshot and runs YOLO.
 
     Returns a trace dict:
       driven          - nodes actually driven, in order
@@ -77,7 +82,7 @@ def drive_route(
     driven: list = [src]
     segments: list[dict] = []
     reroutes: list[dict] = []
-    checked_scores: dict = {}
+    checked_scores: dict = score_cache if score_cache is not None else {}
 
     path = planner(work, current, dst)
     segments.append({"path": list(path), "reason": "initial plan"})

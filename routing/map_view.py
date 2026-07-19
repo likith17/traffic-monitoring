@@ -140,7 +140,9 @@ def build_route_map(
 def build_cameras_map(cams_df, height: int = 460) -> folium.Map:
     """Landing visual: every DOT camera as a glowing dot colored by congestion.
 
-    cams_df needs lat / lon / name and optionally score / level.
+    cams_df needs lat / lon / name and optionally score / level / camera_id.
+    Tooltips encode `cam:<camera_id>` so a map click can resolve the exact
+    camera and auto-start its live YOLO view.
     """
     df = cams_df.dropna(subset=["lat", "lon"])
 
@@ -159,15 +161,19 @@ def build_cameras_map(cams_df, height: int = 460) -> folium.Map:
             counts[level] += 1
         score = cam.get("score")
         score_txt = f" · score {score:.0f}" if score == score and score is not None else ""
+        cam_id = str(cam.get("camera_id", ""))
+        # Prefix keeps the human-readable name but lets the dashboard parse
+        # the id out of last_object_clicked_tooltip after a click.
+        tip = f"cam:{cam_id}|{cam['name']}{score_txt}"
         folium.CircleMarker(
             location=[float(cam["lat"]), float(cam["lon"])],
-            radius=4.5,
+            radius=5.5,
             color=color,
             weight=1,
             fill=True,
             fill_color=color,
-            fill_opacity=0.85,
-            tooltip=f"{cam['name']}{score_txt}",
+            fill_opacity=0.9,
+            tooltip=tip,
         ).add_to(m)
 
     legend = _dark_panel(f"""
