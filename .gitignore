@@ -1,0 +1,20 @@
+# Virtual environments
+.venv/
+.vv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Large local archives and personal documents (not part of the project)
+YOLO V12 TRAFFIC CONGESTION ANALYSIS.zip
+Termination_Report_*.tex
+
+# LaTeX paper draft (kept local)
+report/
+
+# Local video clips for offline segment analysis (user-supplied)
+videos/
+
+# Streamlit local config
+.streamlit/

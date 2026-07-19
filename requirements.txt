@@ -1,0 +1,16 @@
+# Core dependencies for the Emergency Routing / traffic monitoring project.
+# Install with: pip install -r requirements.txt
+# Note: "ultralytics" is pinned to the YOLOv12 research fork so that the
+# yolov12s.pt weights in weights/ load with the correct architecture.
+
+numpy==2.2.6
+pandas==2.3.3
+requests==2.32.5
+networkx==3.6.1
+opencv-python==4.12.0.88
+streamlit==1.52.1
+pydeck==0.9.1
+torch==2.9.1
+torchvision==0.24.1
+ultralytics @ git+https://github.com/sunsmarterjie/yolov12.git@3bca22b336e96cfdabfec4c062b84eef210e9563
+ultralytics-thop==2.0.18

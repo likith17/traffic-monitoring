@@ -1,0 +1,4 @@
+segment_id,name,lat,lon,avg_score,avg_vehicles,avg_pedestrians,avg_signals,level,video_path
+seg_a,Segment A – Midtown,40.758,-73.9855,15.68,11.52,12.0,1.12,high,videos\seg_a.mp4
+seg_b,Segment B – 7th Avenue,40.7527,-73.9772,8.387179487179486,8.333333333333334,0.1794871794871795,0.0,medium,videos\seg_b.mp4
+seg_c,Segment C – Broadway,40.742,-73.992,6.608108108108108,5.405405405405405,3.918918918918919,0.05405405405405406,medium,videos\seg_c.mp4
