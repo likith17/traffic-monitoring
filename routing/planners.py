@@ -24,8 +24,10 @@ def _time_heuristic(g: nx.DiGraph):
 
     No real route can beat flying straight to the goal at the fastest speed
     any edge allows, so this never overestimates and A* stays optimal.
+    Real street graphs store their true top speed in g.graph["max_speed_kmh"];
+    the synthetic grid falls back to the global FREE_FLOW_KMH.
     """
-    speed_ms = FREE_FLOW_KMH / 3.6
+    speed_ms = float(g.graph.get("max_speed_kmh", FREE_FLOW_KMH)) / 3.6
 
     def h(a: tuple, b: tuple) -> float:
         dist = haversine_m(

@@ -15,12 +15,26 @@ import networkx as nx
 def path_to_latlon(g: nx.DiGraph, path: list[tuple]) -> list[list[float]]:
     """Convert a list of graph nodes into a Folium-ready [[lat, lon], ...] polyline.
 
+    Edges from the real street network carry their curved OSM geometry in
+    "geometry_latlon"; when present the polyline follows the actual road
+    instead of drawing straight chords between intersections.
+
     Raises ValueError on an empty path so callers fail loudly instead of
     rendering a blank map.
     """
     if not path:
         raise ValueError("Cannot convert an empty path to lat/lon")
-    return [[float(g.nodes[n]["lat"]), float(g.nodes[n]["lon"])] for n in path]
+
+    coords: list[list[float]] = [
+        [float(g.nodes[path[0]]["lat"]), float(g.nodes[path[0]]["lon"])]
+    ]
+    for u, v in zip(path[:-1], path[1:]):
+        geom = g.edges[u, v].get("geometry_latlon") if g.has_edge(u, v) else None
+        if geom:
+            coords.extend([float(a), float(b)] for a, b in geom[1:])
+        else:
+            coords.append([float(g.nodes[v]["lat"]), float(g.nodes[v]["lon"])])
+    return coords
 
 
 def path_bounds(coords: list[list[float]]) -> list[list[float]]:

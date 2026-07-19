@@ -19,3 +19,6 @@ videos/
 # Streamlit local secrets / cache — keep shared theme config tracked
 .streamlit/*
 !.streamlit/config.toml
+
+# OSMnx HTTP response cache (the GraphML in data/ is the real artifact)
+cache/
