@@ -1,82 +1,114 @@
 # Emergency Routing for Smart Response
 
-Real-time emergency vehicle routing for Manhattan that combines **reinforcement
-learning (Q-learning)** with classical graph algorithms (**Dijkstra, A\***),
-confirms route feasibility with a **YOLOv12 vision check** on live NYC DOT
-traffic cameras, and explains every decision in plain English through an
-**LLM module**. The public dashboard draws **Google-Maps-like dual routes**
-(vision-confirmed vs standard directions) so non-experts can see the difference.
-Ships with a Streamlit UI and a Docker image for reproducible Linux deployment.
+**Vision-confirmed emergency dispatch for Manhattan** — plan on real streets, check live NYC DOT cameras with YOLOv12 before entering an intersection, and recalculate mid-drive when a camera reports a blockage. Then show the public what standard map directions would have done.
 
-Benchmark over 30 simulated emergencies with hidden road blockages
-(`python -m routing.simulate`):
+![Demo walkthrough](docs/assets/demo.gif)
+
+| What it is | What it is *not* |
+|---|---|
+| A navigator that adds a **vision signal** on top of the same graph architecture production maps use | A replacement for Google Maps traffic models |
+| An end-to-end system: cameras → scores → street graph → plan → drive → explain → Docker | A notebook that prints “94% accuracy” |
+| A public Streamlit UI with honest OSRM / Google comparison | A private research prototype |
+
+---
+
+## The problem (and the constraint)
+
+Standard directions optimise for *typical* traffic. They **cannot see** a blocked intersection on a live DOT camera feed. Emergency dispatch cannot afford that blind spot.
+
+**Constraint we designed around:** keep the road *topology* fixed (OpenStreetMap drive network), and apply live conditions as **edge-weight multipliers** — the same pattern production navigators use — then add vision as the missing sensor.
+
+---
+
+## What you see in the dashboard
+
+![Landing — 373 DOT cameras scored live](docs/assets/01-landing.png)
+
+*Landing view: dark mission-control UI, type-ahead From/To search, live congestion map.*
+
+![Route result — best of 3 vs OSRM](docs/assets/02-route-compare.png)
+
+*Every plan runs A\*, Dijkstra, and corridor Q-learning; the fastest arrival is shown on the map.*
+
+![Vision-confirmed route vs standard directions](docs/assets/03-route-map.png)
+
+*Cyan = path actually driven · dashed slate = OSRM/Google · amber = legs abandoned after mid-drive recalculation · black markers = blockages avoided.*
+
+![Algorithm comparison table](docs/assets/04-algo-compare.png)
+
+*Scroll down for an honest side-by-side of all three planners (ETA, distance, reroutes, compute).*
+
+![Live cameras tab](docs/assets/05-live-cameras.png)
+
+![YOLOv12 on a DOT camera](docs/assets/06-yolo-live.png)
+
+*Click a camera on the map → live YOLOv12 inference starts below (same signal the router uses).*
+
+---
+
+## Measured impact
+
+Benchmark over 30 simulated emergencies with **hidden road blockages** (`python -m routing.simulate`):
 
 | Strategy | Mean response time | vs baseline |
 |---|---|---|
 | Static shortest-path baseline | 26.9 min | — |
-| A* + vision gate | 21.8 min | **-18.8%** |
-| Q-learning + vision gate | 22.5 min | **-16.4%** |
+| A\* + vision gate | 21.8 min | **−18.8%** |
+| Q-learning + vision gate | 22.5 min | **−16.4%** |
+
+The win is not “smarter A\*.” It is **excluding roads a camera shows are impassable before the vehicle commits**, then recalculating from the vehicle’s current position — the same UX people expect from Google Maps after a wrong turn, driven by vision instead of GPS probes.
 
 ---
 
-## Why not just Google Maps?
+## Design decisions (why not the obvious approach)
 
-Standard directions optimise for typical traffic. They **cannot see** a blocked
-intersection on a live DOT camera. This project follows the same architecture
-production navigators use — a directed road graph with live conditions applied
-as edge-weight multipliers, never a topology rebuild — and adds the missing
-vision signal:
+These are the questions senior ML interviews actually ask. Answers live in the code, not just this file.
 
-1. **Plan** on real Manhattan streets from OpenStreetMap (Dijkstra / A* /
-   corridor-trained Q-learning), weighted by YOLOv12 camera congestion.
-2. **Drive with lookahead** — before the vehicle enters the next few camera
-   intersections, each one is re-checked (fresh YOLO in live mode).
-3. **Recalculate en route** — a blocked camera ahead cuts that intersection and
-   replans from the vehicle's current position, exactly like Google Maps
-   redrawing after a wrong turn. Abandoned legs stay on the map, faded.
-4. **Compare honestly** — the final path is overlaid on Google Directions (or
-   OSRM) so the divergence created by vision confirmation is visible.
-
-**Constraint trade-off:** the street graph is cached as GraphML in `data/` so
-Docker and offline runs never touch the network; tabular Q-learning trains
-inside a corridor around the A* spine because exploring a 10k-node city graph
-per query is not tractable for a demo that must answer in seconds.
+| Tempting approach | Why we did not | What we did instead |
+|---|---|---|
+| Synthetic grid graph (fast to code) | Routes cut through parks / water — useless for a public demo | Real OSM street network, curved edge geometry preserved (`routing/streets.py`) |
+| Tabular Q-learning on the full 10k-node city graph | Demo must answer in seconds; full-graph RL is not tractable | Corridor Q-learning around the A\* spine (`routing/rl_agent.py`) |
+| Rebuild the topology when traffic changes | Production navigators never do this; fragile and slow | Fixed DiGraph + congestion multipliers on edges |
+| Let the user pick A\* / Dijkstra / RL | Public users should not tune algorithms | Run all three, show the best, document the rest in a table |
+| Trust Google / OSRM as ground truth for ETA | Their path may still pass a vision-blocked camera | Re-score *their* polyline in *our* congestion model for an honest gap |
+| Hit Nominatim on every keystroke | 1 req/s rate limit → fake “not found” errors | Landmarks + camera-name suggestions first; Nominatim only if local hits are thin |
+| Stage blockage demos in live YOLO mode | Live mode must reflect real cameras, not staged scores | En-route blockage demo only in offline mode |
 
 ---
 
 ## How it works
 
 ```
-NYC DOT cameras ──> fetch_cameras.py ──> manhattan_cameras.csv
-                                                │
-                              update_camera_stats.py (YOLOv12 per camera)
-                                                │
-                                         camera_stats.csv
-                                                │
-                    ┌───────────────────────────┴───────────────────────────┐
-                    │                    routing/ package                    │
-                    │                                                       │
-                    │  streets.py ────── real OSM street graph (cached)      │
-                    │  graph.py ──────── synthetic grid fallback             │
-                    │  planners.py ───── Dijkstra / A* / static baseline     │
-                    │  rl_agent.py ───── corridor Q-learning under noise     │
-                    │  vision_gate.py ── YOLO confirm / re-plan (pre-drive)  │
-                    │  navigator.py ──── en-route lookahead + recalculation  │
-                    │  external_route.py Google Directions → OSRM → naive    │
-                    │  geo.py / map_view.py  public Folium dual-route map    │
-                    │  explain.py ────── LLM justification (w/ fallback)     │
-                    │  simulate.py ───── benchmark vs static baseline        │
-                    └───────────────────────────┬───────────────────────────┘
-                                                │
-                         dashboard.py (Streamlit — Emergency routing first)
+NYC DOT cameras ──► fetch_cameras.py ──► manhattan_cameras.csv
+                                              │
+                            update_camera_stats.py (YOLOv12 per camera)
+                                              │
+                                       camera_stats.csv
+                                              │
+              ┌───────────────────────────────┴───────────────────────────────┐
+              │                        routing/ package                        │
+              │  streets.py        real OSM street graph (cached GraphML)      │
+              │  planners.py       Dijkstra / A* / static baseline             │
+              │  rl_agent.py       corridor Q-learning under congestion noise  │
+              │  navigator.py      drive with camera lookahead + recalculation │
+              │  vision_gate.py    live / offline camera scores                │
+              │  geocode.py        Manhattan-bounded place search + suggestions│
+              │  external_route.py Google Directions → OSRM → naive fallback   │
+              │  map_view.py       Folium dual-route + congestion map          │
+              │  explain.py        LLM justification (template fallback)       │
+              │  simulate.py       benchmark vs static baseline                │
+              └───────────────────────────────┬───────────────────────────────┘
+                                              │
+                         dashboard.py  (Streamlit — Route planner first)
 ```
+
+**Drive loop (Google-Maps-style):** plan → look ahead at the next few cameras → if blocked, cut that intersection and **replan from the current node** → draw abandoned legs faded on the map.
 
 ---
 
-## Quick start (local)
+## Quick start
 
-Requires Python 3.11 and the YOLOv12 weights at `weights/yolov12s.pt`
-(included in this repo). Prefer the project venv:
+### Local (Python 3.11+)
 
 ```bash
 python -m venv .venv
@@ -84,81 +116,85 @@ python -m venv .venv
 # Linux/macOS: source .venv/bin/activate
 pip install -r requirements.txt
 
-# 1. Refresh the camera list and congestion scores (optional - CSVs included)
+# Optional — refresh cameras (CSVs ship in the repo)
 python fetch_cameras.py
 python update_camera_stats.py
 
-# 2. Run the routing benchmark
+# Benchmark
 python -m routing.simulate --episodes 30
 
-# 3. Launch the dashboard
+# Dashboard
 streamlit run dashboard.py
 ```
 
-Self-tests: `python -m routing.geo`, `python -m routing.map_view`,
-`python -m routing.external_route`, `python -m routing.vision_gate`,
-`python -m routing.streets`, `python -m routing.navigator`.
+Self-tests: `python -m routing.geo`, `python -m routing.map_view`, `python -m routing.geocode`, `python -m routing.navigator`, `python -m routing.streets`.
 
-The OSM street cache ships in `data/manhattan_streets.graphml`; refresh it with
-`python -m routing.streets --build` if the road network ever changes.
+Street cache: `data/manhattan_streets.graphml` (refresh with `python -m routing.streets --build`).
 
-## Quick start (Docker)
+### Docker
 
 ```bash
 docker build -t emergency-routing .
 docker run -p 8501:8501 emergency-routing
 ```
 
-Open http://localhost:8501. The image is CPU-only and bundles the weights and
-pre-computed camera data. Without network it falls back to the naive free-flow
-comparison path; with network it uses OSRM (or Google if a key is set).
+Open http://localhost:8501. CPU-only image; includes weights + camera CSVs + street cache.
+
+### Optional keys
+
+```bash
+export GOOGLE_MAPS_API_KEY="..."   # true Google Directions compare (else OSRM)
+export OPENAI_API_KEY="..."        # richer route explanations (else template)
+# or: LLM_PROVIDER=anthropic + ANTHROPIC_API_KEY
+```
 
 ---
 
-## Dashboard
+## Dashboard tabs
 
-| Tab | What it shows |
+| Tab | Behaviour |
 |---|---|
-| **Route planner** | Type any two Manhattan places with live suggestions (landmarks + DOT cameras + Nominatim). Runs A*, Dijkstra and corridor Q-learning together, shows the fastest arrival on the map, then a scroll-down table comparing all three. Dark real-street map: cyan = path driven, dashed slate = Google/OSRM, amber = legs abandoned when the drive recalculated. Live vision is the default; the staged-blockage demo only appears in offline mode. |
-| **Live cameras** | Congestion map of every DOT camera — click a dot to auto-start its live YOLOv12 view below. Dropdown + button as fallback. |
-| **Ask the city** | LLM chat grounded in the current congestion data |
+| **Route planner** | Type-ahead From/To (Manhattan only). Runs A\*, Dijkstra, RL; map shows the winner; scroll for the comparison table. Live YOLO is default; staged blockage demo appears only in offline mode. |
+| **Live cameras** | Congestion map of every DOT camera. Click a dot → live YOLOv12 view. |
+| **Ask the city** | LLM chat grounded strictly in current camera scores. |
 
-Searching a place outside the island (e.g. "Newark Airport") is rejected with a
-friendly error rather than routing off-coverage.
-
-### Map comparison providers (honest labels)
-
-| Provider shown in UI | When |
-|---|---|
-| **Google Maps** | `GOOGLE_MAPS_API_KEY` (or `GOOGLE_API_KEY`) is set and Directions succeeds |
-| **OSRM (OpenStreetMap)** | Default online fallback — free public router |
-| **Naive free-flow path** | Offline / no network — in-graph static baseline |
-
-```bash
-export GOOGLE_MAPS_API_KEY="your-key"   # optional, enables true Google compare
-```
-
-## LLM configuration (optional)
-
-```bash
-# OpenAI-compatible (OpenAI, OpenRouter, Ollama, ...)
-export OPENAI_API_KEY="sk-..."
-export OPENAI_MODEL="gpt-4o-mini"        # optional
-export OPENAI_BASE_URL="https://..."     # optional
-
-# or Anthropic
-export LLM_PROVIDER="anthropic"
-export ANTHROPIC_API_KEY="sk-ant-..."
-```
-
-Without a key, explanations fall back to an automatic template.
+Out-of-coverage searches (e.g. “Newark Airport”) return a clear **Manhattan only** error instead of routing into the void.
 
 ---
 
-## Repository notes
+## Stack
 
-- `routing_benchmark.csv` — per-episode results behind the table above.
-- YOLO training assets (`train/`, `valid/`, `test/`) stay in history and are
-  excluded from the Docker image.
-- `compute_stats.py` scores MP4 clips into `segment_stats.csv`; place them under
-  `videos/`.
+- **Vision:** Ultralytics YOLOv12 on NYC DOT JPEG snapshots → congestion score
+- **Graph:** NetworkX DiGraph from OSMnx / OpenStreetMap (`data/manhattan_streets.graphml`)
+- **Planners:** Dijkstra, A\* (admissible time heuristic), corridor tabular Q-learning
+- **Navigation:** `drive_route` with multi-camera lookahead + en-route recalculation
+- **Compare:** Google Directions API → public OSRM → offline free-flow baseline
+- **UI:** Streamlit + Folium (dark tiles) + streamlit-searchbox
+- **Deploy:** Docker (headless Streamlit on `:8501`)
+
+---
+
+## Repository layout
+
+```
+dashboard.py              # public UI
+fetch_cameras.py          # NYC DOT camera index
+update_camera_stats.py    # YOLO city-wide scoring
+routing/                  # planners, navigator, streets, geocode, maps
+docs/assets/              # screenshots + demo.gif
+data/manhattan_streets.graphml
+weights/yolov12s.pt
+```
+
+---
+
+## What this project is meant to demonstrate
+
+Aligned with how senior ML hiring actually evaluates work: **process and constraints**, not a tool list.
+
+1. **End-to-end ownership** — data pull → model inference → graph system → UI → container
+2. **Constraint thinking** — latency of RL, Nominatim rate limits, offline Docker demos, honest baselines
+3. **Production-shaped navigation** — fixed topology, live weights, en-route recalculation
+4. **Communication** — public map + plain-English explanation, not a matplotlib grid
+
+Repo: https://github.com/likith17/traffic-monitoring
