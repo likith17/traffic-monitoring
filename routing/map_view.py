@@ -94,8 +94,8 @@ def build_route_map(
             tooltip=label,
             icon=folium.Icon(
                 color="black" if kind == "blocked" else "orange",
-                icon="remove-sign" if kind == "blocked" else "warning-sign",
-                prefix="glyphicon",
+                icon="times" if kind == "blocked" else "exclamation-triangle",
+                prefix="fa",
             ),
         ).add_to(m)
 

@@ -1,4 +1,4 @@
-# Streamlit dashboard for the Manhattan traffic congestion project.
+# Streamlit dashboard for Emergency Routing for Smart Response.
 # Launch with: streamlit run dashboard.py
 # Prerequisites: run fetch_cameras.py once, then update_camera_stats.py for live scores.
 
@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import requests
 import streamlit as st
+from streamlit_folium import st_folium
 from ultralytics import YOLO
 
 from routing.graph import build_default_graph, nearest_node
@@ -17,9 +18,102 @@ from routing.planners import astar_route, dijkstra_route, route_metrics, static_
 from routing.rl_agent import QLearningRouter
 from routing.vision_gate import plan_confirmed_route
 from routing.explain import explain_route
+from routing.geo import route_map_payload
+from routing.map_view import build_route_map
+from routing.external_route import external_crosses_blockages, fetch_external_route
 from traffic_llm import build_traffic_context, chat_completion
 
-st.set_page_config(page_title="Manhattan Traffic - YOLOv12", layout="wide")
+st.set_page_config(
+    page_title="Emergency Routing — Smart Response",
+    page_icon="·",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
+# Minimal public-facing visual system: calm navy / asphalt / signal red.
+st.markdown(
+    """
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+      :root {
+        --ink: #0f172a;
+        --muted: #64748b;
+        --navy: #0b3d91;
+        --signal: #b91c1c;
+        --surface: #f1f5f9;
+        --line: #e2e8f0;
+      }
+
+      html, body, [class*="css"] {
+        font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+        color: var(--ink);
+      }
+
+      .stApp {
+        background:
+          radial-gradient(1200px 600px at 10% -10%, #dbe7f5 0%, transparent 55%),
+          radial-gradient(900px 500px at 100% 0%, #e8eef5 0%, transparent 50%),
+          linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      }
+
+      h1, h2, h3, .brand-mark {
+        font-family: 'Fraunces', Georgia, serif !important;
+        letter-spacing: -0.02em;
+      }
+
+      .hero {
+        padding: 0.4rem 0 1.2rem 0;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 1.2rem;
+      }
+      .brand-mark {
+        font-size: 2.35rem;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.15;
+        margin: 0;
+      }
+      .brand-mark span { color: var(--navy); }
+      .hero-sub {
+        margin: 0.45rem 0 0 0;
+        max-width: 42rem;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.45;
+      }
+
+      div[data-testid="stTabs"] button[role="tab"] {
+        font-family: 'Source Sans 3', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      div[data-testid="stMetric"] {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      div[data-testid="stMetric"] label,
+      div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: var(--ink) !important;
+      }
+      div[data-testid="stMetric"] [data-testid="stMetricDelta"] svg {
+        fill: #15803d;
+      }
+
+      .compare-note {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin-top: -0.4rem;
+        margin-bottom: 0.8rem;
+      }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # --- Data loaders (cached so they don't re-read CSV on every Streamlit interaction) ---
@@ -128,15 +222,26 @@ else:
     merged["pedestrians"] = np.nan
     merged["signals"] = np.nan
 
-st.title("Manhattan traffic (YOLOv12)")
+st.markdown(
+    """
+    <div class="hero">
+      <p class="brand-mark">Emergency Routing <span>Smart Response</span></p>
+      <p class="hero-sub">
+        RL-optimised path planning with live camera vision confirmation —
+        compared side-by-side against standard map directions.
+      </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
+tab_route, tab1, tab2, tab3, tab4 = st.tabs(
     [
+        "Emergency routing",
         "Overview",
         "Camera explorer",
         "Segments",
         "Ask traffic (LLM)",
-        "Emergency routing",
     ]
 )
 
@@ -381,12 +486,15 @@ with tab4:
         st.rerun()
 
 
-# ── Tab 5: emergency routing with RL, vision confirmation and explanation ─────
-with tab5:
-    st.subheader("Emergency routing")
-    st.caption(
-        "Plans a route on the congestion-weighted road graph, confirms it "
-        "against the cameras along the way, and explains the decision."
+# ── Emergency routing: public map compare (vision-confirmed vs map directions) ─
+with tab_route:
+    st.subheader("Plan an emergency response path")
+    st.markdown(
+        '<p class="compare-note">Pick start and incident locations. We plan with '
+        "A* / Dijkstra / Q-learning, confirm the path against NYC DOT cameras, "
+        "then overlay it on standard map directions so you can see what vision "
+        "confirmation changes.</p>",
+        unsafe_allow_html=True,
     )
 
     @st.cache_resource
@@ -433,19 +541,25 @@ with tab5:
             ["Offline (stored camera scores)", "Live (fresh YOLO per camera)"],
         )
 
-    if st.button("Plan route", type="primary"):
+    if st.button("Plan & compare routes", type="primary"):
         start_row = cam_options[cam_options["camera_id"] == start_cam].iloc[0]
         end_row = cam_options[cam_options["camera_id"] == end_cam].iloc[0]
 
-        src = nearest_node(route_g, float(start_row["lat"]), float(start_row["lon"]))
-        dst = nearest_node(route_g, float(end_row["lat"]), float(end_row["lon"]))
+        start_lat = float(start_row["lat"])
+        start_lon = float(start_row["lon"])
+        end_lat = float(end_row["lat"])
+        end_lon = float(end_row["lon"])
+
+        src = nearest_node(route_g, start_lat, start_lon)
+        dst = nearest_node(route_g, end_lat, end_lon)
 
         if src == dst:
-            st.error("Start and destination snap to the same intersection - pick points further apart.")
+            st.error(
+                "Start and destination snap to the same intersection — "
+                "pick points further apart."
+            )
             st.stop()
 
-        # Wrap the chosen strategy in the common (graph, src, dst) signature
-        # expected by the vision gate.
         if strategy == "Dijkstra":
             planner = dijkstra_route
         elif strategy == "Q-learning (RL)":
@@ -459,28 +573,72 @@ with tab5:
         mode = "live" if vision_mode.startswith("Live") else "offline"
         yolo_model = get_model() if mode == "live" else None
 
-        with st.spinner(f"Planning with {strategy} and confirming via cameras..."):
+        with st.spinner(
+            f"Planning with {strategy}, confirming via cameras, "
+            "and fetching standard map directions..."
+        ):
             route, gate_info = plan_confirmed_route(
                 route_g, src, dst, planner=planner, mode=mode, model=yolo_model
             )
-            baseline = static_baseline_route(route_g, src, dst)
+            external = fetch_external_route(
+                route_g,
+                start_lat,
+                start_lon,
+                end_lat,
+                end_lon,
+                src_node=src,
+                dst_node=dst,
+            )
 
         m_route = route_metrics(route_g, route)
-        m_base = route_metrics(route_g, baseline)
+        our_min = m_route["travel_time_s"] / 60.0
+        ext_cong_min = external["congested_time_s"] / 60.0
+        ext_provider_min = external["duration_s"] / 60.0
+        saved_s = external["congested_time_s"] - m_route["travel_time_s"]
 
-        # Headline numbers: chosen route vs the congestion-blind baseline.
-        saved_s = m_base["travel_time_s"] - m_route["travel_time_s"]
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Estimated time", f"{m_route['travel_time_s'] / 60:.1f} min")
-        col2.metric("Static baseline", f"{m_base['travel_time_s'] / 60:.1f} min")
-        col3.metric("Time saved", f"{max(saved_s, 0) / 60:.1f} min")
+        blocked_nodes = {
+            cam["node"] for cam in gate_info.get("blocked_cameras", []) if "node" in cam
+        }
+        ext_hits = external_crosses_blockages(
+            route_g, external["coords"], blocked_nodes
+        )
+
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Our ETA (vision-confirmed)", f"{our_min:.1f} min")
+        col2.metric(
+            f"{external['provider']} (provider ETA)",
+            f"{ext_provider_min:.1f} min",
+        )
+        col3.metric(
+            f"{external['provider']} in our traffic model",
+            f"{ext_cong_min:.1f} min",
+        )
+        col4.metric(
+            "Advantage vs map path",
+            f"{max(saved_s, 0) / 60:.1f} min",
+            delta="faster under congestion" if saved_s > 0 else "similar",
+        )
 
         if gate_info["confirmed"]:
             st.success(
-                f"Route visually confirmed in {gate_info['attempts']} attempt(s)."
+                f"Vision-confirmed clear in {gate_info['attempts']} attempt(s) "
+                f"via {strategy}."
             )
         else:
-            st.warning("Route could not be fully confirmed - dispatch with caution.")
+            st.warning("Route could not be fully confirmed — dispatch with caution.")
+
+        if external["source"] == "google_directions":
+            st.caption("Comparison baseline: live Google Directions API.")
+        elif external["source"] == "osrm":
+            st.caption(
+                "Comparison baseline: OSRM public router (OpenStreetMap). "
+                "Set GOOGLE_MAPS_API_KEY to compare against Google Maps directly."
+            )
+        else:
+            st.caption(
+                "Comparison baseline: offline naive free-flow path "
+                "(no network / no API key)."
+            )
 
         for cam in gate_info.get("blocked_cameras", []):
             st.warning(
@@ -490,60 +648,72 @@ with tab5:
         for cam in gate_info.get("endpoint_warnings", []):
             st.info(
                 f"Heavy congestion at endpoint camera {cam['camera']} "
-                f"(score {cam['score']:.0f}) - unavoidable."
+                f"(score {cam['score']:.0f}) — unavoidable."
+            )
+        if ext_hits:
+            names = ", ".join(h["camera"] for h in ext_hits)
+            st.error(
+                f"{external['provider']} still passes near blocked camera(s): "
+                f"{names}. That is the gap vision confirmation closes."
             )
 
-        # Map: static matplotlib figure - renders reliably inside Streamlit
-        # tabs, unlike WebGL charts.  Grid streets are shaded by congestion,
-        # the chosen route is blue, the blind baseline is dashed grey.
-        import matplotlib.pyplot as plt
+        # Interactive street map — our route vs external directions.
+        payload = route_map_payload(
+            route_g,
+            route,
+            baseline_path=None,
+            start=(start_lat, start_lon),
+            end=(end_lat, end_lon),
+            gate_info=gate_info,
+        )
+        # Inject external polyline as the comparison route (may not be graph nodes).
+        payload["baseline_route"] = external["coords"]
+        # Expand bounds to cover both polylines.
+        all_pts = payload["our_route"] + payload["baseline_route"]
+        lats = [p[0] for p in all_pts]
+        lons = [p[1] for p in all_pts]
+        payload["bounds"] = [[min(lats), min(lons)], [max(lats), max(lons)]]
 
-        fig, ax = plt.subplots(figsize=(7, 9))
+        fmap = build_route_map(
+            payload,
+            our_label=f"Vision-confirmed ({strategy})",
+            baseline_label=external["provider"],
+        )
+        st_folium(fmap, width=None, height=540, returned_objects=[])
 
-        for u, v, d in route_g.edges(data=True):
-            x = [route_g.nodes[u]["lon"], route_g.nodes[v]["lon"]]
-            y = [route_g.nodes[u]["lat"], route_g.nodes[v]["lat"]]
-            # Darker orange = more congested street.
-            heat = min((d["congestion"] - 1.0) / 2.0, 1.0)
-            ax.plot(x, y, color=(1.0, 0.85 - 0.6 * heat, 0.7 - 0.6 * heat),
-                    linewidth=0.6, zorder=1)
+        st.caption(
+            "Solid navy = our vision-confirmed path. Dashed grey = standard "
+            "map directions. Black markers = blockages we routed around."
+        )
 
-        def draw_path(path, **kwargs):
-            ax.plot(
-                [route_g.nodes[n]["lon"] for n in path],
-                [route_g.nodes[n]["lat"] for n in path],
-                **kwargs,
+        # Side-by-side distance / hop summary for the public compare story.
+        left, right = st.columns(2)
+        with left:
+            st.markdown("#### Our route")
+            st.write(
+                f"{m_route['length_km']:.2f} km · {m_route['hops']} hops · "
+                f"worst congestion ×{m_route['worst_congestion']:.2f}"
+            )
+        with right:
+            st.markdown(f"#### {external['provider']}")
+            st.write(
+                f"{external['distance_km']:.2f} km · "
+                f"provider ETA {ext_provider_min:.1f} min · "
+                f"in our model {ext_cong_min:.1f} min"
             )
 
-        draw_path(baseline, color="grey", linestyle="--", linewidth=1.8,
-                  zorder=2, label="Static baseline")
-        draw_path(route, color="#1e64ff", linewidth=2.6, zorder=3, label="Chosen route")
-
-        ax.scatter([float(start_row["lon"])], [float(start_row["lat"])],
-                   color="green", s=90, zorder=4, label="Start")
-        ax.scatter([float(end_row["lon"])], [float(end_row["lat"])],
-                   color="red", s=90, zorder=4, label="Destination")
-
-        for cam in gate_info.get("blocked_cameras", []):
-            n = cam["node"]
-            ax.scatter([route_g.nodes[n]["lon"]], [route_g.nodes[n]["lat"]],
-                       color="black", marker="x", s=80, zorder=4)
-
-        ax.set_aspect(1.3)  # roughly compensate for latitude distortion
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.legend(loc="upper left", fontsize=8)
-        ax.set_title("Route on the congestion-weighted road grid", fontsize=10)
-        st.pyplot(fig, use_container_width=True)
-        plt.close(fig)
-        st.caption("Street shading = congestion (darker orange is slower). "
-                   "Black X marks a blockage the route avoided.")
-
-        # Finally the plain-English justification (LLM, or template fallback).
+        # Graph free-flow baseline kept as an internal reference for the LLM.
+        graph_baseline = (
+            external.get("graph_path")
+            or static_baseline_route(route_g, src, dst)
+        )
         with st.spinner("Writing explanation..."):
             explanation = explain_route(
-                route_g, route, baseline, gate_info,
-                strategy=f"{strategy} + vision",
+                route_g,
+                route,
+                graph_baseline,
+                gate_info,
+                strategy=f"{strategy} + vision vs {external['provider']}",
             )
         st.markdown("### Why this route")
         st.write(explanation)
