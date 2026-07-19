@@ -12,6 +12,11 @@ import requests
 import streamlit as st
 from ultralytics import YOLO
 
+from routing.graph import build_default_graph, nearest_node
+from routing.planners import astar_route, dijkstra_route, route_metrics, static_baseline_route
+from routing.rl_agent import QLearningRouter
+from routing.vision_gate import plan_confirmed_route
+from routing.explain import explain_route
 from traffic_llm import build_traffic_context, chat_completion
 
 st.set_page_config(page_title="Manhattan Traffic - YOLOv12", layout="wide")
@@ -125,12 +130,13 @@ else:
 
 st.title("Manhattan traffic (YOLOv12)")
 
-tab1, tab2, tab3, tab4 = st.tabs(
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
     [
         "Overview",
         "Camera explorer",
         "Segments",
         "Ask traffic (LLM)",
+        "Emergency routing",
     ]
 )
 
@@ -373,3 +379,171 @@ with tab4:
     if st.button("Clear chat history", key="clear_llm_chat"):
         st.session_state.llm_messages = []
         st.rerun()
+
+
+# ── Tab 5: emergency routing with RL, vision confirmation and explanation ─────
+with tab5:
+    st.subheader("Emergency routing")
+    st.caption(
+        "Plans a route on the congestion-weighted road graph, confirms it "
+        "against the cameras along the way, and explains the decision."
+    )
+
+    @st.cache_resource
+    def get_route_graph():
+        """Build the road graph once per server start; it carries the
+        congestion scores from camera_stats.csv."""
+        return build_default_graph()
+
+    route_g = get_route_graph()
+
+    # Start and destination are picked as cameras purely because their names
+    # are recognisable street corners; the route snaps to the nearest
+    # intersection of the road grid.
+    cam_options = cams_df.dropna(subset=["lat", "lon"])
+    col_a, col_b = st.columns(2)
+    with col_a:
+        start_cam = st.selectbox(
+            "Start (vehicle position):",
+            cam_options["camera_id"].tolist(),
+            format_func=lambda cid: cam_options.loc[
+                cam_options["camera_id"] == cid, "name"
+            ].iloc[0],
+            key="route_start",
+        )
+    with col_b:
+        end_cam = st.selectbox(
+            "Destination (incident):",
+            cam_options["camera_id"].tolist(),
+            index=len(cam_options) - 1,
+            format_func=lambda cid: cam_options.loc[
+                cam_options["camera_id"] == cid, "name"
+            ].iloc[0],
+            key="route_end",
+        )
+
+    col_c, col_d = st.columns(2)
+    with col_c:
+        strategy = st.selectbox(
+            "Routing strategy:", ["A*", "Dijkstra", "Q-learning (RL)"]
+        )
+    with col_d:
+        vision_mode = st.selectbox(
+            "Vision check:",
+            ["Offline (stored camera scores)", "Live (fresh YOLO per camera)"],
+        )
+
+    if st.button("Plan route", type="primary"):
+        start_row = cam_options[cam_options["camera_id"] == start_cam].iloc[0]
+        end_row = cam_options[cam_options["camera_id"] == end_cam].iloc[0]
+
+        src = nearest_node(route_g, float(start_row["lat"]), float(start_row["lon"]))
+        dst = nearest_node(route_g, float(end_row["lat"]), float(end_row["lon"]))
+
+        if src == dst:
+            st.error("Start and destination snap to the same intersection - pick points further apart.")
+            st.stop()
+
+        # Wrap the chosen strategy in the common (graph, src, dst) signature
+        # expected by the vision gate.
+        if strategy == "Dijkstra":
+            planner = dijkstra_route
+        elif strategy == "Q-learning (RL)":
+            def planner(g, a, b):
+                agent = QLearningRouter(g, seed=0)
+                agent.train(a, b, episodes=1500)
+                return agent.best_route()
+        else:
+            planner = astar_route
+
+        mode = "live" if vision_mode.startswith("Live") else "offline"
+        yolo_model = get_model() if mode == "live" else None
+
+        with st.spinner(f"Planning with {strategy} and confirming via cameras..."):
+            route, gate_info = plan_confirmed_route(
+                route_g, src, dst, planner=planner, mode=mode, model=yolo_model
+            )
+            baseline = static_baseline_route(route_g, src, dst)
+
+        m_route = route_metrics(route_g, route)
+        m_base = route_metrics(route_g, baseline)
+
+        # Headline numbers: chosen route vs the congestion-blind baseline.
+        saved_s = m_base["travel_time_s"] - m_route["travel_time_s"]
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Estimated time", f"{m_route['travel_time_s'] / 60:.1f} min")
+        col2.metric("Static baseline", f"{m_base['travel_time_s'] / 60:.1f} min")
+        col3.metric("Time saved", f"{max(saved_s, 0) / 60:.1f} min")
+
+        if gate_info["confirmed"]:
+            st.success(
+                f"Route visually confirmed in {gate_info['attempts']} attempt(s)."
+            )
+        else:
+            st.warning("Route could not be fully confirmed - dispatch with caution.")
+
+        for cam in gate_info.get("blocked_cameras", []):
+            st.warning(
+                f"Avoided blocked intersection: {cam['camera']} "
+                f"(score {cam['score']:.0f})"
+            )
+        for cam in gate_info.get("endpoint_warnings", []):
+            st.info(
+                f"Heavy congestion at endpoint camera {cam['camera']} "
+                f"(score {cam['score']:.0f}) - unavoidable."
+            )
+
+        # Map: static matplotlib figure - renders reliably inside Streamlit
+        # tabs, unlike WebGL charts.  Grid streets are shaded by congestion,
+        # the chosen route is blue, the blind baseline is dashed grey.
+        import matplotlib.pyplot as plt
+
+        fig, ax = plt.subplots(figsize=(7, 9))
+
+        for u, v, d in route_g.edges(data=True):
+            x = [route_g.nodes[u]["lon"], route_g.nodes[v]["lon"]]
+            y = [route_g.nodes[u]["lat"], route_g.nodes[v]["lat"]]
+            # Darker orange = more congested street.
+            heat = min((d["congestion"] - 1.0) / 2.0, 1.0)
+            ax.plot(x, y, color=(1.0, 0.85 - 0.6 * heat, 0.7 - 0.6 * heat),
+                    linewidth=0.6, zorder=1)
+
+        def draw_path(path, **kwargs):
+            ax.plot(
+                [route_g.nodes[n]["lon"] for n in path],
+                [route_g.nodes[n]["lat"] for n in path],
+                **kwargs,
+            )
+
+        draw_path(baseline, color="grey", linestyle="--", linewidth=1.8,
+                  zorder=2, label="Static baseline")
+        draw_path(route, color="#1e64ff", linewidth=2.6, zorder=3, label="Chosen route")
+
+        ax.scatter([float(start_row["lon"])], [float(start_row["lat"])],
+                   color="green", s=90, zorder=4, label="Start")
+        ax.scatter([float(end_row["lon"])], [float(end_row["lat"])],
+                   color="red", s=90, zorder=4, label="Destination")
+
+        for cam in gate_info.get("blocked_cameras", []):
+            n = cam["node"]
+            ax.scatter([route_g.nodes[n]["lon"]], [route_g.nodes[n]["lat"]],
+                       color="black", marker="x", s=80, zorder=4)
+
+        ax.set_aspect(1.3)  # roughly compensate for latitude distortion
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.legend(loc="upper left", fontsize=8)
+        ax.set_title("Route on the congestion-weighted road grid", fontsize=10)
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
+        st.caption("Street shading = congestion (darker orange is slower). "
+                   "Black X marks a blockage the route avoided.")
+
+        # Finally the plain-English justification (LLM, or template fallback).
+        with st.spinner("Writing explanation..."):
+            explanation = explain_route(
+                route_g, route, baseline, gate_info,
+                strategy=f"{strategy} + vision",
+            )
+        st.markdown("### Why this route")
+        st.write(explanation)
