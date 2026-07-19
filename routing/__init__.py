@@ -7,4 +7,5 @@
 #   rl_agent    - tabular Q-learning agent trained under traffic uncertainty
 #   vision_gate - YOLO check that a route is actually passable before dispatch
 #   explain     - plain-English route justification (LLM with offline fallback)
+#   geo         - path -> lat/lon polylines for public map rendering
 #   simulate    - benchmark of the full pipeline vs a static baseline
