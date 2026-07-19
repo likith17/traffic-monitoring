@@ -16,5 +16,6 @@ report/
 # Local video clips for offline segment analysis (user-supplied)
 videos/
 
-# Streamlit local config
-.streamlit/
+# Streamlit local secrets / cache — keep shared theme config tracked
+.streamlit/*
+!.streamlit/config.toml
