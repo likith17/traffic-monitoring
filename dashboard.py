@@ -15,10 +15,10 @@ from ultralytics import YOLO
 
 from routing.graph import build_default_graph, nearest_node
 from routing.planners import astar_route, dijkstra_route, route_metrics, static_baseline_route
-from routing.rl_agent import QLearningRouter
-from routing.vision_gate import plan_confirmed_route
+from routing.rl_agent import rl_route
+from routing.navigator import drive_route
 from routing.explain import explain_route
-from routing.geo import route_map_payload
+from routing.geo import path_to_latlon, route_map_payload
 from routing.map_view import build_route_map
 from routing.external_route import external_crosses_blockages, fetch_external_route
 from traffic_llm import build_traffic_context, chat_completion
@@ -490,20 +490,31 @@ with tab4:
 with tab_route:
     st.subheader("Plan an emergency response path")
     st.markdown(
-        '<p class="compare-note">Pick start and incident locations. We plan with '
-        "A* / Dijkstra / Q-learning, confirm the path against NYC DOT cameras, "
-        "then overlay it on standard map directions so you can see what vision "
-        "confirmation changes.</p>",
+        '<p class="compare-note">Pick start and incident locations. We plan on '
+        "real Manhattan streets, check every NYC DOT camera ahead before the "
+        "vehicle reaches it, and recalculate from the vehicle's position the "
+        "moment one reports a blockage — then overlay it all on standard map "
+        "directions.</p>",
         unsafe_allow_html=True,
     )
 
     @st.cache_resource
     def get_route_graph():
-        """Build the road graph once per server start; it carries the
-        congestion scores from camera_stats.csv."""
-        return build_default_graph()
+        """Load the real OSM street network (cached GraphML) once per server
+        start, with camera congestion attached.  Falls back to the synthetic
+        grid only if the street cache is missing."""
+        try:
+            from routing.streets import build_street_graph
+            return build_street_graph(), True
+        except FileNotFoundError:
+            return build_default_graph(), False
 
-    route_g = get_route_graph()
+    route_g, on_real_streets = get_route_graph()
+    if not on_real_streets:
+        st.warning(
+            "Street network cache missing — routes run on the synthetic grid. "
+            "Run `python -m routing.streets --build` for real Manhattan streets."
+        )
 
     # Start and destination are picked as cameras purely because their names
     # are recognisable street corners; the route snaps to the nearest
@@ -530,7 +541,7 @@ with tab_route:
             key="route_end",
         )
 
-    col_c, col_d = st.columns(2)
+    col_c, col_d, col_e = st.columns(3)
     with col_c:
         strategy = st.selectbox(
             "Routing strategy:", ["A*", "Dijkstra", "Q-learning (RL)"]
@@ -539,6 +550,17 @@ with tab_route:
         vision_mode = st.selectbox(
             "Vision check:",
             ["Offline (stored camera scores)", "Live (fresh YOLO per camera)"],
+        )
+    with col_e:
+        simulate_incident = st.selectbox(
+            "En-route demo:",
+            ["Off", "Simulate a blockage mid-route"],
+            help=(
+                "Forces a camera on the initial route to report a severe "
+                "blockage after departure, so you can watch the route "
+                "recalculate from the vehicle's position — like Google Maps "
+                "rerouting after a wrong turn."
+            ),
         )
 
     if st.button("Plan & compare routes", type="primary"):
@@ -563,25 +585,41 @@ with tab_route:
         if strategy == "Dijkstra":
             planner = dijkstra_route
         elif strategy == "Q-learning (RL)":
-            def planner(g, a, b):
-                agent = QLearningRouter(g, seed=0)
-                agent.train(a, b, episodes=1500)
-                return agent.best_route()
+            planner = rl_route
         else:
             planner = astar_route
 
         mode = "live" if vision_mode.startswith("Live") else "offline"
         yolo_model = get_model() if mode == "live" else None
 
+        # The navigation loop mutates camera scores in the incident demo, so
+        # always work on a copy and leave the shared cached graph untouched.
+        nav_g = route_g.copy()
+        nav_g.graph.update(route_g.graph)
+
         with st.spinner(
-            f"Planning with {strategy}, confirming via cameras, "
+            f"Planning with {strategy}, driving with camera lookahead, "
             "and fetching standard map directions..."
         ):
-            route, gate_info = plan_confirmed_route(
-                route_g, src, dst, planner=planner, mode=mode, model=yolo_model
+            if simulate_incident != "Off":
+                # Stage the demo: a camera mid-way along the initial plan
+                # starts reporting a severe blockage right after departure.
+                from routing.vision_gate import cameras_on_route
+
+                initial = planner(nav_g, src, dst)
+                cams_ahead = [
+                    n for n in cameras_on_route(nav_g, initial)
+                    if n not in (src, dst)
+                ]
+                if cams_ahead:
+                    staged = cams_ahead[len(cams_ahead) // 2]
+                    nav_g.nodes[staged]["cam_score"] = 99.0
+
+            trace = drive_route(
+                nav_g, src, dst, planner=planner, mode=mode, model=yolo_model
             )
             external = fetch_external_route(
-                route_g,
+                nav_g,
                 start_lat,
                 start_lon,
                 end_lat,
@@ -590,7 +628,24 @@ with tab_route:
                 dst_node=dst,
             )
 
-        m_route = route_metrics(route_g, route)
+        route = trace["driven"] if trace["confirmed"] else trace["final_path"]
+        # Adapt the drive trace to the gate_info shape the explanation
+        # module and the map markers already understand.
+        gate_info = {
+            "confirmed": trace["confirmed"],
+            "attempts": len(trace["segments"]),
+            "blocked_cameras": [
+                {
+                    "node": r["blocked_node"],
+                    "camera": r["blocked_camera"],
+                    "score": r["score"],
+                }
+                for r in trace["reroutes"]
+            ],
+            "endpoint_warnings": [],
+        }
+
+        m_route = route_metrics(nav_g, route)
         our_min = m_route["travel_time_s"] / 60.0
         ext_cong_min = external["congested_time_s"] / 60.0
         ext_provider_min = external["duration_s"] / 60.0
@@ -600,7 +655,7 @@ with tab_route:
             cam["node"] for cam in gate_info.get("blocked_cameras", []) if "node" in cam
         }
         ext_hits = external_crosses_blockages(
-            route_g, external["coords"], blocked_nodes
+            nav_g, external["coords"], blocked_nodes
         )
 
         col1, col2, col3, col4 = st.columns(4)
@@ -620,10 +675,18 @@ with tab_route:
         )
 
         if gate_info["confirmed"]:
-            st.success(
-                f"Vision-confirmed clear in {gate_info['attempts']} attempt(s) "
-                f"via {strategy}."
-            )
+            if trace["reroutes"]:
+                st.success(
+                    f"Arrived via {strategy} after "
+                    f"{len(trace['reroutes'])} en-route recalculation(s) — "
+                    "the route redrew from the vehicle's position the moment "
+                    "a camera ahead reported a blockage."
+                )
+            else:
+                st.success(
+                    f"Arrived via {strategy}; every camera ahead was checked "
+                    "before entering and stayed clear the whole drive."
+                )
         else:
             st.warning("Route could not be fully confirmed — dispatch with caution.")
 
@@ -640,10 +703,11 @@ with tab_route:
                 "(no network / no API key)."
             )
 
-        for cam in gate_info.get("blocked_cameras", []):
+        for r in trace["reroutes"]:
             st.warning(
-                f"Avoided blocked intersection: {cam['camera']} "
-                f"(score {cam['score']:.0f})"
+                f"Recalculated en route: camera {r['blocked_camera']} ahead "
+                f"reported score {r['score']:.0f} — rerouted from the "
+                "vehicle's position."
             )
         for cam in gate_info.get("endpoint_warnings", []):
             st.info(
@@ -659,7 +723,7 @@ with tab_route:
 
         # Interactive street map — our route vs external directions.
         payload = route_map_payload(
-            route_g,
+            nav_g,
             route,
             baseline_path=None,
             start=(start_lat, start_lon),
@@ -668,8 +732,25 @@ with tab_route:
         )
         # Inject external polyline as the comparison route (may not be graph nodes).
         payload["baseline_route"] = external["coords"]
-        # Expand bounds to cover both polylines.
+
+        # Legs abandoned when the drive recalculated: draw only the part the
+        # vehicle never used (from the reroute point onward), faded.
+        abandoned = []
+        for seg, reroute in zip(trace["segments"][:-1], trace["reroutes"]):
+            leg = seg["path"]
+            if reroute["at_node"] in leg:
+                unused = leg[leg.index(reroute["at_node"]):]
+                if len(unused) >= 2:
+                    abandoned.append({
+                        "coords": path_to_latlon(nav_g, unused),
+                        "label": f"Abandoned: {reroute['blocked_camera']} blocked",
+                    })
+        payload["abandoned_routes"] = abandoned
+
+        # Expand bounds to cover every polyline on the map.
         all_pts = payload["our_route"] + payload["baseline_route"]
+        for leg in abandoned:
+            all_pts = all_pts + leg["coords"]
         lats = [p[0] for p in all_pts]
         lons = [p[1] for p in all_pts]
         payload["bounds"] = [[min(lats), min(lons)], [max(lats), max(lons)]]
@@ -682,8 +763,9 @@ with tab_route:
         st_folium(fmap, width=None, height=540, returned_objects=[])
 
         st.caption(
-            "Solid navy = our vision-confirmed path. Dashed grey = standard "
-            "map directions. Black markers = blockages we routed around."
+            "Solid navy = the path actually driven. Dashed grey = standard "
+            "map directions. Dotted amber = legs abandoned when the route "
+            "recalculated. Black markers = blockages avoided."
         )
 
         # Side-by-side distance / hop summary for the public compare story.
@@ -705,11 +787,11 @@ with tab_route:
         # Graph free-flow baseline kept as an internal reference for the LLM.
         graph_baseline = (
             external.get("graph_path")
-            or static_baseline_route(route_g, src, dst)
+            or static_baseline_route(nav_g, src, dst)
         )
         with st.spinner("Writing explanation..."):
             explanation = explain_route(
-                route_g,
+                nav_g,
                 route,
                 graph_baseline,
                 gate_info,

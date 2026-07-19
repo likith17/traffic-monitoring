@@ -153,6 +153,40 @@ class QLearningRouter:
         return astar_route(self.g, self.src, self.dst)
 
 
+def rl_route(
+    g: nx.DiGraph,
+    src: tuple,
+    dst: tuple,
+    episodes: int = 900,
+    buffer_deg: float = 0.006,
+    seed: int = 0,
+) -> list[tuple]:
+    """Q-learning route on a corridor around the A* path.
+
+    Tabular Q-learning cannot explore a 10k-node city graph in reasonable
+    time, so - like hierarchical routing engines that restrict the search
+    space - we train inside a corridor of streets around the classical route
+    and let the agent optimise within it under traffic noise.  If the learned
+    policy is unusable, best_route() already falls back to A*.
+    """
+    spine = astar_route(g, src, dst)
+    lats = [g.nodes[n]["lat"] for n in spine]
+    lons = [g.nodes[n]["lon"] for n in spine]
+    lat_min, lat_max = min(lats) - buffer_deg, max(lats) + buffer_deg
+    lon_min, lon_max = min(lons) - buffer_deg, max(lons) + buffer_deg
+
+    corridor = [
+        n for n, d in g.nodes(data=True)
+        if lat_min <= d["lat"] <= lat_max and lon_min <= d["lon"] <= lon_max
+    ]
+    sub = g.subgraph(corridor).copy()
+    sub.graph.update(g.graph)
+
+    agent = QLearningRouter(sub, seed=seed)
+    agent.train(src, dst, episodes=episodes)
+    return agent.best_route()
+
+
 if __name__ == "__main__":
     # Self-test: train on the real congestion graph and check the learned
     # route is close to the A* optimum (it plans under noise, so a small gap

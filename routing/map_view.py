@@ -14,6 +14,7 @@ import folium
 # Calm emergency-ops palette — no purple-gradient AI look.
 OUR_COLOR = "#0B3D91"       # deep navy — vision-confirmed route
 BASELINE_COLOR = "#6B7280"  # muted grey — Google/OSRM/naive baseline
+ABANDONED_COLOR = "#D97706" # amber — legs abandoned after a mid-drive reroute
 START_COLOR = "#15803D"     # green
 END_COLOR = "#B91C1C"       # signal red
 BLOCKED_COLOR = "#111827"   # near-black
@@ -52,6 +53,19 @@ def build_route_map(
             dash_array="8 10",
             tooltip=baseline_label,
         ).add_to(m)
+
+    # Abandoned legs from mid-drive reroutes (Google-style recalculation).
+    for leg in payload.get("abandoned_routes", []):
+        coords = leg.get("coords") or []
+        if len(coords) >= 2:
+            folium.PolyLine(
+                locations=coords,
+                color=ABANDONED_COLOR,
+                weight=4,
+                opacity=0.55,
+                dash_array="2 8",
+                tooltip=leg.get("label", "Abandoned after reroute"),
+            ).add_to(m)
 
     if our and len(our) >= 2:
         folium.PolyLine(
@@ -114,6 +128,7 @@ def build_route_map(
       <div style="font-weight: 700; margin-bottom: 4px;">Route legend</div>
       <div><span style="color:{OUR_COLOR};">━━</span> {our_label}</div>
       <div><span style="color:{BASELINE_COLOR};">╌ ╌</span> {baseline_label}</div>
+      <div><span style="color:{ABANDONED_COLOR};">· ·</span> Abandoned after reroute</div>
       <div><span style="color:{START_COLOR};">●</span> Start &nbsp;
            <span style="color:{END_COLOR};">●</span> Destination</div>
     </div>
