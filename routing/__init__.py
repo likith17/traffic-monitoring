@@ -8,4 +8,6 @@
 #   vision_gate - YOLO check that a route is actually passable before dispatch
 #   explain     - plain-English route justification (LLM with offline fallback)
 #   geo         - path -> lat/lon polylines for public map rendering
+#   map_view    - Folium Google-Maps-like dual-route visualisation
+#   external_route - Google Directions / OSRM comparison baseline
 #   simulate    - benchmark of the full pipeline vs a static baseline
