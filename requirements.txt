@@ -12,6 +12,7 @@ streamlit==1.52.1
 pydeck==0.9.1
 folium==0.20.0
 streamlit-folium==0.27.2
+osmnx==2.1.0
 torch==2.9.1
 torchvision==0.24.1
 ultralytics @ git+https://github.com/sunsmarterjie/yolov12.git@3bca22b336e96cfdabfec4c062b84eef210e9563

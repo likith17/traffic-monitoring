@@ -26,10 +26,12 @@ RUN pip install --no-cache-dir torch==2.9.1 torchvision==0.24.1 \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code, model weights and the pre-computed camera data
-# so the dashboard works out of the box without hitting the NYC DOT API.
+# Copy the application code, model weights, the pre-computed camera data and
+# the cached OSM street network so the dashboard works fully offline.
 COPY routing/ routing/
 COPY weights/ weights/
+COPY data/ data/
+COPY .streamlit/ .streamlit/
 COPY *.py ./
 COPY manhattan_cameras.csv camera_stats.csv segment_stats.csv ./
 

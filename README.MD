@@ -22,16 +22,25 @@ Benchmark over 30 simulated emergencies with hidden road blockages
 ## Why not just Google Maps?
 
 Standard directions optimise for typical traffic. They **cannot see** a blocked
-intersection on a live DOT camera. This project adds that missing signal:
+intersection on a live DOT camera. This project follows the same architecture
+production navigators use — a directed road graph with live conditions applied
+as edge-weight multipliers, never a topology rebuild — and adds the missing
+vision signal:
 
-1. Plan on a congestion-weighted graph (Dijkstra / A* / Q-learning under noise).
-2. Re-check every camera on the candidate path (YOLOv12).
-3. Cut blocked nodes and re-plan until the path is vision-confirmed.
-4. Overlay our path against Google Directions (or OSRM) so the divergence is visible.
+1. **Plan** on real Manhattan streets from OpenStreetMap (Dijkstra / A* /
+   corridor-trained Q-learning), weighted by YOLOv12 camera congestion.
+2. **Drive with lookahead** — before the vehicle enters the next few camera
+   intersections, each one is re-checked (fresh YOLO in live mode).
+3. **Recalculate en route** — a blocked camera ahead cuts that intersection and
+   replans from the vehicle's current position, exactly like Google Maps
+   redrawing after a wrong turn. Abandoned legs stay on the map, faded.
+4. **Compare honestly** — the final path is overlaid on Google Directions (or
+   OSRM) so the divergence created by vision confirmation is visible.
 
-**Constraint trade-off:** the planner runs on a reproducible Manhattan-style grid
-snapped to real camera coordinates (works fully offline in Docker). External
-comparison uses real street geometry from Google / OSRM when the network is up.
+**Constraint trade-off:** the street graph is cached as GraphML in `data/` so
+Docker and offline runs never touch the network; tabular Q-learning trains
+inside a corridor around the A* spine because exploring a 10k-node city graph
+per query is not tractable for a demo that must answer in seconds.
 
 ---
 
@@ -47,10 +56,12 @@ NYC DOT cameras ──> fetch_cameras.py ──> manhattan_cameras.csv
                     ┌───────────────────────────┴───────────────────────────┐
                     │                    routing/ package                    │
                     │                                                       │
-                    │  graph.py ──────── road grid + congestion weights      │
+                    │  streets.py ────── real OSM street graph (cached)      │
+                    │  graph.py ──────── synthetic grid fallback             │
                     │  planners.py ───── Dijkstra / A* / static baseline     │
-                    │  rl_agent.py ───── Q-learning under traffic noise      │
-                    │  vision_gate.py ── YOLO confirm / re-plan              │
+                    │  rl_agent.py ───── corridor Q-learning under noise     │
+                    │  vision_gate.py ── YOLO confirm / re-plan (pre-drive)  │
+                    │  navigator.py ──── en-route lookahead + recalculation  │
                     │  external_route.py Google Directions → OSRM → naive    │
                     │  geo.py / map_view.py  public Folium dual-route map    │
                     │  explain.py ────── LLM justification (w/ fallback)     │
@@ -85,7 +96,11 @@ streamlit run dashboard.py
 ```
 
 Self-tests: `python -m routing.geo`, `python -m routing.map_view`,
-`python -m routing.external_route`, `python -m routing.vision_gate`.
+`python -m routing.external_route`, `python -m routing.vision_gate`,
+`python -m routing.streets`, `python -m routing.navigator`.
+
+The OSM street cache ships in `data/manhattan_streets.graphml`; refresh it with
+`python -m routing.streets --build` if the road network ever changes.
 
 ## Quick start (Docker)
 
@@ -104,7 +119,7 @@ comparison path; with network it uses OSRM (or Google if a key is set).
 
 | Tab | What it shows |
 |---|---|
-| **Emergency routing** | Interactive street map: navy = vision-confirmed path, dashed grey = Google/OSRM; metrics compare both; LLM explanation |
+| **Emergency routing** | Real-street map: navy = path driven, dashed grey = Google/OSRM, amber = legs abandoned when the drive recalculated; metrics compare both; LLM explanation. An en-route demo stages a mid-drive blockage so you can watch the recalculation. |
 | **Overview** | Camera map + congestion table |
 | **Camera explorer** | Live YOLO on any camera |
 | **Segments** | Offline clip scores (`compute_stats.py`) |
