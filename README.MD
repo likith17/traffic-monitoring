@@ -52,9 +52,11 @@ Benchmark over 30 simulated emergencies with **hidden road blockages** (`python 
 
 | Strategy | Mean response time | vs baseline |
 |---|---|---|
-| Static shortest-path baseline | 26.9 min | — |
-| A\* + vision gate | 21.8 min | **−18.8%** |
-| Q-learning + vision gate | 22.5 min | **−16.4%** |
+| Static shortest-path baseline | 28.1 min | — |
+| A\* + vision gate | 22.5 min | **−19.9%** |
+| Corridor Q-learning + vision gate | 22.9 min | **−18.7%** |
+
+*Numbers from the real OSM street graph with the same corridor Q-learning the dashboard ships (`routing_benchmark.csv` has the per-episode results).*
 
 The win is not “smarter A\*.” It is **excluding roads a camera shows are impassable before the vehicle commits**, then recalculating from the vehicle’s current position — the same UX people expect from Google Maps after a wrong turn, driven by vision instead of GPS probes.
 

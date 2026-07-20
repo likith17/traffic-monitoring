@@ -28,7 +28,7 @@ import pandas as pd
 
 from routing.graph import build_default_graph
 from routing.planners import astar_route, static_baseline_route
-from routing.rl_agent import QLearningRouter
+from routing.rl_agent import rl_route
 from routing.vision_gate import plan_confirmed_route
 
 # How much slower a street becomes when it is actually blocked: the vehicle
@@ -83,14 +83,6 @@ def make_episode(
             return g_plan, g_true, src, dst
 
 
-def rl_planner(g: nx.DiGraph, src: tuple, dst: tuple) -> list[tuple]:
-    """Adapter so the Q-learning agent has the same (graph, src, dst)
-    signature as the classical planners and works with the vision gate."""
-    agent = QLearningRouter(g, seed=0)
-    agent.train(src, dst, episodes=800)
-    return agent.best_route()
-
-
 def run_benchmark(episodes: int, n_incidents: int, seed: int) -> pd.DataFrame:
     """Simulate the requested number of emergencies and record every result."""
     rng = random.Random(seed)
@@ -106,8 +98,9 @@ def run_benchmark(episodes: int, n_incidents: int, seed: int) -> pd.DataFrame:
         # Strategy 2: A* on congestion weights, confirmed by the vision gate.
         astar_path, _ = plan_confirmed_route(g_plan, src, dst, planner=astar_route)
 
-        # Strategy 3: RL policy, confirmed by the vision gate.
-        rl_path, _ = plan_confirmed_route(g_plan, src, dst, planner=rl_planner)
+        # Strategy 3: corridor Q-learning (the same RL the dashboard ships),
+        # confirmed by the vision gate.
+        rl_path, _ = plan_confirmed_route(g_plan, src, dst, planner=rl_route)
 
         rows.append({
             "episode": ep,

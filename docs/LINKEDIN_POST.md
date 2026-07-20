@@ -1,86 +1,87 @@
 # LinkedIn post — Emergency Routing for Smart Response
 
 Copy below into LinkedIn. Attach images from `docs/assets/` in this order:
-1. `01-landing.png` (or the `demo.gif` as the first media if LinkedIn accepts GIFs)
+1. `01-landing.png` (or `demo.gif` as the first media if LinkedIn accepts GIFs)
 2. `02-route-compare.png`
 3. `03-route-map.png`
 4. `06-yolo-live.png`
 
-Suggested first comment (link + longer context): paste the “First comment” block at the bottom.
+Put the repo link in the **first comment** (LinkedIn suppresses reach on posts with external links) — block at the bottom.
 
 ---
 
 ## Post (ready to paste)
 
-Google Maps is great at typical traffic.
+This is my first post here, so a small confession to start.
 
-It still cannot see a blocked intersection on a live traffic camera.
+I've spent the last couple of years mostly consuming — courses, papers, other people's project write-ups. Somewhere along the way I realized I could explain how production ML systems work without ever having shipped one end to end. That gap bothered me. So this year I'm flipping it: less consuming, more creating. This post is the first receipt.
 
-I built **Emergency Routing for Smart Response** for Manhattan to close that gap:
+I built **Emergency Routing for Smart Response** — a Manhattan emergency router that can *see* the road ahead.
 
-• Plan on **real OpenStreetMap streets** (not a toy grid)
-• Score **373 NYC DOT cameras** with **YOLOv12**
-• **Look ahead** at cameras before the vehicle enters them
-• **Recalculate mid-drive** when a camera reports a blockage — same UX as a wrong-turn reroute, driven by vision
-• Run **A\*, Dijkstra, and corridor Q-learning** every time, show the fastest arrival, and put the full comparison below the map
-• Overlay **OSRM / Google Directions** and re-score *their* path in *our* congestion model so the comparison is honest
+Google Maps is great at typical traffic. But it cannot see a blocked intersection on a live traffic camera. For emergency dispatch, that blind spot costs minutes.
 
-**What changed when we measured it** (30 simulated emergencies with hidden blockages):
+What it does:
+• Plans on real OpenStreetMap streets, not a toy grid
+• Scores 373 live NYC DOT cameras with YOLOv12
+• Looks ahead at the cameras on the route before the vehicle reaches them
+• Recalculates mid-drive when a camera reports a blockage — the same UX as a wrong-turn reroute, driven by vision instead of GPS probes
+• Runs A*, Dijkstra, and corridor Q-learning on every request and shows the fastest arrival
+• Overlays OSRM / Google Directions and re-scores *their* path in *our* congestion model, so the comparison is honest
 
-Static shortest path → **26.9 min** mean  
-A\* + vision gate → **21.8 min** (−18.8%)  
-Q-learning + vision → **22.5 min** (−16.4%)
+Measured over 30 simulated emergencies with hidden road blockages:
 
-The interesting part was not picking a fancier algorithm.
+Static shortest path → 28.1 min mean response
+A* + vision gate → 22.5 min (−19.9%)
+Corridor Q-learning + vision → 22.9 min (−18.7%)
 
-It was the **constraints**:
+Honestly, the part that taught me the most wasn't the ML. It was the constraints:
 
-→ Full-graph tabular RL on ~10k nodes is too slow for a live demo → train Q-learning only in a corridor around the A\* spine  
-→ Synthetic grids look fine until the route cuts through water → switch to a cached OSM street graph with curved geometry  
-→ Nominatim rate-limits type-ahead → landmarks + camera-name suggestions first  
-→ “Simulate a blockage” only makes sense against stored scores → hide it in live YOLO mode  
+→ Tabular RL can't explore a 10k-node city graph in demo time, so the agent trains only in a corridor around the A* spine
+→ Synthetic grids look fine until a route cuts straight through the Hudson — so: real OSM street graph, cached
+→ Nominatim rate-limits type-ahead search, so local landmark suggestions come first
+→ A benchmark should measure what you ship — the RL in the benchmark is the exact corridor RL in the app
 
-Stack: YOLOv12 · NetworkX / OSMnx · Streamlit + Folium · Docker.
+Stack: YOLOv12 · NetworkX / OSMnx · Streamlit + Folium · Docker. Repo in the comments.
 
-Happy to walk through the trade-offs if you are hiring for ML systems that have to ship under real constraints — not just train a model in a notebook.
+If you build ML systems that have to survive contact with the real world, I'd genuinely love to compare notes. And if you're earlier in the journey than me: build the thing. It teaches faster than watching ever did.
 
-#MachineLearning #ComputerVision #ReinforcementLearning #MLOps #UrbanTech #OpenStreetMap #YOLO #Streamlit
+#MachineLearning #ComputerVision #ReinforcementLearning #MLOps #OpenStreetMap
 
 ---
 
 ## First comment (paste after posting)
 
-Repo + screenshots + demo GIF:  
+Repo + screenshots + demo GIF:
 https://github.com/likith17/traffic-monitoring
 
-Demo walkthrough (GIF in the README):  
-https://github.com/likith17/traffic-monitoring#emergency-routing-for-smart-response
-
-What I would talk about in an interview for this project:
-1. Why we kept topology fixed and put congestion on edge weights  
-2. Why corridor RL instead of city-wide Q-learning  
-3. How en-route recalculation mirrors consumer navigation but uses vision  
-4. How we avoid lying with baselines (re-score external routes in our model)
+The four decisions I'd defend in an interview:
+1. Fixed street topology, live conditions as edge-weight multipliers (the pattern production navigators use)
+2. Corridor Q-learning instead of city-wide RL (tractability beats purity in a live demo)
+3. En-route recalculation from the vehicle's current node, driven by camera vision
+4. Never lie with baselines — external routes are re-scored inside our own congestion model
 
 ---
 
 ## Optional shorter variant (if you prefer a punchier post)
 
-Built a Manhattan emergency router that **sees** the road ahead.
+First post here. New rule for myself: stop consuming, start creating.
 
-YOLOv12 on 373 DOT cameras → congestion weights on a real OSM street graph → A\* / Dijkstra / RL all run → best ETA shown → mid-drive recalculation when a camera reports a blockage → side-by-side vs OSRM/Google.
+First receipt: a Manhattan emergency router that **sees** the road ahead.
 
-Result on 30 blocked-road simulations: **~19% faster** than static shortest path.
+YOLOv12 on 373 DOT cameras → congestion weights on a real OSM street graph → A* / Dijkstra / corridor RL race on every request → mid-drive recalculation when a camera reports a blockage → honest side-by-side vs OSRM/Google.
 
-The hard parts were constraints (RL latency, rate-limited geocoding, honest baselines) — not the YOLO call itself.
+Result over 30 blocked-road simulations: **~20% faster** than static shortest path (28.1 → 22.5 min).
 
-Repo: https://github.com/likith17/traffic-monitoring
+The hard parts were constraints — RL latency, rate-limited geocoding, honest baselines — not the YOLO call.
+
+Repo in the comments.
 
 ---
 
 ## Posting checklist
 
 - [ ] Attach 3–4 images (landing, metrics, dual-route map, YOLO frame) **or** `demo.gif`
-- [ ] Confirm the GitHub branch/URL in the first comment matches what you pushed
-- [ ] Tag carefully — avoid spammy hashtag walls; 6–8 is enough
-- [ ] Do **not** lead with “achieved X% accuracy” — lead with the problem + constraint + impact (that is what hiring managers actually read)
+- [ ] Repo link in the FIRST COMMENT, not the post body
+- [ ] Confirm the GitHub URL shows the new README (push main first)
+- [ ] 5–8 hashtags max — no hashtag walls
+- [ ] Do **not** lead with "achieved X% accuracy" — lead with problem + constraint + impact
