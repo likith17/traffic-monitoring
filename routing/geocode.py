@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import time
+from functools import lru_cache
 from typing import Any
 
 import pandas as pd
@@ -28,12 +29,23 @@ _MIN_INTERVAL_S = 1.05
 _last_request_at = 0.0
 
 
-def _throttle() -> None:
+def _throttle(blocking: bool = True) -> bool:
+    """Space out Nominatim calls to respect the 1 req/s policy.
+
+    blocking=True  (address lookups): wait out the interval, then proceed.
+    blocking=False (type-ahead): never sleep - return False so the caller can
+    skip the network entirely.  Sleeping here would freeze the Streamlit
+    script thread on every keystroke, which looks like the page reloading
+    before results appear.
+    """
     global _last_request_at
     wait = _MIN_INTERVAL_S - (time.monotonic() - _last_request_at)
     if wait > 0:
+        if not blocking:
+            return False
         time.sleep(wait)
     _last_request_at = time.monotonic()
+    return True
 
 # Coverage box around the DOT cameras (west, south, east, north), padded a
 # touch so riverside addresses still hit.
@@ -77,6 +89,21 @@ def _nominatim(query: str) -> dict[str, Any] | None:
         return None
 
 
+@lru_cache(maxsize=4)
+def _load_cameras(cameras_csv: str) -> pd.DataFrame | None:
+    """Camera list with a pre-lowercased name column, read from disk once.
+
+    Cached because type-ahead calls this on every keystroke; re-parsing the
+    CSV each time is pure waste.  Returns None when the file is missing.
+    """
+    try:
+        cams = pd.read_csv(cameras_csv).dropna(subset=["lat", "lon"])
+    except FileNotFoundError:
+        return None
+    cams["_name_lower"] = cams["name"].str.lower()
+    return cams
+
+
 def _camera_matches(
     query: str,
     cameras_csv: str = "manhattan_cameras.csv",
@@ -87,16 +114,15 @@ def _camera_matches(
     'amsterdam 60' matches 'Amsterdam Ave @ 60 St' — every query token must
     appear in the camera name.  Returns up to `limit` hits for type-ahead.
     """
-    try:
-        cams = pd.read_csv(cameras_csv).dropna(subset=["lat", "lon"])
-    except FileNotFoundError:
+    cams = _load_cameras(cameras_csv)
+    if cams is None:
         return []
 
     tokens = [t for t in query.lower().replace("@", " ").split() if t]
     if not tokens:
         return []
 
-    names = cams["name"].str.lower()
+    names = cams["_name_lower"]
     mask = pd.Series(True, index=cams.index)
     for t in tokens:
         mask &= names.str.contains(t, regex=False)
@@ -120,9 +146,15 @@ def _camera_match(query: str, cameras_csv: str = "manhattan_cameras.csv") -> dic
 
 
 def _nominatim_suggest(query: str, limit: int = 5) -> list[dict[str, Any]]:
-    """Multi-hit bounded Nominatim lookup used for type-ahead suggestions."""
+    """Multi-hit bounded Nominatim lookup used for type-ahead suggestions.
+
+    Non-blocking: if the rate-limit window hasn't elapsed we return nothing
+    rather than sleeping, because this runs on every keystroke.  The local
+    landmark and camera-name suggestions still answer instantly.
+    """
     try:
-        _throttle()
+        if not _throttle(blocking=False):
+            return []
         r = requests.get(
             NOMINATIM_URL,
             params={

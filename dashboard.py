@@ -264,12 +264,21 @@ with tab_route:
             "for real Manhattan streets."
         )
 
-    def _search_manhattan(term: str) -> list:
-        """Type-ahead: instant camera-name matches + bounded Nominatim hits."""
+    @st.cache_data(ttl=3600, show_spinner=False)
+    def _cached_suggestions(term: str) -> list:
+        """Suggestions for one search term, cached for an hour.
+
+        The searchbox fires on every keystroke, so without this a user who
+        backspaces or retypes pays for the same lookup repeatedly.
+        """
         return [
             (s["label"], (s["label"], s["lat"], s["lon"]))
             for s in suggest_places(term)
         ]
+
+    def _search_manhattan(term: str) -> list:
+        """Type-ahead: instant camera-name matches + bounded Nominatim hits."""
+        return _cached_suggestions(term)
 
     SEARCHBOX_STYLE = {
         "searchbox": {
