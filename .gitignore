@@ -16,9 +16,11 @@ report/
 # Local video clips for offline segment analysis (user-supplied)
 videos/
 
-# Streamlit local secrets / cache — keep shared theme config tracked
+# Streamlit local secrets / cache — keep the theme config and the secrets
+# template tracked, but never the real secrets.toml
 .streamlit/*
 !.streamlit/config.toml
+!.streamlit/secrets.toml.example
 
 # OSMnx HTTP response cache (the GraphML in data/ is the real artifact)
 cache/
