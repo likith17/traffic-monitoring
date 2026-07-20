@@ -1,3 +1,9 @@
+# NEVER bake secrets into the image — they would be readable by anyone who
+# pulls it, and `docker history` exposes them even if a later layer deletes
+# the file. Keys are passed at run time with `docker run -e KEY=value`.
+.streamlit/secrets.toml
+.env
+
 # Keep the image small: no virtual envs, no git history, no datasets.
 .venv/
 .vv/
