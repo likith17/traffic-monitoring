@@ -13,6 +13,7 @@ Ordinary navigation optimises for *typical* traffic. It cannot see that the inte
 ## Contents
 
 - [The problem, and how success is measured](#the-problem-and-how-success-is-measured)
+- [Terms used here](#terms-used-here)
 - [How the system works](#how-the-system-works)
 - [Results](#results)
 - [Design decisions, and why](#design-decisions-and-why)
@@ -41,7 +42,33 @@ Ordinary navigation optimises for *typical* traffic. It cannot see that the inte
 
 ---
 
+## Terms used here
+
+Plain definitions for the jargon, so the rest of this reads without a search engine open.
+
+| Term | What it means here |
+|---|---|
+| **Graph** | The road map as data: intersections are *nodes*, streets between them are *edges*. Routing is finding a path through it. |
+| **Edge weight** | A number attached to each street saying how expensive it is to drive. Here it is travel time in seconds. Traffic makes the number bigger. |
+| **Dijkstra** | A classic algorithm that finds the genuinely cheapest path by expanding outward from the start until it reaches the destination. Reliable, explores a lot. |
+| **A\*** ("A-star") | Dijkstra with a hint. It also estimates how far each intersection is from the goal, so it explores toward the destination instead of in all directions. Same answer, less work. |
+| **Heuristic** | That hint. Here it is straight-line distance at the fastest speed on the map. As long as it never *overestimates*, A\* is guaranteed to still find the best route. |
+| **Q-learning** | A reinforcement-learning method: try routes many times, get rewarded for arriving quickly, and gradually learn which turn is best from each intersection. No labelled training data needed — it learns from its own attempts. |
+| **YOLO** | An object-detection model. Give it an image, it returns boxes around the things it recognises, each with a label like `car` or `person`. YOLOv12 is the version used here. |
+| **Inference** | Running a trained model to get an answer. As opposed to *training*, which is teaching it in the first place. This project only ever does inference. |
+| **ONNX / ONNX Runtime** | A portable file format for trained models, and the program that runs them. Lets the model run without PyTorch, which is why the container is half the size. |
+| **PyTorch** | The framework the model was trained in. Powerful, large, and only needed for training and exporting — not for running the finished model. |
+| **NMS** (non-maximum suppression) | Detectors often draw several overlapping boxes around one car. NMS keeps the most confident box and discards the duplicates. |
+| **Letterboxing** | Resizing an image to the model's expected square input by scaling it down and padding the leftover space with grey, rather than stretching and distorting it. |
+| **GraphML** | A file format for saving a graph. The Manhattan street network lives in one so it does not have to be re-downloaded. |
+| **OSM** (OpenStreetMap) | A free, public map of the world. The real street layout comes from here. |
+| **OSRM** | A free routing service built on OSM data. Used as an outside opinion to compare routes against. |
+| **Container / image** | A packaged copy of the app plus everything it needs to run. The *image* is the frozen package; a *container* is one running copy of it. |
+| **Baseline** | The simple approach a new method has to beat to be worth anything. Here: shortest path ignoring live traffic. |
+
 ## How the system works
+
+In one sentence: score every camera for how busy it looks, make busy streets count as slower, find the fastest route through that, then double-check the cameras along it before committing — and recheck while driving.
 
 ```
 NYC DOT cameras
@@ -155,53 +182,128 @@ These are the ones that cost real time. Several are environment problems rather 
 
 ## Running it
 
-### Locally
+There are two ways to run this. **Option A (Python)** is the normal one and takes about five minutes. **Option B (Docker)** needs no Python at all but downloads more. If you are not sure, use Option A.
 
-Python 3.11. Everything the app needs — camera index, congestion scores, street graph, ONNX model — is committed, so there is no data-prep step.
+Nothing here needs a GPU, an API key, or a paid account.
+
+### Before you start
+
+You need two things installed. Check both before going further — most setup problems are one of these being missing or the wrong version.
+
+**1. Python 3.11 or newer.** Check what you have:
+
+```bash
+python --version
+```
+
+You should see `Python 3.11.x` or higher. If the command is not found, or the version is 3.10 or lower, install Python from [python.org/downloads](https://www.python.org/downloads/). On Windows, tick **"Add Python to PATH"** during installation — skipping that box is the single most common cause of `python: command not found` afterwards.
+
+On macOS and some Linux systems the command is `python3` rather than `python`. If so, use `python3` everywhere below.
+
+**2. Git**, to download the code:
+
+```bash
+git --version
+```
+
+Any version works. If it is missing, get it from [git-scm.com](https://git-scm.com/downloads). Alternatively you can download the repository as a ZIP from GitHub and skip the `git clone` step.
+
+### Option A: run it with Python
+
+**Step 1 — get the code.**
+
+```bash
+git clone https://github.com/likith17/traffic-monitoring.git
+cd traffic-monitoring
+```
+
+Every command from here runs inside that folder. If you opened a new terminal later, `cd` back into it first.
+
+**Step 2 — create a virtual environment.**
+
+A virtual environment is a private folder of Python packages for this project. Without it, installing this project's dependencies could break other Python projects on your machine.
 
 ```bash
 python -m venv .venv
-# Windows:      .venv\Scripts\activate
-# Linux/macOS:  source .venv/bin/activate
+```
 
+This creates a `.venv` folder and prints nothing when it works. If it fails with a permission error and `.venv` already exists, you do not need this step — the environment is already there, so skip to step 3.
+
+**Step 3 — activate the virtual environment.**
+
+This is the step people forget, and it causes confusing errors later. Pick the line for your system:
+
+```bash
+# Windows (PowerShell or Command Prompt)
+.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+You will know it worked because your prompt now starts with `(.venv)`. If it does not, the activation did not take, and the next step will install packages into the wrong place.
+
+On Windows PowerShell you may get *"running scripts is disabled on this system."* Fix it once with:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then run the activate line again.
+
+**Step 4 — install the dependencies.**
+
+```bash
 pip install -r requirements.txt
+```
+
+This downloads about 15 packages and takes two to five minutes on a normal connection. You will see a lot of scrolling text; that is normal. It has worked when the last line says `Successfully installed ...`.
+
+**Step 5 — start the app.**
+
+```bash
 streamlit run dashboard.py
 ```
 
-Opens on http://localhost:8501.
+Your browser should open automatically at **http://localhost:8501**. If it does not, open that address yourself. The terminal will show a line beginning `You can now view your Streamlit app in your browser.`
 
-For training, re-exporting the model, or running the ONNX parity test, add the development dependencies:
+The first load takes 10–20 seconds because it reads the street network into memory. After that it is fast.
 
-```bash
-pip install -r requirements-dev.txt
-```
+**Leave that terminal open** — closing it stops the app. To stop it deliberately, press `Ctrl+C` in the terminal.
 
-Refreshing the data and reproducing the benchmark:
+**Step 6 — check it actually works.**
 
-```bash
-python fetch_cameras.py            # rebuild the camera index
-python update_camera_stats.py      # rescore every camera (several minutes)
-python -m routing.simulate --episodes 30
-```
+In the browser, on the **Route planner** tab: type `Times Square` in the From box, `Wall Street` in the To box, and click **Plan route**. Within a few seconds you should see a map with a blue route line, an estimated time, and a paragraph explaining the choice. If you see that, everything is installed correctly.
 
-Every routing module self-tests on its own, which is the fastest way to check one piece in isolation:
+You will see two harmless warnings in the terminal that are safe to ignore:
+- `missing ScriptRunContext` — appears once at startup.
+- `FlashAttention is not available on this device` — only if you have the development dependencies installed; it means your hardware lacks an optional speedup and the code is using the standard path instead.
 
-```bash
-python -m routing.detect
-python -m routing.streets
-python -m routing.navigator
-python -m routing.vision_gate
-python -m tests.test_detect_parity   # needs requirements-dev.txt
-```
+### Option B: run it with Docker
 
-### Docker
+Use this if you would rather not install Python, or you want to check the container works. It needs [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and **running** — look for the whale icon and confirm it says "Engine running" before you continue.
 
 ```bash
+git clone https://github.com/likith17/traffic-monitoring.git
+cd traffic-monitoring
 docker build -t emergency-routing .
 docker run -p 8501:8501 emergency-routing
 ```
 
-The image is CPU-only, runs as a non-root user, has a health check, and contains no secrets. Keys are passed at run time and never built in:
+Then open **http://localhost:8501** yourself — unlike Option A, Docker will not open the browser for you.
+
+The `build` step takes 5–15 minutes the first time because it downloads Python and all the packages. Later builds reuse that work and take seconds. `-p 8501:8501` connects the container's port to your machine's, which is what makes `localhost:8501` reach it.
+
+Press `Ctrl+C` to stop. To run it in the background instead, add `-d`:
+
+```bash
+docker run -d -p 8501:8501 --name er emergency-routing
+docker logs er     # see its output
+docker stop er     # stop it
+docker rm er       # remove the stopped container
+```
+
+The image is CPU-only, runs as a non-root user, and contains no secrets. If you want the LLM explanations, pass the key at run time — never build it into the image:
 
 ```bash
 docker run -p 8501:8501 \
@@ -209,19 +311,92 @@ docker run -p 8501:8501 \
   emergency-routing
 ```
 
-If `docker pull` fails with an `EOF` from CloudFront, see the Docker Hub note in [Problems hit along the way](#problems-hit-along-the-way).
+### Optional: turn on the LLM explanations
 
-### Optional keys
+Everything works without this. Routing, the camera vision check, the benchmark and the OSRM comparison need no credentials at all — the only difference is that route explanations come from a fixed template instead of being written in prose, and the "Ask the city" chat tab is disabled.
 
-Everything works without them. The router, the vision gate, the benchmark and the OSRM comparison need no credentials at all.
+To enable it, get a key from [console.anthropic.com](https://console.anthropic.com) (API keys → Create key), then copy the example file and edit it:
 
 ```bash
-export ANTHROPIC_API_KEY=...      # LLM route explanations; template fallback otherwise
-export LLM_PROVIDER=anthropic     # required alongside it, or the code defaults to OpenAI
-export GOOGLE_MAPS_API_KEY=...    # compare against Google Directions instead of OSRM
+# Windows
+copy .streamlit\secrets.toml.example .streamlit\secrets.toml
+
+# macOS / Linux
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 ```
 
-Locally these can live in `.streamlit/secrets.toml` — copy `.streamlit/secrets.toml.example` and fill it in. That file is gitignored and excluded from the Docker image.
+Open `.streamlit/secrets.toml` and replace the placeholder with your key:
+
+```toml
+LLM_PROVIDER = "anthropic"
+ANTHROPIC_API_KEY = "sk-ant-your-real-key-here"
+```
+
+**Both lines are required.** With only the key, the code defaults to OpenAI and ignores it — this is the most common mistake here.
+
+Restart the app (`Ctrl+C`, then `streamlit run dashboard.py`) because secrets are read once at startup. To confirm it worked, plan a route and look at the explanation: the offline version always begins *"Route decision summary (automatic, no LLM configured)"*. If that line is gone, the LLM is running.
+
+`secrets.toml` is excluded from git and from the Docker image, so your key cannot be committed or shipped by accident.
+
+### Optional: refresh the data yourself
+
+The repository ships with camera scores already computed, so this is not required. Run it if you want congestion reflecting the current moment rather than when the file was committed.
+
+```bash
+python fetch_cameras.py          # rebuild the list of cameras (~10 seconds)
+python update_camera_stats.py    # score every camera (10-20 minutes)
+```
+
+The second command downloads a snapshot from each of ~370 cameras and runs object detection on it, printing one line per camera. It is slow because it is deliberately polite to the city's servers. Restart the app afterwards to pick up the new scores.
+
+### Optional: reproduce the benchmark
+
+This is the number in the results table. It takes about five minutes.
+
+```bash
+python -m routing.simulate --episodes 30
+```
+
+It prints one line per simulated emergency, then the summary table, and writes per-episode detail to `routing_benchmark.csv`. Use `--episodes 5` for a quicker sanity check.
+
+Your numbers will not match the table exactly, because the congestion data changes with the traffic. What should hold is the ordering and the rough size of the gap.
+
+### Optional: run the tests
+
+Each routing module tests itself when run directly. This is the quickest way to check one piece in isolation, and each prints what it found plus `OK` or an assertion failure.
+
+```bash
+python -m routing.detect          # object detection on a live camera frame
+python -m routing.streets         # street network loads and routes
+python -m routing.navigator       # mid-drive recalculation around a blockage
+python -m routing.vision_gate     # camera check rejects a blocked route
+python -m routing.geocode         # place search stays inside Manhattan
+```
+
+The ONNX-versus-PyTorch parity test is the one that guards the riskiest code in the project. It needs the development dependencies, which include PyTorch and are a large download (~2 GB):
+
+```bash
+pip install -r requirements-dev.txt
+python -m tests.test_detect_parity
+```
+
+### If something goes wrong
+
+| What you see | What it means | Fix |
+|---|---|---|
+| `python: command not found` | Python is not installed, or not on PATH | Reinstall Python with "Add to PATH" ticked; or try `python3` |
+| `pip: command not found` | The virtual environment is not active | Re-run the activate command from step 3; check for `(.venv)` in your prompt |
+| `running scripts is disabled on this system` | Windows PowerShell blocks scripts by default | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then activate again |
+| `ModuleNotFoundError: No module named 'streamlit'` | Dependencies installed outside the environment | Activate the environment, then re-run `pip install -r requirements.txt` |
+| `Port 8501 is already in use` | The app is already running elsewhere | Close the other terminal, or run `streamlit run dashboard.py --server.port 8502` |
+| `FileNotFoundError: weights/yolov12s.onnx` | Repository downloaded incompletely | Re-clone; if you downloaded a ZIP, confirm `weights/` contains a 37 MB `.onnx` file |
+| `data/manhattan_streets.graphml missing` | The cached street network is absent | `python -m routing.streets --build` (needs internet, takes a few minutes) |
+| Search box is slow or empty | Place lookup is rate-limited by OpenStreetMap | Expected. Landmarks and camera names still answer instantly; pause a moment for address results |
+| `Anthropic API error 401: invalid x-api-key` | The key is wrong, or still the placeholder | Open `.streamlit/secrets.toml` and confirm you replaced `PASTE-YOUR-KEY-HERE` with a real key |
+| Explanations say "no LLM configured" | `LLM_PROVIDER` is missing | Both `LLM_PROVIDER` and `ANTHROPIC_API_KEY` are needed; restart afterwards |
+| Docker: `Virtualization support not detected` | Windows is missing the Virtual Machine Platform feature | In an **admin** terminal: `wsl --install --no-distribution`, then reboot. See the note in [Problems hit along the way](#problems-hit-along-the-way) — this is usually not a BIOS problem |
+| Docker: `failed to copy ... EOF` from cloudfront | Docker Hub's CDN is dropping the download | Add `"registry-mirrors": ["https://mirror.gcr.io"]` in Docker Desktop → Settings → Docker Engine, then Apply & Restart |
+| Docker: `Cannot connect to the Docker daemon` | Docker Desktop is not running | Start Docker Desktop and wait for "Engine running" |
 
 ---
 
