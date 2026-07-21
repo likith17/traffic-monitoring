@@ -1,0 +1,24 @@
+# Development-only dependencies, on top of requirements.txt.
+#
+# PyTorch and ultralytics are needed to train, to re-export weights/yolov12s.pt
+# to ONNX, and to run tests/test_detect_parity.py, which checks the ONNX
+# detector still agrees with the PyTorch model it replaced. None of that
+# happens in the container, so none of it belongs in the runtime image.
+#
+#   pip install -r requirements.txt -r requirements-dev.txt
+
+-r requirements.txt
+
+torch==2.9.1
+torchvision==0.24.1
+ultralytics @ git+https://github.com/sunsmarterjie/yolov12.git@3bca22b336e96cfdabfec4c062b84eef210e9563
+ultralytics-thop==2.0.18
+
+# ONNX export toolchain. onnxscript is required by torch's newer exporter and
+# is not pulled in automatically - omitting it fails at export time with
+# ModuleNotFoundError, which is easy to misread as a broken install.
+onnx==1.22.0
+onnxscript==0.7.1
+
+# Only used to render the route map PNG in docs/.
+matplotlib==3.10.7

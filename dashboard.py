@@ -18,7 +18,7 @@ import requests
 import streamlit as st
 from streamlit_folium import st_folium
 from streamlit_searchbox import st_searchbox
-from ultralytics import YOLO
+from routing.detect import get_detector
 
 from routing.graph import build_default_graph, nearest_node
 from routing.planners import astar_route, dijkstra_route, route_metrics, static_baseline_route
@@ -161,7 +161,8 @@ def load_stats():
 
 @st.cache_resource
 def get_model():
-    return YOLO("weights/yolov12s.pt")
+    """One ONNX Runtime session shared across reruns and sessions."""
+    return get_detector()
 
 
 @st.cache_data(ttl=24 * 3600, show_spinner=False)
@@ -196,12 +197,17 @@ def fetch_frame(url: str):
 
 
 def run_yolo_on_camera(cam_row: pd.Series):
+    """Fetch a live snapshot and run detection on it.
+
+    Returns (annotated_frame, detections), or (None, None) if the camera is
+    unreachable.
+    """
     model = get_model()
     frame = fetch_frame(cam_row["image_url"])
     if frame is None:
         return None, None
-    res = model(frame, imgsz=640)[0]
-    return res.plot(), res
+    dets = model.detect(frame)
+    return model.annotate(frame, dets), dets
 
 
 cams_df = load_cameras()

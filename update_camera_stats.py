@@ -9,9 +9,7 @@ import pandas as pd
 import cv2
 from pathlib import Path
 
-from ultralytics import YOLO
-
-WEIGHTS_PATH = Path("weights/yolov12s.pt")
+from routing.detect import get_detector
 
 
 def compute_congestion(counts: dict):
@@ -46,10 +44,10 @@ def compute_congestion(counts: dict):
 
 
 def load_model():
-    """Load the YOLO weights from disk.  This takes a few seconds, so we do it once."""
-    print(f"[INFO] Loading YOLO model from {WEIGHTS_PATH} ...")
-    model = YOLO(str(WEIGHTS_PATH))
-    print("[INFO] YOLO model loaded.")
+    """Load the detector once - building the session parses the whole model."""
+    print("[INFO] Loading YOLOv12 (ONNX Runtime) ...")
+    model = get_detector()
+    print(f"[INFO] Model loaded, {len(model.names)} classes.")
     return model
 
 
@@ -72,7 +70,7 @@ def fetch_frame(url: str):
         return None
 
 
-def analyze_camera_row(model: YOLO, row: pd.Series):
+def analyze_camera_row(model, row: pd.Series):
     """Fetch a snapshot for one camera row and run YOLO on it.
 
     Returns a dict of stats, or None if the camera is unreachable or inference fails.
@@ -82,18 +80,10 @@ def analyze_camera_row(model: YOLO, row: pd.Series):
         return None
 
     try:
-        res = model(frame, imgsz=640)[0]
+        counts = model.class_counts(frame)
     except Exception as e:
         print(f"[WARN] YOLO inference failed for {row['camera_id']}: {e}")
         return None
-
-    # Tally how many times each class appears in this frame.
-    counts: dict[str, int] = {}
-    names = model.names
-    for box in res.boxes:
-        cls_id = int(box.cls[0])
-        name = names.get(cls_id, str(cls_id))
-        counts[name] = counts.get(name, 0) + 1
 
     score, level, vehicles, pedestrians, signals = compute_congestion(counts)
 

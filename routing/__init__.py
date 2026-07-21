@@ -2,6 +2,8 @@
 # congestion-aware road graph built from the Manhattan camera data.
 #
 # Modules:
+#   detect      - YOLOv12 inference via ONNX Runtime (no PyTorch at runtime)
+#   streets     - real OSM drive network, cached as GraphML
 #   graph       - builds the road network and attaches camera congestion
 #   planners    - classical Dijkstra / A* shortest-path planners
 #   rl_agent    - tabular Q-learning agent trained under traffic uncertainty

@@ -5,10 +5,9 @@
 import cv2
 import numpy as np
 import pandas as pd
-from ultralytics import YOLO
+from routing.detect import get_detector
 from pathlib import Path
 
-WEIGHTS_PATH = Path("weights/yolov12s.pt")
 
 # Each entry maps a human-readable road segment to a local video file.
 # Add or remove entries here to analyse different locations.
@@ -68,7 +67,7 @@ def compute_congestion(counts: dict):
     return score, level, vehicles, pedestrians, signals
 
 
-def analyze_segment(seg: dict, model: YOLO, max_frames: int = 60, stride: int = 10):
+def analyze_segment(seg: dict, model, max_frames: int = 60, stride: int = 10):
     """Sample up to max_frames evenly spaced frames from the video and average the scores.
 
     stride=10 means we look at every 10th frame, which is fast enough for offline
@@ -82,7 +81,6 @@ def analyze_segment(seg: dict, model: YOLO, max_frames: int = 60, stride: int = 
 
     print(f"[INFO] Analyzing segment {seg['segment_id']} from {video_path}...")
 
-    names = model.names  # class-id → class-name lookup table from the weights
 
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
@@ -110,15 +108,7 @@ def analyze_segment(seg: dict, model: YOLO, max_frames: int = 60, stride: int = 
             idx += 1
             continue
 
-        res = model(frame, imgsz=640)[0]
-
-        # Count detections per class for this frame.
-        counts: dict[str, int] = {}
-        for box in res.boxes:
-            cls_id = int(box.cls[0])
-            name = names.get(cls_id, str(cls_id))
-            counts[name] = counts.get(name, 0) + 1
-
+        counts = model.class_counts(frame)
         score, level, vehicles, peds, signals = compute_congestion(counts)
         scores.append(score)
         vehicles_list.append(vehicles)
@@ -166,8 +156,8 @@ def analyze_segment(seg: dict, model: YOLO, max_frames: int = 60, stride: int = 
 
 def main():
     # Load the model once here so we don't pay the 5–10 second startup cost per segment.
-    print(f"[INFO] Loading YOLO model from {WEIGHTS_PATH} ...")
-    model = YOLO(str(WEIGHTS_PATH))
+    print("[INFO] Loading YOLOv12 (ONNX Runtime) ...")
+    model = get_detector()
     print("[INFO] YOLO model loaded.")
 
     rows = []

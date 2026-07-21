@@ -70,12 +70,7 @@ def live_score(g: nx.DiGraph, node: tuple, model=None) -> float:
     if model is None:
         model = load_model()
 
-    res = model(frame, imgsz=640, verbose=False)[0]
-    counts: dict[str, int] = {}
-    for box in res.boxes:
-        name = model.names.get(int(box.cls[0]), "?")
-        counts[name] = counts.get(name, 0) + 1
-
+    counts = model.class_counts(frame)
     score, _level, _v, _p, _s = compute_congestion(counts)
     return float(score)
 
