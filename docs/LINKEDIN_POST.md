@@ -1,6 +1,6 @@
 # LinkedIn post — Emergency Routing for Smart Response
 
-LinkedIn caps a post at 3,000 characters. The version below is 2,843, so it fits
+LinkedIn caps a post at 3,000 characters. The version below is 2,912, so it fits
 with room to spare. The longer draft is kept at the bottom for a blog post or a
 portfolio page, where there is no limit.
 
@@ -12,11 +12,11 @@ on posts containing external links.
 
 ---
 
-## Post (2,843 characters, ready to paste)
+## Post (2,912 characters, ready to paste)
 
-First post here, and I want to start it honestly.
+Do you ever get the feeling that you have consumed enough, and it is time you actually built something?
 
-For two years I mostly consumed. Courses, papers, other people's write-ups. At some point I realised I could explain how a production ML system works without having shipped one. So this year: less consuming, more building.
+That hit me a few months ago. For two years it was courses, papers, other people's write-ups. Then I realised I could explain how a production ML system works without ever having shipped one. So I stopped reading about it and built this.
 
 Emergency Routing for Smart Response. A Manhattan emergency router that checks live traffic cameras before sending a vehicle down a street.
 
