@@ -1,6 +1,6 @@
 # LinkedIn post — Emergency Routing for Smart Response
 
-LinkedIn caps a post at 3,000 characters. The version below is 2,912, so it fits
+LinkedIn caps a post at 3,000 characters. The version below is 2,926, so it fits
 with room to spare. The longer draft is kept at the bottom for a blog post or a
 portfolio page, where there is no limit.
 
@@ -12,7 +12,7 @@ on posts containing external links.
 
 ---
 
-## Post (2,912 characters, ready to paste)
+## Post (2,926 characters, ready to paste)
 
 Do you ever get the feeling that you have consumed enough, and it is time you actually built something?
 
@@ -39,7 +39,7 @@ On the AI part, since "used AI" has stopped meaning anything.
 
 I built this with Claude Code, mostly Opus 4.8 and Fable 5. It wrote much of the implementation while I set direction and decided what counted as done. Weeks of work became days.
 
-It was also wrong often. It called a function load_street_graph when my code said build_street_graph. It set a test threshold at 10%, and the result came back at exactly 10.0%, which is not a pass, it is a coincidence on the line. It blamed my slow search on a CSV read that measured 3 ms. It mixed TOML syntax into PowerShell commands, so I pasted a line that could not run.
+It was also wrong often. It called a function load_street_graph when my code said build_street_graph. It set a test threshold at 10%, and the result came back at exactly 10.0%, which is not a pass, it is a coincidence on the line. It blamed my slow search on a CSV read that measured 3 ms. It handed me a config-file line as if it were a terminal command, so PowerShell just errored on it.
 
 Each one got caught by running it, measuring it, or reading the output instead of believing the explanation.
 
