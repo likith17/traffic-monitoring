@@ -6,6 +6,9 @@ import cv2
 import numpy as np
 import pandas as pd
 from routing.detect import get_detector
+from routing.tracking import (
+    VehicleTracker, VEHICLE_CLASSES, HIGH_CONF, flow_stats_from,
+)
 from pathlib import Path
 
 
@@ -67,12 +70,15 @@ def compute_congestion(counts: dict):
     return score, level, vehicles, pedestrians, signals
 
 
-def analyze_segment(seg: dict, model, max_frames: int = 60, stride: int = 10):
-    """Sample up to max_frames evenly spaced frames from the video and average the scores.
+def analyze_segment(seg: dict, model, max_frames: int = 90, stationary_px: float = 4.0):
+    """Analyse a video clip: average per-frame scores AND track vehicles.
 
-    stride=10 means we look at every 10th frame, which is fast enough for offline
-    analysis while still capturing traffic variation across the clip.
-    The model is passed in so it is loaded only once across all segments.
+    Every frame is read in order (no stride skipping) because the tracker needs
+    consecutive frames to associate a vehicle from one frame to the next. Each
+    frame is detected once and its result feeds two things: the running average
+    score, exactly as before, and the tracker, which produces the flow features
+    (distinct vehicles, queue length, relative speed) that a single frame cannot
+    give. The model is passed in so it loads once across all segments.
     """
     video_path = Path(seg["video_path"])
     if not video_path.exists():
@@ -81,45 +87,35 @@ def analyze_segment(seg: dict, model, max_frames: int = 60, stride: int = 10):
 
     print(f"[INFO] Analyzing segment {seg['segment_id']} from {video_path}...")
 
-
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         print(f"[WARN] Could not open video: {video_path}")
         return None
 
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    print(f"[INFO] Video frames: {frame_count}")
-
-    scores = []
-    vehicles_list = []
-    peds_list = []
-    signals_list = []
-
+    tracker = VehicleTracker()
+    scores, vehicles_list, peds_list, signals_list, veh_counts = [], [], [], [], []
     processed = 0
-    idx = 0  # absolute frame index (including skipped frames)
 
-    while True:
+    while processed < max_frames:
         ret, frame = cap.read()
         if not ret:
             break
 
-        # Skip frames that don't fall on the stride boundary.
-        if idx % stride != 0:
-            idx += 1
-            continue
+        dets = model.detect(frame)                         # detect once per frame
+        counts: dict = {}
+        for d in dets:
+            counts[d.name] = counts.get(d.name, 0) + 1
 
-        counts = model.class_counts(frame)
         score, level, vehicles, peds, signals = compute_congestion(counts)
         scores.append(score)
         vehicles_list.append(vehicles)
         peds_list.append(peds)
         signals_list.append(signals)
 
+        tracker.update(dets)                               # feed the same detections
+        veh_counts.append(sum(1 for d in dets
+                              if d.name in VEHICLE_CLASSES and d.conf >= HIGH_CONF))
         processed += 1
-        idx += 1
-
-        if processed >= max_frames:
-            break
 
     cap.release()
 
@@ -127,11 +123,8 @@ def analyze_segment(seg: dict, model, max_frames: int = 60, stride: int = 10):
         print(f"[WARN] No frames processed for segment {seg['segment_id']}")
         return None
 
-    # Average all sampled frames into a single representative score.
     avg_score = float(np.mean(scores))
-    avg_vehicles = float(np.mean(vehicles_list))
-    avg_peds = float(np.mean(peds_list))
-    avg_signals = float(np.mean(signals_list))
+    flow = flow_stats_from(tracker, veh_counts, processed, stationary_px)
 
     if avg_score < 5:
         level = "low"
@@ -146,10 +139,14 @@ def analyze_segment(seg: dict, model, max_frames: int = 60, stride: int = 10):
         "lat": seg["lat"],
         "lon": seg["lon"],
         "avg_score": avg_score,
-        "avg_vehicles": avg_vehicles,
-        "avg_pedestrians": avg_peds,
-        "avg_signals": avg_signals,
+        "avg_vehicles": float(np.mean(vehicles_list)),
+        "avg_pedestrians": float(np.mean(peds_list)),
+        "avg_signals": float(np.mean(signals_list)),
         "level": level,
+        # Phase 1 flow features from multi-frame tracking:
+        "unique_vehicles": flow.unique_vehicles,
+        "queue_length": flow.queue_length,
+        "mean_speed_px": flow.mean_speed_px,
         "video_path": str(video_path),
     }
 

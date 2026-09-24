@@ -3,6 +3,8 @@
 #
 # Modules:
 #   detect      - YOLOv12 inference via ONNX Runtime (no PyTorch at runtime)
+#   tracking    - multi-frame vehicle tracking for flow and queue length
+#   perception_eval - measures single-frame vs multi-frame scoring stability
 #   streets     - real OSM drive network, cached as GraphML
 #   graph       - builds the road network and attaches camera congestion
 #   planners    - classical Dijkstra / A* shortest-path planners
