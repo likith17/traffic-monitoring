@@ -216,6 +216,28 @@ def assess(
     return base
 
 
+def check_frame_for_incident(
+    frame: np.ndarray,
+    camera_id: str = "",
+    camera_name: str = "",
+    *,
+    use_vlm: bool = True,
+    timeout: int = 30,
+) -> IncidentReport:
+    """Single-frame incident check for the vision gate.
+
+    Unlike analyze_camera, this takes one already-fetched frame and forces the
+    vision look rather than gating on Stage-1 tracking: when confirming a route
+    for dispatch, safety outweighs the small cost of looking at each camera on
+    the (short) route. Falls back exactly like assess when no vision model is
+    configured, so the gate degrades to score-only blocking.
+    """
+    empty = FlowStats(n_frames=0, unique_vehicles=0, queue_length=0,
+                      mean_density=0.0, mean_speed_px=0.0)
+    return assess(camera_id, camera_name, 0.0, empty, frame,
+                  use_vlm=use_vlm, force_vlm=True, timeout=timeout)
+
+
 def analyze_camera(
     detector, camera_id: str, camera_name: str, image_url: str,
     *, polls: int = 5, spacing: float = 1.5, use_vlm: bool = True,

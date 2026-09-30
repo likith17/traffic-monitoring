@@ -62,10 +62,18 @@ def build_route_summary(
             lines.append("Vision check: could NOT fully confirm the route - dispatch with caution.")
 
         for cam in gate_info.get("blocked_cameras", []):
-            lines.append(
-                f"Avoided blocked intersection at camera '{cam['camera']}' "
-                f"(congestion score {cam['score']:.0f})."
-            )
+            if cam.get("reason") == "incident" and cam.get("incident"):
+                inc = cam["incident"]
+                lines.append(
+                    f"Avoided an incident at camera '{cam['camera']}': "
+                    f"{inc['category'].replace('_', ' ')} confirmed by camera review "
+                    f"(confidence {inc['confidence']:.0%})."
+                )
+            else:
+                lines.append(
+                    f"Avoided blocked intersection at camera '{cam['camera']}' "
+                    f"(congestion score {cam['score']:.0f})."
+                )
         for cam in gate_info.get("endpoint_warnings", []):
             lines.append(
                 f"Warning: heavy congestion at the start/destination itself "
