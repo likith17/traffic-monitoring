@@ -5,6 +5,9 @@
 #   detect      - YOLOv12 inference via ONNX Runtime (no PyTorch at runtime)
 #   tracking    - multi-frame vehicle tracking for flow and queue length
 #   perception_eval - measures single-frame vs multi-frame scoring stability
+#   ground_truth - matches cameras to NYC speed-sensor links (Phase 2 target)
+#   congestion_calibration - checks whether the score tracks measured speed
+#   congestion_logger - accumulates (features, speed) pairs over time for fitting
 #   streets     - real OSM drive network, cached as GraphML
 #   graph       - builds the road network and attaches camera congestion
 #   planners    - classical Dijkstra / A* shortest-path planners
