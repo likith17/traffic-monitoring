@@ -29,3 +29,4 @@ cache/
 # would churn git. The dataset lives locally until a frozen snapshot is committed
 # for fitting.
 congestion_log.csv
+congestion_logger_run.log
