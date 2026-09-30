@@ -7,6 +7,7 @@
 #   Live cameras  - the YOLO congestion picture across all NYC DOT cameras
 #   Ask the city  - LLM chat grounded in the current congestion data
 
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -38,6 +39,21 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+# Bridge Streamlit secrets into the environment. traffic_llm (the LLM and vision
+# calls) reads plain os.environ, while Streamlit keeps keys in st.secrets, so
+# without this a key in .streamlit/secrets.toml stays invisible to those features.
+# A shell environment variable, if already set, always wins. Keys never leave the
+# process and secrets.toml is gitignored.
+for _key in ("LLM_PROVIDER", "ANTHROPIC_API_KEY", "ANTHROPIC_MODEL",
+             "OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENAI_MODEL",
+             "OPENAI_VISION_MODEL", "GOOGLE_MAPS_API_KEY"):
+    try:
+        if _key not in os.environ and _key in st.secrets:
+            os.environ[_key] = str(st.secrets[_key])
+    except Exception:
+        # No secrets file, or it is unreadable: features fall back gracefully.
+        pass
 
 # ── Mission-control visual system ─────────────────────────────────────────────
 st.markdown(
@@ -751,19 +767,31 @@ with tab_cams:
     if st.button("Scan this camera for incidents", key="incident_scan"):
         frame = fetch_frame(cam_row["image_url"])
         if frame is None:
-            st.error("Could not fetch a frame from this camera. It may be offline.")
+            st.session_state["incident_result"] = {
+                "cam": str(cam_row["name"]), "error": "unreachable"}
         else:
             with st.spinner("Reviewing the frame with the vision model..."):
                 rep = check_frame_for_incident(
                     frame, str(cam_row["camera_id"]), str(cam_row["name"])
                 )
-            st.image(frame, channels="BGR", caption=f"{cam_row['name']} — frame reviewed")
+            # Persist across reruns: st.tabs resets to the first tab on each
+            # rerun, so a result rendered only inside the button block would
+            # vanish. Stored here, it survives and redraws on the Live tab.
+            st.session_state["incident_result"] = {
+                "cam": str(cam_row["name"]), "frame": frame, "rep": rep}
+
+    res = st.session_state.get("incident_result")
+    if res:
+        if res.get("error"):
+            st.error(f"Could not fetch a frame from {res['cam']}. It may be offline.")
+        else:
+            rep, frame = res["rep"], res["frame"]
+            st.image(frame, channels="BGR", caption=f"{res['cam']} — frame reviewed")
             if rep.source != "vlm":
-                st.info(
-                    "No vision model is configured, so this frame could not be "
-                    "reviewed. Set LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY "
-                    "(or OPENAI_API_KEY) to enable incident review."
-                )
+                # Surface the real reason (no key, or an API error such as a
+                # rejected key) instead of assuming none is configured.
+                st.info(f"Vision review unavailable — {rep.note or 'no vision model configured'}. "
+                        "Set a valid ANTHROPIC_API_KEY (or OPENAI_API_KEY) to enable it.")
             elif rep.incident and rep.category in BLOCKING:
                 st.error(
                     f"**Possible {rep.category.replace('_', ' ')}** "
