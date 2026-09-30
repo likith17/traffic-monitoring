@@ -16,6 +16,7 @@ Ordinary navigation optimises for *typical* traffic. It cannot see that the inte
 - [Terms used here](#terms-used-here)
 - [How the system works](#how-the-system-works)
 - [Results](#results)
+- [Upgrades beyond the core](#upgrades-beyond-the-core)
 - [Design decisions, and why](#design-decisions-and-why)
 - [Problems hit along the way](#problems-hit-along-the-way)
 - [Running it](#running-it)
@@ -87,9 +88,11 @@ camera_stats.csv
       |  graph.py       camera scores -> edge weights    |
       |  planners.py    Dijkstra / A* / static baseline  |
       |  rl_agent.py    corridor Q-learning              |
-      |  vision_gate.py camera check before dispatch     |
+      |  vision_gate.py camera + incident check          |
       |  navigator.py   drive loop + recalculation       |
       |  detect.py      YOLOv12 via ONNX Runtime         |
+      |  tracking.py    multi-frame flow and queue        |
+      |  incident_detect.py  vision-model hazard check    |
       |  explain.py     plain-English justification      |
       |  simulate.py    benchmark vs the baseline        |
       +-------------------------------------------------+
@@ -129,6 +132,18 @@ Per-episode results are in `routing_benchmark.csv`.
 One caveat on reproducibility: `camera_stats.csv` is a snapshot from one moment, so re-running `update_camera_stats.py` at a different hour changes the congestion field and shifts the absolute minutes. The gap between strategies is the stable part; the exact numbers move with the traffic. The committed scores were taken on a weekday evening (mean score 3.07 across 371 cameras).
 
 **Where the RL agent actually stands.** It lands slightly behind A\* on this benchmark, and I have left that in rather than tuning until it wins. It is optimising for a different thing — robustness to congestion noise, which this benchmark only partly rewards — and on a static snapshot A\* is already optimal, so there is nothing for RL to beat. Reporting it as a loss is more useful than reporting a number I massaged.
+
+---
+
+## Upgrades beyond the core
+
+The core above is the finished, benchmarked system. What follows is an advisor-approved plan to strengthen its three weakest parts: perception on one frame, guessed congestion weights, and blindness to actual incidents. Each is written up honestly, including where the data does not yet support the ambition.
+
+**1. Multi-frame perception (`tracking.py`).** A single snapshot is noisy: measured across live cameras, one frame misses the multi-frame median by about 45% of the score. So detections now feed a compact ByteTrack-style tracker that follows vehicles across several polled frames and reports steadier signals a single frame cannot — distinct vehicles (flow) and how many sit still (queue length). `update_camera_stats.py --temporal` scores from the median of several frames instead of one. Honest scope: all motion is in image pixels, not metres; without per-camera calibration that pixel motion cannot become km/h, so the code reports a relative speed proxy and never claims a real speed.
+
+**2. Learning-based congestion, and why it is not fitted yet (`ground_truth.py`, `congestion_calibration.py`, `congestion_logger.py`).** The weights (vehicle 1.0, pedestrian 0.3, signal 0.5) are guesses, and replacing them needs a real target. NYC publishes a live traffic-speed feed, so `ground_truth.py` matches each camera to its nearest sensored road link. The honest limit, measured before building on it: those sensors cover highways and major arterials, not surface streets, so only 35 of 373 cameras sit on a sensored road. `congestion_calibration.py` then asks the go/no-go question — does the score track measured speed on that subset? On a single snapshot it does not, much: Pearson −0.28, Spearman −0.22, both p > 0.2, because highway cameras show almost no count variation while speed swings 4–25 mph. The honest conclusion is not a cleverer model but more data, so `congestion_logger.py` accumulates (features, speed) pairs across hours and days, logging the richer flow features too, until a fit is justified. The weights are still guesses; what is new is a measured reason they are hard to replace and a pipeline that can.
+
+**3. Incident detection (`incident_detect.py`).** Counting vehicles says a street is busy, not that a car has crashed, stalled in a live lane, or that the road is flooded — the events an emergency router most needs to avoid. This adds a two-stage check in the project's existing shape: a cheap tracking gate decides when a frame is worth a closer look, then a vision-language model returns a strict-JSON verdict (incident, category, confidence). A confirmed blocking incident now cuts that segment in `vision_gate.py` and forces a re-plan exactly as a high score does, so the router avoids hazards and not just jams; `python -m routing.incident_demo` shows this end to end. Honest scope: it reads one still frame, a model can be wrong, so a positive is an advisory flag for a dispatcher to verify — plain congestion is deliberately kept a separate category so a jam is never labelled a crash. With no vision model configured it degrades to score-only blocking rather than failing.
 
 ---
 
@@ -361,6 +376,21 @@ It prints one line per simulated emergency, then the summary table, and writes p
 
 Your numbers will not match the table exactly, because the congestion data changes with the traffic. What should hold is the ordering and the rough size of the gap.
 
+### Optional: try the upgrades
+
+The perception, calibration, and incident work from ["Upgrades beyond the core"](#upgrades-beyond-the-core) each run on their own:
+
+```bash
+python -m routing.incident_demo             # reroute around a staged incident (no API key needed)
+python -m routing.incident_detect --cameras 10   # scan live cameras (needs a vision model for Stage 2)
+python -m update_camera_stats --temporal    # multi-frame median scoring instead of one frame
+python -m routing.ground_truth              # match cameras to NYC speed sensors
+python -m routing.congestion_calibration    # does the score track measured speed?
+python -m routing.congestion_logger         # log one (features, speed) sample; run repeatedly to collect
+```
+
+Incident detection's Stage 2 and live scanning need a vision model configured (see ["turn on the LLM explanations"](#optional-turn-on-the-llm-explanations) — the same keys enable vision). Without one they degrade to the tracking gate and score-only blocking rather than failing.
+
 ### Optional: run the tests
 
 Each routing module tests itself when run directly. This is the quickest way to check one piece in isolation, and each prints what it found plus `OK` or an assertion failure.
@@ -369,7 +399,8 @@ Each routing module tests itself when run directly. This is the quickest way to 
 python -m routing.detect          # object detection on a live camera frame
 python -m routing.streets         # street network loads and routes
 python -m routing.navigator       # mid-drive recalculation around a blockage
-python -m routing.vision_gate     # camera check rejects a blocked route
+python -m routing.vision_gate     # camera check rejects a blocked route, and reroutes around an incident
+python -m routing.tracking        # multi-frame tracker: flow and queue on a scripted sequence
 python -m routing.geocode         # place search stays inside Manhattan
 ```
 
@@ -409,8 +440,15 @@ routing/
   graph.py           camera scores -> congestion-weighted edges
   planners.py        Dijkstra, A*, and the static baseline
   rl_agent.py        corridor Q-learning under traffic noise
-  vision_gate.py     camera check and re-planning before dispatch
+  vision_gate.py     camera + incident check and re-planning before dispatch
   navigator.py       drive loop with lookahead and recalculation
+  tracking.py        multi-frame vehicle tracking: flow and queue length
+  perception_eval.py measures single-frame vs multi-frame stability
+  ground_truth.py    match cameras to NYC speed-sensor links (calibration)
+  congestion_calibration.py   does the score track measured speed?
+  congestion_logger.py        accumulate (features, speed) pairs over time
+  incident_detect.py incident detection via tracking gate + vision model
+  incident_demo.py   end-to-end demo of rerouting around an incident
   geocode.py         Manhattan-bounded place search
   external_route.py  Google Directions / OSRM comparison
   geo.py             routes -> lat/lon polylines
@@ -421,10 +459,11 @@ routing/
 tests/
   test_detect_parity.py   ONNX vs PyTorch equivalence
 
-dashboard.py         Streamlit UI
+dashboard.py         Streamlit UI (route planner, live cameras, incident check)
 fetch_cameras.py     build the camera index
-update_camera_stats.py   score every camera
+update_camera_stats.py   score every camera (--temporal for multi-frame)
 compute_stats.py     offline analysis of recorded clips
+scripts/run_congestion_logger.bat   hourly collector for the scheduled task
 
 data/manhattan_streets.graphml   cached street network
 weights/yolov12s.onnx            deployed inference model
@@ -439,9 +478,9 @@ routing_benchmark.csv            per-episode benchmark output
 
 Being straight about the limits, because most of these are the obvious follow-up questions.
 
-**The congestion weights are guesses.** Vehicle 1.0, pedestrian 0.3, signal 0.5 are reasonable, and they are not calibrated against anything. Doing this properly means correlating camera scores with measured travel times — which needs ground-truth trip data I do not have.
+**The congestion weights are still guesses — but now for a measured reason.** Vehicle 1.0, pedestrian 0.3, signal 0.5 are reasonable and uncalibrated. The upgrade above builds the ground-truth pipeline to fix this (NYC's speed feed), and it surfaced why it is hard: the sensors cover only highways, where camera counts barely vary, so a single-snapshot fit is not yet honest. The logger is accumulating the data a real fit needs; until it has, the weights stay as they are.
 
-**A camera sees one frame, not a street.** Scores come from a single snapshot at one point. A camera pointed at a clear block fifty metres from a jam reports "clear." Multi-frame temporal smoothing would help.
+**A camera sees one frame — now softened, not solved.** Scores still come from cameras that see one viewpoint, so a camera pointed at a clear block fifty metres from a jam still reports "clear." Multi-frame tracking (above) does remove the single-frame *noise* by scoring from the median of several frames, but it cannot fix the *framing* problem of what the camera points at.
 
 **The RL agent does not beat A\*.** Discussed above. It is included because robustness to stale congestion is a real property worth demonstrating, not because it wins.
 
