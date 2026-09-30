@@ -15,6 +15,7 @@
 #   graph       - builds the road network and attaches camera congestion
 #   planners    - classical Dijkstra / A* shortest-path planners
 #   rl_agent    - tabular Q-learning agent trained under traffic uncertainty
+#   dynamic_traffic - time-varying congestion: the arena where foresight can win
 #   vision_gate - YOLO check that a route is actually passable before dispatch
 #   explain     - plain-English route justification (LLM with offline fallback)
 #   geo         - path -> lat/lon polylines for public map rendering
