@@ -9,6 +9,7 @@
 #   congestion_calibration - checks whether the score tracks measured speed
 #   congestion_logger - accumulates (features, speed) pairs over time for fitting
 #   incident_detect - flags accidents/stalls/debris via tracking + a vision model
+#   incident_demo - end-to-end demo: router reroutes around a confirmed incident
 #   streets     - real OSM drive network, cached as GraphML
 #   graph       - builds the road network and attaches camera congestion
 #   planners    - classical Dijkstra / A* shortest-path planners

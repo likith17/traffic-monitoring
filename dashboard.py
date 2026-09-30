@@ -25,6 +25,7 @@ from routing.planners import astar_route, dijkstra_route, route_metrics, static_
 from routing.rl_agent import rl_route
 from routing.navigator import drive_route
 from routing.explain import explain_route
+from routing.incident_detect import check_frame_for_incident, BLOCKING
 from routing.geo import path_to_latlon, route_map_payload
 from routing.geocode import geocode_manhattan, suggest_places
 from routing.map_view import build_cameras_map, build_route_map
@@ -737,6 +738,48 @@ with tab_cams:
             time.sleep(2)
         if not failed:
             st.info("Live view finished — click the camera again (or the button) to restart.")
+
+    # ── Incident check: ask a vision-language model what it sees right now ──
+    st.markdown("#### Incident check")
+    st.caption(
+        "Counting vehicles shows how busy a street is, not whether something is "
+        "wrong. This reads one live frame with a vision-language model and reports "
+        "any blocking incident — a crash, a stalled vehicle, debris, or flooding. "
+        "It is one still frame and an advisory flag for a dispatcher to verify, "
+        "not a confirmed fact."
+    )
+    if st.button("Scan this camera for incidents", key="incident_scan"):
+        frame = fetch_frame(cam_row["image_url"])
+        if frame is None:
+            st.error("Could not fetch a frame from this camera. It may be offline.")
+        else:
+            with st.spinner("Reviewing the frame with the vision model..."):
+                rep = check_frame_for_incident(
+                    frame, str(cam_row["camera_id"]), str(cam_row["name"])
+                )
+            st.image(frame, channels="BGR", caption=f"{cam_row['name']} — frame reviewed")
+            if rep.source != "vlm":
+                st.info(
+                    "No vision model is configured, so this frame could not be "
+                    "reviewed. Set LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY "
+                    "(or OPENAI_API_KEY) to enable incident review."
+                )
+            elif rep.incident and rep.category in BLOCKING:
+                st.error(
+                    f"**Possible {rep.category.replace('_', ' ')}** "
+                    f"(confidence {rep.confidence:.0%}). {rep.note} "
+                    "Flag for dispatcher review."
+                )
+            elif rep.category == "heavy_congestion":
+                st.warning(
+                    f"Heavy congestion, no blocking incident seen "
+                    f"(confidence {rep.confidence:.0%}). {rep.note}"
+                )
+            else:
+                st.success(
+                    f"No blocking incident seen (confidence {rep.confidence:.0%}). "
+                    f"{rep.note}"
+                )
 
     if stats_df is not None:
         with st.expander("Full congestion table"):
