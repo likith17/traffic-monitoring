@@ -3,6 +3,7 @@
 # Which backend is used is controlled by the LLM_PROVIDER env var (default: openai).
 from __future__ import annotations
 
+import base64
 import os
 from typing import Any
 
@@ -254,4 +255,136 @@ def chat_completion(
     if provider in ("anthropic", "claude"):
         return _chat_anthropic(messages, timeout=timeout)
     return _chat_openai_compatible(messages, timeout=timeout)
+
+
+# --- Vision (Phase 3): send camera frames to a vision-language model ----------
+#
+# Incident detection needs the model to look at the actual image, not just read
+# counts. Both backends this module already speaks (Anthropic Messages and the
+# OpenAI-compatible chat API) accept images inline, but with different content
+# shapes, so the two builders below wrap that difference behind one call.
+#
+# Images are passed in as JPEG bytes so this module stays dependency-light (only
+# stdlib base64 is added); the caller, which already uses OpenCV, does the
+# encoding. The same (reply, error) contract as chat_completion is kept, so a
+# caller can always fall back when no key is set or the network is down.
+
+def _vision_model_anthropic() -> str:
+    # A vision-capable default; override with ANTHROPIC_MODEL as for text.
+    return (os.environ.get("ANTHROPIC_MODEL") or "claude-haiku-4-5").strip()
+
+
+def _chat_anthropic_vision(
+    prompt: str, images: list[bytes], system: str | None, *, timeout: int,
+) -> tuple[str | None, str | None]:
+    api_key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    if not api_key:
+        return None, "Need ANTHROPIC_API_KEY when LLM_PROVIDER=anthropic."
+
+    content: list[dict[str, Any]] = [{"type": "text", "text": prompt}]
+    for img in images:
+        content.append({
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": base64.b64encode(img).decode("ascii"),
+            },
+        })
+
+    body: dict[str, Any] = {
+        "model": _vision_model_anthropic(),
+        "max_tokens": int(os.environ.get("ANTHROPIC_MAX_TOKENS") or "1024"),
+        "messages": [{"role": "user", "content": content}],
+        "temperature": 0.0,  # incident calls want determinism, not flair
+    }
+    if system:
+        body["system"] = system
+
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": (os.environ.get("ANTHROPIC_API_VERSION") or "2023-06-01").strip(),
+        "Content-Type": "application/json",
+    }
+    try:
+        r = requests.post("https://api.anthropic.com/v1/messages",
+                          json=body, headers=headers, timeout=timeout)
+    except requests.RequestException as e:
+        return None, f"Request failed: {e}"
+    if r.status_code != 200:
+        try:
+            detail = r.json()
+        except Exception:
+            detail = r.text[:500]
+        return None, f"Anthropic vision error {r.status_code}: {detail}"
+    try:
+        for block in r.json()["content"]:
+            if isinstance(block, dict) and block.get("type") == "text":
+                return str(block.get("text", "")).strip(), None
+        return None, "No text block in Anthropic vision response."
+    except (KeyError, TypeError) as e:
+        return None, f"Unexpected Anthropic vision response: {e}"
+
+
+def _chat_openai_vision(
+    prompt: str, images: list[bytes], system: str | None, *, timeout: int,
+) -> tuple[str | None, str | None]:
+    api_key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    base = (os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
+    model = (os.environ.get("OPENAI_VISION_MODEL")
+             or os.environ.get("OPENAI_MODEL") or "gpt-4o-mini").strip()
+    if not api_key:
+        return None, "Set OPENAI_API_KEY (or use LLM_PROVIDER=anthropic)."
+
+    user_content: list[dict[str, Any]] = [{"type": "text", "text": prompt}]
+    for img in images:
+        b64 = base64.b64encode(img).decode("ascii")
+        user_content.append({
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{b64}"},
+        })
+
+    messages: list[dict[str, Any]] = []
+    if system:
+        messages.append({"role": "system", "content": system})
+    messages.append({"role": "user", "content": user_content})
+
+    payload = {"model": model, "messages": messages, "temperature": 0.0}
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    try:
+        r = requests.post(f"{base}/chat/completions", json=payload, headers=headers, timeout=timeout)
+    except requests.RequestException as e:
+        return None, f"Request failed: {e}"
+    if r.status_code != 200:
+        try:
+            detail = r.json()
+        except Exception:
+            detail = r.text[:500]
+        return None, f"Vision API error {r.status_code}: {detail}"
+    try:
+        return str(r.json()["choices"][0]["message"]["content"]).strip(), None
+    except (KeyError, IndexError, TypeError) as e:
+        return None, f"Unexpected vision API response: {e}"
+
+
+def vision_completion(
+    prompt: str,
+    images: list[bytes],
+    *,
+    system: str | None = None,
+    timeout: int = 60,
+) -> tuple[str | None, str | None]:
+    """Ask the configured vision-language model about one or more JPEG frames.
+
+    images are raw JPEG bytes. Routes to Anthropic or the OpenAI-compatible API
+    exactly like chat_completion, and returns (reply_text, None) on success or
+    (None, error_string) on any failure, so callers can fall back cleanly when
+    no vision model is configured.
+    """
+    if not images:
+        return None, "vision_completion called with no images."
+    provider = (os.environ.get("LLM_PROVIDER") or "openai").strip().lower()
+    if provider in ("anthropic", "claude"):
+        return _chat_anthropic_vision(prompt, images, system, timeout=timeout)
+    return _chat_openai_vision(prompt, images, system, timeout=timeout)
 
