@@ -387,6 +387,7 @@ python -m update_camera_stats --temporal    # multi-frame median scoring instead
 python -m routing.ground_truth              # match cameras to NYC speed sensors
 python -m routing.congestion_calibration    # does the score track measured speed?
 python -m routing.congestion_logger         # log one (features, speed) sample; run repeatedly to collect
+python -m routing.perception_audit          # measure where the congestion score loses accuracy
 ```
 
 Incident detection's Stage 2 and live scanning need a vision model configured (see ["turn on the LLM explanations"](#optional-turn-on-the-llm-explanations) — the same keys enable vision). Without one they degrade to the tracking gate and score-only blocking rather than failing.
@@ -444,6 +445,7 @@ routing/
   navigator.py       drive loop with lookahead and recalculation
   tracking.py        multi-frame vehicle tracking: flow and queue length
   perception_eval.py measures single-frame vs multi-frame stability
+  perception_audit.py quantifies where the congestion score loses accuracy
   ground_truth.py    match cameras to NYC speed-sensor links (calibration)
   congestion_calibration.py   does the score track measured speed?
   congestion_logger.py        accumulate (features, speed) pairs over time
@@ -481,6 +483,12 @@ Being straight about the limits, because most of these are the obvious follow-up
 **The congestion weights are still guesses — but now for a measured reason.** Vehicle 1.0, pedestrian 0.3, signal 0.5 are reasonable and uncalibrated. The upgrade above builds the ground-truth pipeline to fix this (NYC's speed feed), and it surfaced why it is hard: the sensors cover only highways, where camera counts barely vary, so a single-snapshot fit is not yet honest. The logger is accumulating the data a real fit needs; until it has, the weights stay as they are.
 
 **A camera sees one frame — now softened, not solved.** Scores still come from cameras that see one viewpoint, so a camera pointed at a clear block fifty metres from a jam still reports "clear." Multi-frame tracking (above) does remove the single-frame *noise* by scoring from the median of several frames, but it cannot fix the *framing* problem of what the camera points at.
+
+**The count is sensitive to the confidence threshold.** `routing/perception_audit.py` measures this on live frames: the total vehicle count moved 47 → 37 → 21 across confidence 0.15 / 0.25 / 0.40 on one 18-camera sample, so raising the cutoff to 0.40 drops about 43% of vehicles. Many vehicles sit right at the operating threshold. Temporal median scoring (`--temporal`) is the mitigation, since it averages that noise across frames; there is no ground truth here to justify moving the threshold itself.
+
+**Static fixtures can leak into the score.** Traffic lights and stop signs count 0.5 each, but they are fixtures in a camera's view, present every frame regardless of traffic. Usually a small share of the score, but occasionally the whole of it — the audit found a camera reading 1.5 with zero vehicles, purely from detected traffic lights. Treating them as a per-camera constant, or dropping them, is the obvious fix; it is left as a scoring-formula change rather than made silently, because the weights are load-bearing for the benchmark.
+
+**A dead camera no longer reads as a clear road.** A dark night frame or a flat "camera unavailable" placeholder yields zero detections, which used to be indistinguishable from an empty street — and would make a street with a broken camera look maximally attractive to the router. `assess_frame_quality` in `routing/detect.py` now flags such frames so temporal scoring skips them instead of scoring them as clear. It is a brightness/variation heuristic, not scene understanding, so an evenly-lit but useless frame could still slip through.
 
 **The RL agent does not beat A\*.** Discussed above. It is included because robustness to stale congestion is a real property worth demonstrating, not because it wins.
 
