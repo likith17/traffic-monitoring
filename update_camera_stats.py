@@ -11,7 +11,7 @@ import pandas as pd
 import cv2
 from pathlib import Path
 
-from routing.detect import get_detector
+from routing.detect import get_detector, assess_frame_quality
 
 
 def compute_congestion(counts: dict):
@@ -120,16 +120,22 @@ def analyze_camera_temporal(model, row: pd.Series, polls: int = 5, spacing: floa
     for i in range(polls):
         frame = fetch_frame(row["image_url"])
         if frame is not None:
-            try:
-                _, _, v, p, s = compute_congestion(model.class_counts(frame))
-                per_frame.append((v, p, s))
-            except Exception as e:
-                print(f"[WARN] inference failed for {row['camera_id']}: {e}")
+            usable, why = assess_frame_quality(frame)
+            if not usable:
+                # A dark or placeholder frame's zero count is not "clear road";
+                # skip it rather than let it drag the median toward empty.
+                print(f"[WARN] skipping {why} frame for {row['camera_id']}")
+            else:
+                try:
+                    _, _, v, p, s = compute_congestion(model.class_counts(frame))
+                    per_frame.append((v, p, s))
+                except Exception as e:
+                    print(f"[WARN] inference failed for {row['camera_id']}: {e}")
         if i < polls - 1:
             time.sleep(spacing)
 
     if len(per_frame) < max(2, polls // 2):
-        return None  # too few frames to be more reliable than a single shot
+        return None  # too few usable frames to be more reliable than a single shot
 
     veh = statistics.median(f[0] for f in per_frame)
     ped = statistics.median(f[1] for f in per_frame)

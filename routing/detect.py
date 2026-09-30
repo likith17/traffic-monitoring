@@ -242,6 +242,36 @@ def _class_colour(cls_id: int) -> tuple:
     return int(bgr[0]), int(bgr[1]), int(bgr[2])
 
 
+# --- Frame quality -----------------------------------------------------------
+#
+# A DOT camera does not always return a usable picture. It may be night-dark, or
+# it may be a flat "camera unavailable" placeholder. Running detection on either
+# gives zero objects, which is indistinguishable from a genuinely clear street
+# unless the image itself is checked. That matters for routing: a street whose
+# camera is dead would otherwise read as maximally clear and be preferred. These
+# thresholds flag such frames so their zero counts are treated as "unknown"
+# rather than "empty".
+DARK_MEAN = 40.0   # mean brightness (0-255) below which detection is unreliable
+FLAT_STD = 12.0    # pixel std below which the frame is a flat placeholder, not a scene
+
+
+def assess_frame_quality(frame: np.ndarray) -> tuple[bool, str]:
+    """Is this frame trustworthy enough to score? Returns (usable, reason).
+
+    Cheap, dependency-free checks on brightness and variation. A dark frame or a
+    near-flat placeholder returns usable=False with a short reason; anything with
+    a normal range of light returns (True, 'ok').
+    """
+    if frame is None or frame.size == 0:
+        return False, "empty"
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    if float(gray.mean()) < DARK_MEAN:
+        return False, "too dark"
+    if float(gray.std()) < FLAT_STD:
+        return False, "flat/placeholder"
+    return True, "ok"
+
+
 _DETECTOR: Detector | None = None
 
 
