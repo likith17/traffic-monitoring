@@ -30,3 +30,6 @@ cache/
 # for fitting.
 congestion_log.csv
 congestion_logger_run.log
+
+# Phase 3 per-run incident scan output (diagnostic, regenerated each run).
+incident_reports.csv

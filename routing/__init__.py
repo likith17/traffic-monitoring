@@ -8,6 +8,7 @@
 #   ground_truth - matches cameras to NYC speed-sensor links (Phase 2 target)
 #   congestion_calibration - checks whether the score tracks measured speed
 #   congestion_logger - accumulates (features, speed) pairs over time for fitting
+#   incident_detect - flags accidents/stalls/debris via tracking + a vision model
 #   streets     - real OSM drive network, cached as GraphML
 #   graph       - builds the road network and attaches camera congestion
 #   planners    - classical Dijkstra / A* shortest-path planners
