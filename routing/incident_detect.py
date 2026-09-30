@@ -34,7 +34,7 @@ import cv2
 import numpy as np
 import requests
 
-from routing.detect import get_detector
+from routing.detect import get_detector, assess_frame_quality
 from routing.tracking import (
     VehicleTracker, VEHICLE_CLASSES, HIGH_CONF, flow_stats_from, FlowStats,
 )
@@ -191,6 +191,14 @@ def assess(
             base.source = "heuristic"
             base.category = "heavy_congestion"
             base.note = "flagged by counts only; not vision-confirmed"
+        return base
+
+    # Don't spend a vision-model call on a frame we already know is untrustworthy
+    # (dark or a placeholder): it would only invite a hallucinated verdict.
+    usable, why = assess_frame_quality(frame)
+    if not usable:
+        base.source = "heuristic"
+        base.note = f"frame not usable ({why}); vision check skipped"
         return base
 
     jpeg = _encode_jpeg(frame)

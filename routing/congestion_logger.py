@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from routing.detect import get_detector
+from routing.detect import get_detector, assess_frame_quality
 from routing.ground_truth import match_cameras
 from routing.tracking import (
     VehicleTracker, VEHICLE_CLASSES, HIGH_CONF, flow_stats_from,
@@ -67,7 +67,10 @@ def _sample_camera(detector, image_url: str, polls: int, spacing: float,
         except Exception:
             frame = None
 
-        if frame is not None:
+        # A dark or placeholder frame gives all-zero features that are not real
+        # (can't see, not empty). Logging them would teach a later fit that
+        # "no cars -> free flow" from frames where nothing was visible, so skip.
+        if frame is not None and assess_frame_quality(frame)[0]:
             dets = detector.detect(frame)
             counts: dict = {}
             for d in dets:
