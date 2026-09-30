@@ -36,3 +36,6 @@ incident_reports.csv
 
 # Perception audit output (diagnostic, regenerated each run).
 perception_audit.csv
+
+# Dynamic-conditions benchmark output (diagnostic, regenerated each run).
+dynamic_benchmark.csv
