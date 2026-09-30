@@ -24,3 +24,8 @@ videos/
 
 # OSMnx HTTP response cache (the GraphML in data/ is the real artifact)
 cache/
+
+# Phase 2 accumulating collector output: append-only, grows every run, so it
+# would churn git. The dataset lives locally until a frozen snapshot is committed
+# for fitting.
+congestion_log.csv
