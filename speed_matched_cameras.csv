@@ -1,0 +1,36 @@
+camera_id,camera_name,lat,lon,link_id,link_name,speed_mph,has_speed,dist_m
+ec1e7b42-18de-4475-8c89-9e80f21e5b6c,FDR Drive @ 122 St,40.798685,-73.929148,4456452,TBB W - FDR S MANHATTAN TRUSS - E116TH STREET,0.0,False,44.2
+0ccf3a51-8981-4e03-92a9-00b1c59f0b9b,BB-24 South Rdwy @ Above South St,40.708186,-73.999623,4616342,BKN Bridge Manhattan Side - FDR N Catherine Slip,7.45,True,17.6
+3095997f-dd41-4e71-a810-9290576c17a6,12 Ave @ 57 St,40.7715319506809,-73.9942101957323,4616338,12th Ave N 40th - 57th St,0.0,False,2.5
+9b923606-16ba-45ad-a105-aabcc98ef1fa,12 Ave @ 22 St,40.748276,-74.007636,4616324,12th ave @ 45th - 11 ave ganservoort st,0.0,False,12.9
+ecba28cb-ac70-4d25-abcb-6506111ea120,FDR Dr @ Brooklyn Bridge ,40.708414,-73.998515,4616341,FDR S Catherine Slip - BKN Bridge Manhattan Side,3.72,True,18.2
+6728d273-d20b-44b7-868a-d54c00e50fab,Amsterdam @ 178 St,40.846142,-73.932426,4620298,GWB E LOWER LEVEL PLAZA - CBE E LOWER LEVEL AMSTERDAM AVE,12.42,True,25.3
+04ffc69c-92a7-4c02-aa18-2b16e7ba81f2,FDR Dr @ 36 St,40.744441,-73.971242,4616329,FDR N 25th - 63rd St,6.83,True,31.2
+ae2f7e1a-e781-4d24-9434-12f4f4ef4f2b,WBB -17  SOR - 2  @ Delancey St/FDR,40.71481,-73.976595,4616328,FDR N Catherine Slip - 25th St,25.47,True,42.6
+3809d95f-f99e-4eca-9121-9c7db73f8cbd,12 Ave @ 34 St,40.75697,-74.004812,4616337,11th ave n ganservoort - 12th ave @ 40th st,0.0,False,30.8
+af741eca-a192-41be-890a-22c7ae7d159a,WBB-10 NIR-4 @ FDR RD,40.714971,-73.976438,4616328,FDR N Catherine Slip - 25th St,25.47,True,20.6
+38c07664-0329-471e-997f-6a9015a5bcef,1 Ave @ 124 St,40.801009,-73.931756,4456452,TBB W - FDR S MANHATTAN TRUSS - E116TH STREET,0.0,False,29.6
+67a4769b-dfb2-4a0d-9605-114df107646c,West St @ West Houston St,40.729104,-74.010528,4616325,11th ave s ganservoort - west st @ spring st,0.0,False,21.4
+1e627100-9bce-4e78-bcd3-736344a2236c,FDR Dr @ Brooklyn Bridge Exit NB,40.708446,-73.998459,4616341,FDR S Catherine Slip - BKN Bridge Manhattan Side,3.72,True,23.3
+86d418ab-10bc-4b73-a283-153abffabb0f,West st and West Thames (Battery tunnel),40.70769,-74.01565,4456494,West St S Spring St - BBT Manhattan Portal outbound,8.07,True,27.4
+9bd74b87-32d1-4767-8081-86a2e83f28f2,12 Ave @ 42 St,40.761978792937,-74.0010637153985,4616324,12th ave @ 45th - 11 ave ganservoort st,0.0,False,27.4
+a409e9bd-6a0f-4cdc-81d8-290d5709dc74,FDR @ 38 St,40.7458,-73.9705,4616329,FDR N 25th - 63rd St,6.83,True,31.5
+7d10cfbb-0465-4958-90fc-ddd5349d6635,West St @ Canal St,40.725812,-74.011063,4616325,11th ave s ganservoort - west st @ spring st,0.0,False,42.4
+5efba010-6a58-4df5-ae2c-ef1eda48fad0,West street underpass entrance,40.70858,-74.0153,4456494,West St S Spring St - BBT Manhattan Portal outbound,8.07,True,15.9
+9fda4742-9a18-4a32-b090-8825b201f0d5,FDR Drive @ 124 St,40.799477,-73.929293,4456452,TBB W - FDR S MANHATTAN TRUSS - E116TH STREET,0.0,False,19.4
+30bcfac8-ebd1-40c7-ae4c-1d93113bd465,BB-21 North Rdwy @ Above South St,40.708272,-73.999488,4616342,BKN Bridge Manhattan Side - FDR N Catherine Slip,7.45,True,18.4
+6a49e889-4397-4c5a-a942-2225c1f1c5e7,C4-WST-07-Med_at_W.23rd_St,40.749346,-74.008089,4616337,11th ave n ganservoort - 12th ave @ 40th st,0.0,False,41.4
+b03d3f18-928f-4fcf-b0f5-bbd18314f492,12 Ave @ W 49 St,40.766158,-73.997147,4616323,12th Ave S 57th St - 45th St,0.0,False,17.4
+beda95e2-f7d1-43a3-9a8b-7ab89e03f296,FDR Dr @ Catherine Street,40.708979,-73.996036,4616341,FDR S Catherine Slip - BKN Bridge Manhattan Side,3.72,True,16.0
+ba3d9734-3871-4d49-b46b-88d88dd96e71,AVE C @ 23 St,40.73545,-73.9751,4616333,FDR S 25th St - Catherine Slip,10.56,True,40.0
+5f9ef54f-f3ac-4ce9-ad39-2e483467867a,WBB - 5 NOR-5 @ Delancey St North/FDR,40.715043,-73.976486,4616328,FDR N Catherine Slip - 25th St,25.47,True,20.5
+99bd1846-c0e4-4689-b077-63d2525bf1aa,Amsterdam Ave @ W 180 st ,40.84652,-73.932073,4620298,GWB E LOWER LEVEL PLAZA - CBE E LOWER LEVEL AMSTERDAM AVE,12.42,True,30.9
+8d7e94a5-7a81-4e92-8171-9f6c0f0ca7bf,FDR @ E 53 St,40.754739,-73.96219,4616332,FDR S 63rd - 25th St,21.12,True,15.5
+606916f2-cd00-4893-9d2b-4c9f9d6d974f,AVE C @ 18 St,40.7316,-73.9742,4616333,FDR S 25th St - Catherine Slip,10.56,True,18.9
+e278de5c-4cfa-46e7-aa85-59512db61f0d,FDR Dr @ 23 St,40.7348035082712,-73.9746809005737,4616333,FDR S 25th St - Catherine Slip,10.56,True,40.2
+82b5a027-8b2d-43ce-ba8e-329382bd61bf,Galvin Ave @ W 40 St,40.7588,-73.9976,4329472,LINCOLN TUNNEL E SOUTH TUBE - NJ - NY,0.0,False,57.0
+843a0580-a31d-4e5b-90c5-c3875afdfa96,3rd Camera North Bound BPU,40.703181,-74.016191,4456502,BBT E Manhattan Portal - Toll Plaza,24.85,True,35.0
+ffae5a99-c403-41aa-9985-0633aee4aeff,"Henry Hudson pkwy @ Exit 14 ,165 St/ GWB  ramp",40.84148,-73.9455,4616346,Westside Hwy S GWB - 57th St,0.0,False,30.0
+c75873dc-16d0-4e9c-b5b5-1c6ede0b0b63,FDR @ E 6 St,40.721494,-73.974554,4616328,FDR N Catherine Slip - 25th St,25.47,True,9.8
+e438c68c-c1e4-4fc1-9d1e-28cab8acb42a,Henry Hudson Pkwy @ 70 St,40.779679,-73.988462,4620343,Westside Hwy N 57th St - GWB,0.0,False,39.7
+e5f322e7-e38c-4a3c-9b1b-8df2cb459884,FDR @ 48 St,40.751693,-73.965239,4616332,FDR S 63rd - 25th St,21.12,True,5.3
