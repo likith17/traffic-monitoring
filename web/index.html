@@ -10,7 +10,7 @@
     :root {
       --bg:#0b1220; --panel:#131c2e; --panel2:#0f1626; --line:rgba(148,163,184,.18);
       --ink:#e2e8f0; --muted:#94a3b8; --cyan:#22d3ee; --green:#34d399;
-      --amber:#fbbf24; --red:#f87171; --slate:#94a3b8;
+      --amber:#fbbf24; --red:#f87171;
       --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
     }
     * { box-sizing:border-box; }
@@ -25,17 +25,39 @@
 
     .main { flex:1; display:flex; min-height:0; }
     #map { flex:1; min-width:0; background:#0f1626; }
-    .side { width:340px; max-width:42vw; border-left:1px solid var(--line);
+    .side { width:360px; max-width:44vw; border-left:1px solid var(--line);
             background:var(--panel); padding:16px; overflow-y:auto; }
 
     label { display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
             color:var(--muted); margin:10px 0 4px; }
+    .field { position:relative; }
     input { width:100%; padding:9px 11px; border-radius:8px; border:1px solid var(--line);
             background:var(--panel2); color:var(--ink); font-size:14px; }
+    .suggest { position:absolute; z-index:1000; left:0; right:0; top:100%; margin-top:2px;
+               background:var(--panel2); border:1px solid var(--line); border-radius:8px;
+               overflow:hidden; display:none; }
+    .suggest div { padding:8px 11px; font-size:13px; cursor:pointer; }
+    .suggest div:hover, .suggest div.active { background:rgba(34,211,238,.14); }
     button { width:100%; margin-top:14px; padding:11px; border:none; border-radius:8px;
              background:var(--cyan); color:#06202a; font-weight:700; font-size:14px;
              cursor:pointer; }
+    button.secondary { background:var(--panel2); color:var(--ink);
+                       border:1px solid var(--line); font-weight:600; margin-top:10px; }
     button:disabled { opacity:.55; cursor:default; }
+
+    .card { margin-top:16px; background:var(--panel2); border:1px solid var(--line);
+            border-radius:10px; padding:13px; display:none; }
+    .card h3 { margin:0 0 8px; font-size:13.5px; }
+    .card img { width:100%; border-radius:6px; display:block; }
+    .counts { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; font-size:12px; }
+    .pill { background:var(--panel); border:1px solid var(--line); border-radius:999px;
+            padding:2px 9px; color:var(--muted); }
+    .pill b { color:var(--ink); font-variant-numeric:tabular-nums; }
+    .verdict { margin-top:10px; font-size:12.5px; border-radius:8px; padding:9px 11px;
+               border:1px solid var(--line); background:var(--panel); }
+    .verdict.good { border-left:3px solid var(--green); }
+    .verdict.warn { border-left:3px solid var(--amber); }
+    .verdict.bad  { border-left:3px solid var(--red); }
 
     .metrics { margin-top:16px; display:none; }
     .row { display:flex; gap:10px; }
@@ -43,20 +65,16 @@
             border-radius:10px; padding:11px 12px; }
     .tile b { display:block; font-size:21px; font-variant-numeric:tabular-nums; }
     .tile span { font-size:11px; color:var(--muted); }
-    .verdict { margin-top:12px; font-size:13px; border-radius:8px; padding:10px 12px;
-               border:1px solid var(--line); background:var(--panel2); }
-    .verdict.good { border-left:3px solid var(--green); }
-    .verdict.warn { border-left:3px solid var(--amber); }
-    .blocked { margin-top:10px; font-size:12.5px; color:var(--muted); }
-    .blocked li { margin:2px 0; }
+    .blocked { margin-top:10px; font-size:12.5px; color:var(--muted); padding-left:16px; }
     .legend { margin-top:18px; font-size:12px; color:var(--muted);
               border-top:1px solid var(--line); padding-top:12px; }
     .legend .k { display:inline-flex; align-items:center; gap:6px; margin-right:12px; }
     .swatch { width:11px; height:11px; border-radius:50%; display:inline-block; }
     .err { color:var(--red); font-size:13px; margin-top:12px; display:none; }
+    .hint { color:var(--muted); font-size:11.5px; margin-top:6px; }
     .leaflet-container { background:#0f1626; }
     @media (max-width:720px){ .main{flex-direction:column;} .side{width:auto;max-width:none;
-      border-left:none;border-top:1px solid var(--line);} #map{min-height:48vh;} }
+      border-left:none;border-top:1px solid var(--line);} #map{min-height:46vh;} }
   </style>
 </head>
 <body>
@@ -70,9 +88,15 @@
     <div id="map"></div>
     <aside class="side">
       <label for="start">From</label>
-      <input id="start" value="Times Square" autocomplete="off">
+      <div class="field">
+        <input id="start" value="Times Square" autocomplete="off">
+        <div class="suggest" id="sug-start"></div>
+      </div>
       <label for="end">To (the incident)</label>
-      <input id="end" value="Wall Street" autocomplete="off">
+      <div class="field">
+        <input id="end" value="Wall Street" autocomplete="off">
+        <div class="suggest" id="sug-end"></div>
+      </div>
       <button id="go">Find vision-confirmed route</button>
       <div class="err" id="err"></div>
 
@@ -89,6 +113,16 @@
         <ul class="blocked" id="blocked"></ul>
       </div>
 
+      <!-- Live camera test: click any camera dot on the map -->
+      <div class="card" id="camCard">
+        <h3 id="camName">Camera</h3>
+        <img id="camImg" alt="camera frame">
+        <div class="counts" id="camCounts"></div>
+        <button class="secondary" id="scanInc">Scan this camera for incidents</button>
+        <div class="verdict" id="incVerdict" style="display:none;"></div>
+      </div>
+      <p class="hint" id="camHint">Tip: click any camera dot to see a live YOLOv12 detection.</p>
+
       <div class="legend">
         <div><span class="k"><span class="swatch" style="background:#34d399"></span>low</span>
         <span class="k"><span class="swatch" style="background:#fbbf24"></span>medium</span>
@@ -104,6 +138,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
+    const $ = id => document.getElementById(id);
     const map = L.map('map', { zoomControl: true }).setView([40.75, -73.98], 12);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, attribution: '© OpenStreetMap contributors'
@@ -111,8 +146,9 @@
 
     const colorFor = s => s == null ? '#64748b' : s >= 15 ? '#f87171' : s >= 5 ? '#fbbf24' : '#34d399';
     let routeLayer = L.layerGroup().addTo(map);
+    let currentCam = null;
 
-    // Load camera congestion points.
+    // --- Camera overlay + live-view on click ---
     fetch('/api/cameras').then(r => r.json()).then(cams => {
       const layer = L.layerGroup();
       cams.forEach(c => {
@@ -120,24 +156,122 @@
           radius: 4, color: colorFor(c.score), fillColor: colorFor(c.score),
           fillOpacity: .85, weight: 1
         }).bindTooltip(`${c.name}${c.score != null ? ' · score ' + c.score.toFixed(1) : ''}`)
+          .on('click', () => loadCamera(c))
           .addTo(layer);
       });
       layer.addTo(map);
-      document.getElementById('status').textContent = `${cams.length} cameras`;
+      $('status').textContent = `${cams.length} cameras`;
     });
 
-    const $ = id => document.getElementById(id);
+    async function loadCamera(c) {
+      currentCam = c;
+      $('camHint').style.display = 'none';
+      $('camCard').style.display = 'block';
+      $('camName').textContent = c.name;
+      $('camImg').removeAttribute('src');
+      $('camCounts').innerHTML = '<span class="pill">running YOLOv12…</span>';
+      $('incVerdict').style.display = 'none';
+      try {
+        const d = await (await fetch(`/api/camera/${encodeURIComponent(c.id)}/detect`)).json();
+        if (!d.ok) { $('camCounts').innerHTML = `<span class="pill">${d.error}</span>`; return; }
+        if (d.image) $('camImg').src = d.image;
+        $('camCounts').innerHTML =
+          `<span class="pill">score <b>${d.score}</b></span>` +
+          `<span class="pill">vehicles <b>${d.vehicles}</b></span>` +
+          `<span class="pill">pedestrians <b>${d.pedestrians}</b></span>` +
+          `<span class="pill">signals <b>${d.signals}</b></span>`;
+      } catch (e) {
+        $('camCounts').innerHTML = `<span class="pill">request failed</span>`;
+      }
+    }
+
+    $('scanInc').addEventListener('click', async () => {
+      if (!currentCam) return;
+      const v = $('incVerdict');
+      v.style.display = 'block'; v.className = 'verdict'; v.textContent = 'Reviewing frame…';
+      try {
+        const d = await (await fetch(`/api/camera/${encodeURIComponent(currentCam.id)}/incident`)).json();
+        if (!d.ok) { v.className = 'verdict warn'; v.textContent = d.error; return; }
+        if (d.source !== 'vlm') {
+          v.className = 'verdict warn';
+          v.textContent = `Vision review unavailable — ${d.note || 'no vision model configured'}.`;
+        } else if (d.blocking) {
+          v.className = 'verdict bad';
+          v.textContent = `Possible ${d.category.replace('_',' ')} (confidence ${Math.round(d.confidence*100)}%). ${d.note}`;
+        } else if (d.category === 'heavy_congestion') {
+          v.className = 'verdict warn';
+          v.textContent = `Heavy congestion, no blocking incident (${Math.round(d.confidence*100)}%). ${d.note}`;
+        } else {
+          v.className = 'verdict good';
+          v.textContent = `No blocking incident seen (${Math.round(d.confidence*100)}%). ${d.note}`;
+        }
+      } catch (e) { v.className = 'verdict warn'; v.textContent = 'Request failed.'; }
+    });
+
+    // --- Type-ahead suggestions ---
+    function attachSuggest(input, box) {
+      let picked = null, timer = null, items = [], active = -1;
+      input.dataset.lat = ''; input.dataset.lon = '';
+      const close = () => { box.style.display = 'none'; active = -1; };
+      const render = () => {
+        if (!items.length) { close(); return; }
+        box.innerHTML = '';
+        items.forEach((it, i) => {
+          const el = document.createElement('div');
+          el.textContent = it.label;
+          if (i === active) el.classList.add('active');
+          el.addEventListener('mousedown', ev => {
+            ev.preventDefault();
+            input.value = it.label; input.dataset.lat = it.lat; input.dataset.lon = it.lon;
+            close();
+          });
+          box.appendChild(el);
+        });
+        box.style.display = 'block';
+      };
+      input.addEventListener('input', () => {
+        input.dataset.lat = ''; input.dataset.lon = '';   // typing clears a pick
+        const q = input.value.trim();
+        clearTimeout(timer);
+        if (q.length < 2) { items = []; close(); return; }
+        timer = setTimeout(async () => {
+          try { items = await (await fetch(`/api/suggest?q=${encodeURIComponent(q)}`)).json(); }
+          catch { items = []; }
+          active = -1; render();
+        }, 220);
+      });
+      input.addEventListener('keydown', e => {
+        if (box.style.display !== 'block') return;
+        if (e.key === 'ArrowDown') { active = Math.min(active+1, items.length-1); render(); e.preventDefault(); }
+        else if (e.key === 'ArrowUp') { active = Math.max(active-1, 0); render(); e.preventDefault(); }
+        else if (e.key === 'Enter' && active >= 0) {
+          const it = items[active]; input.value = it.label;
+          input.dataset.lat = it.lat; input.dataset.lon = it.lon; close(); e.preventDefault();
+        } else if (e.key === 'Escape') close();
+      });
+      input.addEventListener('blur', () => setTimeout(close, 150));
+    }
+    attachSuggest($('start'), $('sug-start'));
+    attachSuggest($('end'), $('sug-end'));
+
+    // --- Route planning ---
     function showErr(msg){ const e=$('err'); e.textContent=msg; e.style.display='block'; }
+    function coordsOf(input){
+      const lat = parseFloat(input.dataset.lat), lon = parseFloat(input.dataset.lon);
+      return (isFinite(lat) && isFinite(lon)) ? {lat, lon} : null;
+    }
 
     async function findRoute() {
       $('err').style.display='none'; $('metrics').style.display='none';
       const btn=$('go'); btn.disabled=true; btn.textContent='Planning…';
       try {
-        const res = await fetch('/api/route', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ start:$('start').value, end:$('end').value, compare:true })
-        });
-        const d = await res.json();
+        const s = coordsOf($('start')), e = coordsOf($('end'));
+        const body = { start:$('start').value, end:$('end').value, compare:true };
+        if (s) { body.start_lat=s.lat; body.start_lon=s.lon; }
+        if (e) { body.end_lat=e.lat; body.end_lon=e.lon; }
+        const d = await (await fetch('/api/route', {
+          method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+        })).json();
         if (!d.ok) { showErr(d.error || 'Could not plan a route.'); return; }
 
         routeLayer.clearLayers();
@@ -152,8 +286,7 @@
 
         $('ourMin').textContent = d.our_minutes;
         $('saveMin').textContent = d.saved_minutes;
-        $('km').textContent = d.km;
-        $('hops').textContent = d.hops;
+        $('km').textContent = d.km; $('hops').textContent = d.hops;
         const v=$('verdict');
         v.className = 'verdict ' + (d.confirmed ? 'good':'warn');
         v.textContent = d.confirmed
@@ -166,11 +299,8 @@
           bl.appendChild(li);
         });
         $('metrics').style.display='block';
-      } catch (e) {
-        showErr('Request failed: ' + e.message);
-      } finally {
-        btn.disabled=false; btn.textContent='Find vision-confirmed route';
-      }
+      } catch (e) { showErr('Request failed: ' + e.message); }
+      finally { btn.disabled=false; btn.textContent='Find vision-confirmed route'; }
     }
     $('go').addEventListener('click', findRoute);
   </script>

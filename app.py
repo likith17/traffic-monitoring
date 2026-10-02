@@ -18,10 +18,14 @@
 
 from __future__ import annotations
 
+import base64
 from pathlib import Path
 
+import cv2
+import numpy as np
 import pandas as pd
-from fastapi import FastAPI
+import requests
+from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
@@ -29,8 +33,11 @@ from routing.graph import nearest_node, build_default_graph
 from routing.planners import astar_route, route_metrics, static_baseline_route
 from routing.vision_gate import plan_confirmed_route
 from routing.geo import route_map_payload
-from routing.geocode import geocode_manhattan
+from routing.geocode import geocode_manhattan, suggest_places
 from routing.external_route import fetch_external_route
+from routing.detect import get_detector
+from routing.incident_detect import check_frame_for_incident, BLOCKING
+from update_camera_stats import compute_congestion
 
 app = FastAPI(title="Emergency Routing API")
 
@@ -58,6 +65,20 @@ def load_state() -> None:
     STATE["graph"] = graph
     STATE["real_streets"] = real
     STATE["cameras"] = cams
+    STATE["model"] = get_detector()
+    # Fast lookup from camera id to its row (for the live-view endpoints).
+    STATE["cam_by_id"] = {str(r["camera_id"]): r for _, r in cams.iterrows()}
+
+
+def _fetch_frame(url: str):
+    """Download and decode one camera snapshot, or None if unreachable."""
+    try:
+        r = requests.get(url, timeout=8)
+        r.raise_for_status()
+        frame = cv2.imdecode(np.frombuffer(r.content, np.uint8), cv2.IMREAD_COLOR)
+        return frame
+    except Exception:
+        return None
 
 
 @app.on_event("startup")
@@ -97,9 +118,77 @@ def cameras() -> JSONResponse:
     return JSONResponse(out)
 
 
+@app.get("/api/suggest")
+def suggest(q: str = Query("", min_length=0)) -> JSONResponse:
+    """Type-ahead place suggestions (landmarks, camera names, then Nominatim)."""
+    hits = suggest_places(q) if len(q.strip()) >= 2 else []
+    return JSONResponse([
+        {"label": h["label"], "lat": float(h["lat"]), "lon": float(h["lon"])}
+        for h in hits
+    ])
+
+
+@app.get("/api/camera/{camera_id}/detect")
+def camera_detect(camera_id: str) -> JSONResponse:
+    """Run YOLOv12 on a fresh snapshot from one camera and return the annotated
+    image plus its congestion counts - the live-camera test from the old UI."""
+    row = STATE["cam_by_id"].get(str(camera_id))
+    if row is None:
+        return JSONResponse({"ok": False, "error": "unknown camera"}, status_code=404)
+    frame = _fetch_frame(row["image_url"])
+    if frame is None:
+        return JSONResponse({"ok": False, "error": "camera unreachable or offline"},
+                            status_code=502)
+
+    model = STATE["model"]
+    dets = model.detect(frame)
+    annotated = model.annotate(frame, dets)
+    counts: dict = {}
+    for d in dets:
+        counts[d.name] = counts.get(d.name, 0) + 1
+    score, level, vehicles, peds, signals = compute_congestion(counts)
+
+    ok, buf = cv2.imencode(".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, 80])
+    img = base64.b64encode(buf.tobytes()).decode("ascii") if ok else None
+    return JSONResponse({
+        "ok": True, "name": str(row["name"]),
+        "image": f"data:image/jpeg;base64,{img}" if img else None,
+        "score": round(score, 1), "level": level,
+        "vehicles": vehicles, "pedestrians": peds, "signals": signals,
+        "detections": len(dets),
+    })
+
+
+@app.get("/api/camera/{camera_id}/incident")
+def camera_incident(camera_id: str) -> JSONResponse:
+    """Vision-language incident check on one camera (crash, stall, debris,
+    flooding). Degrades to a clear message when no vision model is configured."""
+    row = STATE["cam_by_id"].get(str(camera_id))
+    if row is None:
+        return JSONResponse({"ok": False, "error": "unknown camera"}, status_code=404)
+    frame = _fetch_frame(row["image_url"])
+    if frame is None:
+        return JSONResponse({"ok": False, "error": "camera unreachable or offline"},
+                            status_code=502)
+
+    rep = check_frame_for_incident(frame, str(camera_id), str(row["name"]))
+    blocking = rep.source == "vlm" and rep.incident and rep.category in BLOCKING
+    return JSONResponse({
+        "ok": True, "name": str(row["name"]), "source": rep.source,
+        "incident": rep.incident, "category": rep.category,
+        "confidence": rep.confidence, "note": rep.note, "blocking": bool(blocking),
+    })
+
+
 class RouteRequest(BaseModel):
     start: str = "Times Square"
     end: str = "Wall Street"
+    # When a suggestion was picked, the page sends its coordinates so we skip a
+    # second geocode round-trip; free-typed text still geocodes server-side.
+    start_lat: float | None = None
+    start_lon: float | None = None
+    end_lat: float | None = None
+    end_lon: float | None = None
     compare: bool = True  # also fetch the external router for comparison
 
 
@@ -113,8 +202,18 @@ def _resolve(query: str) -> dict:
 def route(req: RouteRequest) -> JSONResponse:
     g = STATE["graph"]
 
-    start_geo = _resolve(req.start)
-    end_geo = _resolve(req.end)
+    # Use coordinates from a picked suggestion when present; otherwise geocode.
+    if req.start_lat is not None and req.start_lon is not None:
+        start_geo = {"outcome": "ok", "lat": req.start_lat, "lon": req.start_lon,
+                     "label": req.start}
+    else:
+        start_geo = _resolve(req.start)
+    if req.end_lat is not None and req.end_lon is not None:
+        end_geo = {"outcome": "ok", "lat": req.end_lat, "lon": req.end_lon,
+                   "label": req.end}
+    else:
+        end_geo = _resolve(req.end)
+
     for label, geo in (("start", start_geo), ("end", end_geo)):
         if geo.get("outcome") != "ok":
             return JSONResponse(
