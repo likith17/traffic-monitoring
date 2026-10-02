@@ -7,11 +7,17 @@
 
 from __future__ import annotations
 
+import os
 from typing import Any
 
 import folium
 
-TILES = "CartoDB dark_matter"
+# CartoDB's "dark_matter" basemap now requires an API key: without one its tile
+# servers return "API KEY REQUIRED" watermarked tiles (and often fail to load at
+# all, leaving a blank map). Default to OpenStreetMap, which is keyless and
+# reliable. Set MAP_TILES to override with a provider you have a key for; a dark
+# basemap needs a keyed provider now (MapTiler, Stadia, etc.), not CartoDB.
+TILES = os.environ.get("MAP_TILES", "OpenStreetMap")
 
 OUR_COLOR = "#22D3EE"       # neon cyan — the path actually driven
 BASELINE_COLOR = "#94A3B8"  # slate — Google/OSRM/naive comparison
