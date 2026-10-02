@@ -42,3 +42,10 @@ dynamic_benchmark.csv
 
 # Local secrets (API keys): GEOAPIFY_KEY, ANTHROPIC_API_KEY, etc. Never commit.
 .env
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.synctex.gz
+progress_report_*.pdf
