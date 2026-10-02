@@ -140,8 +140,17 @@ class Detector:
         frame: np.ndarray,
         conf: float = DEFAULT_CONF,
         iou: float = DEFAULT_IOU,
+        enhance: bool = False,
     ) -> list[Detection]:
-        """Detect objects in a BGR frame (the format OpenCV hands back)."""
+        """Detect objects in a BGR frame (the format OpenCV hands back).
+
+        enhance=True brightens and boosts local contrast on dark (night) frames
+        before inference, which recovers vehicles the detector would otherwise
+        miss in low light. It is off by default so paths that need bit-exact
+        behaviour (the ONNX-vs-PyTorch parity test) are unaffected.
+        """
+        if enhance:
+            frame = enhance_low_light(frame)
         padded, scale, pad_x, pad_y = _letterbox(frame)
 
         # BGR uint8 HWC -> RGB float32 CHW, scaled to 0..1, with batch axis.
@@ -264,6 +273,28 @@ def _class_colour(cls_id: int) -> tuple:
 # rather than "empty".
 DARK_MEAN = 40.0   # mean brightness (0-255) below which detection is unreliable
 FLAT_STD = 12.0    # pixel std below which the frame is a flat placeholder, not a scene
+ENHANCE_BELOW = 90.0  # brighten frames dimmer than this before detecting (night)
+
+
+def enhance_low_light(frame: np.ndarray) -> np.ndarray:
+    """Brighten a dim frame and boost local contrast, for night detection.
+
+    Only dim frames are touched: a daytime frame is returned unchanged, so this
+    never degrades good images. Uses CLAHE on the L channel in LAB space, which
+    lifts shadow detail (headlights, car bodies) without blowing out bright
+    regions the way a global gamma would. A frame too dark to be trustworthy at
+    all (below DARK_MEAN) is left alone - no amount of stretching invents detail.
+    """
+    if frame is None or frame.size == 0:
+        return frame
+    gray_mean = float(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).mean())
+    if gray_mean >= ENHANCE_BELOW or gray_mean < DARK_MEAN:
+        return frame
+    lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+    l = clahe.apply(l)
+    return cv2.cvtColor(cv2.merge((l, a, b)), cv2.COLOR_LAB2BGR)
 
 
 def assess_frame_quality(frame: np.ndarray) -> tuple[bool, str]:

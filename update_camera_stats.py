@@ -82,7 +82,7 @@ def analyze_camera_row(model, row: pd.Series):
         return None
 
     try:
-        counts = model.class_counts(frame)
+        counts = model.class_counts(frame, enhance=True)
     except Exception as e:
         print(f"[WARN] YOLO inference failed for {row['camera_id']}: {e}")
         return None
@@ -127,7 +127,7 @@ def analyze_camera_temporal(model, row: pd.Series, polls: int = 5, spacing: floa
                 print(f"[WARN] skipping {why} frame for {row['camera_id']}")
             else:
                 try:
-                    _, _, v, p, s = compute_congestion(model.class_counts(frame))
+                    _, _, v, p, s = compute_congestion(model.class_counts(frame, enhance=True))
                     per_frame.append((v, p, s))
                 except Exception as e:
                     print(f"[WARN] inference failed for {row['camera_id']}: {e}")

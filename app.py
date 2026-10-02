@@ -147,8 +147,8 @@ def camera_detect(camera_id: str) -> JSONResponse:
 
     model = STATE["model"]
     # Slightly lower confidence for the live view so more of what is on screen
-    # gets a box; scoring elsewhere keeps the default threshold.
-    dets = model.detect(frame, conf=0.20)
+    # gets a box; enhance=True brightens dark night frames before detecting.
+    dets = model.detect(frame, conf=0.20, enhance=True)
     annotated = model.annotate(frame, dets)
     counts: dict = {}
     for d in dets:
@@ -199,6 +199,7 @@ class RouteRequest(BaseModel):
     end_lat: float | None = None
     end_lon: float | None = None
     compare: bool = True  # also fetch the external router for comparison
+    simulate_blockage: bool = False  # stage a severe incident mid-route (demo)
 
 
 def _resolve(query: str) -> dict:
@@ -241,16 +242,40 @@ def route(req: RouteRequest) -> JSONResponse:
             status_code=422,
         )
 
+    # Demo: stage a severe incident on a camera mid-route so the vision gate has
+    # something to reroute around. Work on a copy so the shared graph is untouched.
+    work = g
+    staged_camera = None
+    if req.simulate_blockage:
+        work = g.copy()
+        initial = astar_route(work, src, dst)
+        mids = [n for n in initial[1:-1] if "cam_id" in work.nodes[n]]
+        if mids:
+            staged = mids[len(mids) // 2]
+            work.nodes[staged]["cam_score"] = 99.0  # far above the block threshold
+            staged_camera = work.nodes[staged].get("cam_name", "unknown")
+
     # Vision-confirmed route (offline: trust stored camera scores) + baseline.
     our_path, gate_info = plan_confirmed_route(
-        g, src, dst, planner=astar_route, mode="offline")
-    baseline_path = static_baseline_route(g, src, dst)
+        work, src, dst, planner=astar_route, mode="offline")
+    baseline_path = static_baseline_route(work, src, dst)
 
-    m = route_metrics(g, our_path)
-    mb = route_metrics(g, baseline_path)
+    m = route_metrics(work, our_path)
+    mb = route_metrics(work, baseline_path)
+
+    # Cameras the chosen route actually passes, with their congestion scores -
+    # this is what shaped the route (plus nearby cameras weighting the graph).
+    route_cameras = []
+    for n in our_path:
+        nd = work.nodes[n]
+        sc = nd.get("cam_score")
+        if "cam_id" in nd and sc is not None and sc > 0:
+            route_cameras.append({"camera": nd.get("cam_name", "camera"),
+                                  "score": round(float(sc), 1)})
+    route_cameras.sort(key=lambda c: c["score"], reverse=True)
 
     payload = route_map_payload(
-        g, our_path, baseline_path,
+        work, our_path, baseline_path,
         start=(start_geo["lat"], start_geo["lon"]),
         end=(end_geo["lat"], end_geo["lon"]),
         gate_info=gate_info,
@@ -260,7 +285,7 @@ def route(req: RouteRequest) -> JSONResponse:
     if req.compare:
         try:
             ext = fetch_external_route(
-                g, start_geo["lat"], start_geo["lon"],
+                work, start_geo["lat"], start_geo["lon"],
                 end_geo["lat"], end_geo["lon"], src_node=src, dst_node=dst)
             external = {
                 "provider": ext.get("provider"),
@@ -286,6 +311,8 @@ def route(req: RouteRequest) -> JSONResponse:
              "reason": c.get("reason", "score")}
             for c in gate_info.get("blocked_cameras", [])
         ],
+        "route_cameras": route_cameras[:8],
+        "staged_camera": staged_camera,
         "payload": payload,
         "external": external,
     })

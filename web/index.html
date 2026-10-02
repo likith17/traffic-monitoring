@@ -121,7 +121,10 @@
         <input id="end" value="Wall Street" autocomplete="off" placeholder="Destination">
         <div class="suggest" id="sug-end"></div>
       </div>
-      <button class="btn" id="go">Find route</button>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-weight:500;text-transform:none;color:var(--ink);cursor:pointer;">
+        <input type="checkbox" id="simBlock" style="width:auto;"> Simulate a blockage on the route (demo)
+      </label>
+      <button class="btn" id="go" style="margin-top:12px;">Find route</button>
       <div class="err" id="err"></div>
 
       <div class="metrics" id="metrics">
@@ -134,6 +137,10 @@
         </div>
         <div class="note" id="verdict"></div>
         <ul class="blocked" id="blocked"></ul>
+        <div id="routeCamsWrap" style="display:none;margin-top:12px;">
+          <div class="sect-title" style="margin-bottom:8px;">Cameras on this route</div>
+          <ul class="blocked" id="routeCams" style="padding-left:16px;"></ul>
+        </div>
       </div>
 
       <hr class="divider">
@@ -293,7 +300,8 @@
       const b=$('go'); b.disabled=true; b.textContent='Planning…';
       try{
         const s=coordsOf($('start')), e=coordsOf($('end'));
-        const body={ start:$('start').value, end:$('end').value, compare:true };
+        const body={ start:$('start').value, end:$('end').value, compare:true,
+                     simulate_blockage: $('simBlock').checked };
         if(s){ body.start_lat=s.lat; body.start_lon=s.lon; }
         if(e){ body.end_lat=e.lat; body.end_lon=e.lon; }
         const d=await (await fetch('/api/route',{method:'POST',
@@ -320,7 +328,14 @@
         v.textContent=d.confirmed?`Route confirmed clear by camera review.`:`Route could not be fully confirmed — dispatch with caution.`;
         const bl=$('blocked'); bl.innerHTML='';
         d.blocked_cameras.forEach(c=>{ const li=document.createElement('li');
-          li.textContent=`Avoided ${c.camera} (${c.reason}, ${c.score})`; bl.appendChild(li); });
+          li.textContent=`Avoided ${c.camera} (${c.reason}, score ${c.score})`; bl.appendChild(li); });
+        // Cameras the chosen route passes, with their congestion scores.
+        const rc=$('routeCams'); rc.innerHTML='';
+        if(d.route_cameras && d.route_cameras.length){
+          d.route_cameras.forEach(c=>{ const li=document.createElement('li');
+            li.textContent=`${c.camera} — score ${c.score}`; rc.appendChild(li); });
+          $('routeCamsWrap').style.display='block';
+        } else { $('routeCamsWrap').style.display='none'; }
         $('metrics').style.display='block';
       } catch(e){ $('err').textContent='Request failed: '+e.message; $('err').style.display='block'; }
       finally{ b.disabled=false; b.textContent='Find route'; }
