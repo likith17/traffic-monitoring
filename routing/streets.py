@@ -39,6 +39,29 @@ def camera_bbox(cameras_csv: str | Path = "manhattan_cameras.csv") -> tuple:
     )
 
 
+# The five NYC boroughs as OSM place queries. Building from these polygons clips
+# the network to the actual city boundary, so a bounding box does not drag in New
+# Jersey or Nassau County across the rivers.
+NYC_BOROUGHS = [
+    "Manhattan, New York, New York, USA",
+    "Brooklyn, New York, New York, USA",
+    "Queens, New York, New York, USA",
+    "The Bronx, New York, New York, USA",
+    "Staten Island, New York, New York, USA",
+]
+
+
+def _finalise_and_save(mg) -> Path:
+    import osmnx as ox
+    mg = ox.routing.add_edge_speeds(mg, fallback=DEFAULT_SPEED_KMH)
+    mg = ox.routing.add_edge_travel_times(mg)
+    GRAPHML_PATH.parent.mkdir(parents=True, exist_ok=True)
+    ox.io.save_graphml(mg, GRAPHML_PATH)
+    print(f"Saved {mg.number_of_nodes()} nodes / {mg.number_of_edges()} edges "
+          f"to {GRAPHML_PATH}")
+    return GRAPHML_PATH
+
+
 def download_streets(cameras_csv: str | Path = "manhattan_cameras.csv") -> Path:
     """Fetch the drivable street network from OSM and cache it as GraphML.
 
@@ -49,14 +72,22 @@ def download_streets(cameras_csv: str | Path = "manhattan_cameras.csv") -> Path:
     bbox = camera_bbox(cameras_csv)
     print(f"Downloading drivable streets for bbox {bbox} ...")
     mg = ox.graph_from_bbox(bbox, network_type="drive")
-    mg = ox.routing.add_edge_speeds(mg, fallback=DEFAULT_SPEED_KMH)
-    mg = ox.routing.add_edge_travel_times(mg)
+    return _finalise_and_save(mg)
 
-    GRAPHML_PATH.parent.mkdir(parents=True, exist_ok=True)
-    ox.io.save_graphml(mg, GRAPHML_PATH)
-    print(f"Saved {mg.number_of_nodes()} nodes / {mg.number_of_edges()} edges "
-          f"to {GRAPHML_PATH}")
-    return GRAPHML_PATH
+
+def download_streets_city() -> Path:
+    """Build the drivable network for all five boroughs, clipped to the city.
+
+    Large: expect a multi-minute Overpass download, a few hundred thousand
+    nodes, and a GraphML file in the hundreds of MB. Saves to the same cache
+    path the app loads, so the whole city replaces the Manhattan-only graph.
+    """
+    import osmnx as ox
+
+    print(f"Downloading drivable streets for {len(NYC_BOROUGHS)} boroughs "
+          "(this takes several minutes)...")
+    mg = ox.graph_from_place(NYC_BOROUGHS, network_type="drive")
+    return _finalise_and_save(mg)
 
 
 def _multi_to_digraph(mg) -> nx.DiGraph:
@@ -193,10 +224,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Real street network builder")
     parser.add_argument("--build", action="store_true",
                         help="download the OSM network and refresh the cache")
+    parser.add_argument("--city", action="store_true",
+                        help="build all five boroughs (with --build) instead of "
+                             "the camera bounding box")
     args = parser.parse_args()
 
     if args.build:
-        download_streets()
+        download_streets_city() if args.city else download_streets()
 
     g = build_street_graph()
     print(f"Street graph: {g.number_of_nodes()} nodes, {g.number_of_edges()} edges")
