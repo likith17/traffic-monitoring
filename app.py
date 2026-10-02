@@ -271,7 +271,8 @@ def route(req: RouteRequest) -> JSONResponse:
         sc = nd.get("cam_score")
         if "cam_id" in nd and sc is not None and sc > 0:
             route_cameras.append({"camera": nd.get("cam_name", "camera"),
-                                  "score": round(float(sc), 1)})
+                                  "score": round(float(sc), 1),
+                                  "lat": float(nd["lat"]), "lon": float(nd["lon"])})
     route_cameras.sort(key=lambda c: c["score"], reverse=True)
 
     payload = route_map_payload(
@@ -308,7 +309,9 @@ def route(req: RouteRequest) -> JSONResponse:
         "km": round(m["length_km"], 2),
         "blocked_cameras": [
             {"camera": c.get("camera"), "score": round(c.get("score", 0), 1),
-             "reason": c.get("reason", "score")}
+             "reason": c.get("reason", "score"),
+             "lat": float(work.nodes[c["node"]]["lat"]) if c.get("node") in work else None,
+             "lon": float(work.nodes[c["node"]]["lon"]) if c.get("node") in work else None}
             for c in gate_info.get("blocked_cameras", [])
         ],
         "route_cameras": route_cameras[:8],

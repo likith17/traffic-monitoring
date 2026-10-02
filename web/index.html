@@ -167,6 +167,8 @@
         <span class="k"><span class="dot" style="background:#dc2626"></span>high</span>
         <span class="k"><span class="dot" style="background:#0891b2;border-radius:2px;width:18px;height:4px"></span>our route</span>
         <span class="k"><span class="dot" style="background:#4f46e5;border-radius:2px;width:18px;height:4px;outline:1px solid #fff"></span>shortest path</span>
+        <span class="k"><span class="dot" style="background:#16a34a;border:3px solid #0891b2;width:12px;height:12px"></span>camera on route</span>
+        <span class="k"><span class="dot" style="background:transparent;border:3px solid #dc2626;width:12px;height:12px"></span>avoided (blocked)</span>
       </div>
     </aside>
   </div>
@@ -181,6 +183,7 @@
 
     const colorFor = s => s == null ? '#94a3b8' : s >= 15 ? '#dc2626' : s >= 5 ? '#d97706' : '#16a34a';
     const routeLayer = L.layerGroup().addTo(map);
+    const highlightLayer = L.layerGroup().addTo(map);  // on-route & blocked cameras
 
     fetch('/api/cameras').then(r => r.json()).then(cams => {
       const layer = L.layerGroup();
@@ -307,7 +310,7 @@
         const d=await (await fetch('/api/route',{method:'POST',
           headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})).json();
         if(!d.ok){ $('err').textContent=d.error||'Could not plan a route.'; $('err').style.display='block'; return; }
-        routeLayer.clearLayers();
+        routeLayer.clearLayers(); highlightLayer.clearLayers();
         const p=d.payload;
         // White casing under each line so both read clearly on the light basemap.
         // Baseline (shortest path): indigo, dashed. Our route: cyan, solid, on top.
@@ -333,9 +336,20 @@
         const rc=$('routeCams'); rc.innerHTML='';
         if(d.route_cameras && d.route_cameras.length){
           d.route_cameras.forEach(c=>{ const li=document.createElement('li');
-            li.textContent=`${c.camera} — score ${c.score}`; rc.appendChild(li); });
+            li.textContent=`${c.camera} — score ${c.score}`; rc.appendChild(li);
+            // Highlight each on-route camera: a cyan halo ring, filled by its level.
+            if(c.lat!=null) L.circleMarker([c.lat,c.lon], {radius:8, color:'#0891b2',
+              weight:3, fillColor:colorFor(c.score), fillOpacity:.95})
+              .bindTooltip(`On route: ${c.camera} · score ${c.score}`).addTo(highlightLayer);
+          });
           $('routeCamsWrap').style.display='block';
         } else { $('routeCamsWrap').style.display='none'; }
+        // Avoided / blocked high-congestion cameras: a bold red ring + marker.
+        (d.blocked_cameras||[]).forEach(c=>{
+          if(c.lat==null) return;
+          L.circleMarker([c.lat,c.lon], {radius:12, color:'#dc2626', weight:4,
+            fill:false}).bindTooltip(`Avoided: ${c.camera} · score ${c.score}`).addTo(highlightLayer);
+        });
         $('metrics').style.display='block';
       } catch(e){ $('err').textContent='Request failed: '+e.message; $('err').style.display='block'; }
       finally{ b.disabled=false; b.textContent='Find route'; }
