@@ -35,7 +35,7 @@ from routing.vision_gate import plan_confirmed_route
 from routing.geo import route_map_payload
 from routing.geocode import geocode_manhattan, suggest_places
 from routing.external_route import fetch_external_route
-from routing.detect import get_detector
+from routing.detect import get_detector, assess_frame_quality
 from routing.incident_detect import check_frame_for_incident, BLOCKING
 from update_camera_stats import compute_congestion
 
@@ -141,21 +141,25 @@ def camera_detect(camera_id: str) -> JSONResponse:
                             status_code=502)
 
     model = STATE["model"]
-    dets = model.detect(frame)
+    # Slightly lower confidence for the live view so more of what is on screen
+    # gets a box; scoring elsewhere keeps the default threshold.
+    dets = model.detect(frame, conf=0.20)
     annotated = model.annotate(frame, dets)
     counts: dict = {}
     for d in dets:
         counts[d.name] = counts.get(d.name, 0) + 1
     score, level, vehicles, peds, signals = compute_congestion(counts)
 
-    ok, buf = cv2.imencode(".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, 80])
+    ok, buf = cv2.imencode(".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, 82])
     img = base64.b64encode(buf.tobytes()).decode("ascii") if ok else None
+    usable, why = assess_frame_quality(frame)
     return JSONResponse({
         "ok": True, "name": str(row["name"]),
         "image": f"data:image/jpeg;base64,{img}" if img else None,
         "score": round(score, 1), "level": level,
         "vehicles": vehicles, "pedestrians": peds, "signals": signals,
         "detections": len(dets),
+        "usable": usable, "quality": why,
     })
 
 

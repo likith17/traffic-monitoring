@@ -206,30 +206,41 @@ class Detector:
             counts[det.name] = counts.get(det.name, 0) + 1
         return counts
 
-    def annotate(self, frame: np.ndarray, dets: list[Detection] | None = None) -> np.ndarray:
+    def annotate(self, frame: np.ndarray, dets: list[Detection] | None = None,
+                 thickness: int | None = None, font_scale: float | None = None) -> np.ndarray:
         """Draw boxes and labels on a copy of the frame.
 
         Replaces ultralytics' Results.plot(), which is not available once
-        torch is out of the image.
+        torch is out of the image. thickness and font_scale default to a size
+        that scales with the frame, so boxes stay clearly visible on small DOT
+        snapshots as well as large ones.
         """
         if dets is None:
             dets = self.detect(frame)
+
+        h, w = frame.shape[:2]
+        # Scale line/label size to the frame so boxes read clearly at any size.
+        if thickness is None:
+            thickness = max(2, round(min(h, w) / 240))
+        if font_scale is None:
+            font_scale = max(0.5, min(h, w) / 900)
+        ft = max(1, round(thickness * 0.8))
 
         out = frame.copy()
         for det in dets:
             x1, y1, x2, y2 = (int(v) for v in det.xyxy)
             # Stable per-class colour so the same class looks the same twice.
             colour = tuple(int(c) for c in _class_colour(det.cls_id))
-            cv2.rectangle(out, (x1, y1), (x2, y2), colour, 2)
+            cv2.rectangle(out, (x1, y1), (x2, y2), colour, thickness)
 
             label = f"{det.name} {det.conf:.2f}"
-            (tw, th), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+            (tw, th), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, ft)
             # Keep the label inside the frame when the box touches the top.
             top = max(y1, th + baseline + 2)
             cv2.rectangle(out, (x1, top - th - baseline - 2), (x1 + tw, top), colour, -1)
             cv2.putText(
                 out, label, (x1, top - baseline - 1),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA,
+                cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), ft, cv2.LINE_AA,
             )
         return out
 
