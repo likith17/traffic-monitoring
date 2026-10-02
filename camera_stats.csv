@@ -1,372 +1,977 @@
 camera_id,name,lat,lon,area,score,level,vehicles,pedestrians,signals
-8cc75cbc-e050-4947-aee8-639f63fe4ca7,Canal Street @ Chrystie Street,40.715821,-73.994913,Manhattan,6.0,medium,6,0,0
-8afc5cd6-f735-47e8-bd57-6e6d3b81b442,WBB-20 @ Above Bedford Ave ( Berry St ),40.711356,-73.96519,Manhattan,0.0,low,0,0,0
-8a6bc417-4877-4ebe-8052-88c1b261baf1,Central Park West @ 86 St,40.785302,-73.969353,Manhattan,2.3,low,2,1,0
-98fc3e41-66be-42d7-8f69-5cc76ae7226f,BB - Manhattan hub - 156.103,40.710977,-74.003594,Manhattan,0.0,low,0,0,0
-ec1e7b42-18de-4475-8c89-9e80f21e5b6c,FDR Drive @ 122 St,40.798685,-73.929148,Manhattan,1.0,low,1,0,0
+8a6bc417-4877-4ebe-8052-88c1b261baf1,Central Park West @ 86 St,40.785302,-73.969353,Manhattan,4.5,low,4,0,1
+300e0508-3c7e-4ac5-8527-b75bcf8292b8,Hillside Ave @ Little Neck Pkwy,40.736207,-73.713777,Queens,0.0,low,0,0,0
+ec1e7b42-18de-4475-8c89-9e80f21e5b6c,FDR Drive @ 122 St,40.798685,-73.929148,Manhattan,2.3,low,2,1,0
 ec9eda79-e250-4e6f-a8f6-e51021fb054f,Amsterdam Ave @ 60 St,40.771057,-73.987139,Manhattan,0.0,low,0,0,0
-4f8c2e84-c15a-4474-91fb-7e14554d4c4e,Central Park West @ 65 St,40.771797,-73.979217,Manhattan,1.0,low,1,0,0
-332f161d-47cb-4c8a-b6b6-5ad48a55c978,Ave of Americas @ Central Park South,40.765683,-73.976229,Manhattan,11.6,medium,11,2,0
-ad3df063-d5d6-458c-84e7-1242060649cf,Ft Washington @ 179 St,40.849349,-73.93894,Manhattan,2.0,low,2,0,0
-984ebbad-ca64-41d8-8008-63aaae316952,Central Park West @ 72 St,40.776225,-73.975974,Manhattan,8.0,medium,8,0,0
+b221fdc4-ca81-41ae-875e-bf0341377758,C1-BRE-06_W - WB_at_CBX-Hutch_Int-EX6A,40.829767,-73.834824,Bronx,1.0,low,1,0,0
+8afc5cd6-f735-47e8-bd57-6e6d3b81b442,WBB-20 @ Above Bedford Ave ( Berry St ),40.711356,-73.96519,Manhattan,5.0,medium,5,0,0
+0472fa7a-acd7-4510-a9e7-61307d4057cd,Bay Pkwy @ 78 St (Kings Hwy),40.60632,-73.989087,Brooklyn,4.0,low,4,0,0
+98fc3e41-66be-42d7-8f69-5cc76ae7226f,BB - Manhattan hub - 156.103,40.710977,-74.003594,Manhattan,1.0,low,1,0,0
+c145d543-b5f5-4dec-9bb8-7866eafdf054,Exterior St @ 3 Ave,40.809314,-73.929538,Bronx,2.0,low,2,0,0
+09afb231-ef10-470f-bf54-0f44fc2dc18f,Pelham Shore Rd @ City Island Rd,40.864552,-73.813781,Bronx,0.0,low,0,0,0
+1b3248f9-f26e-4f36-943f-b7a7731595fb,QBB @ Crescent St,40.750889,-73.940613,Queens,7.0,medium,7,0,0
+0039e6bf-5244-4b4e-b7dc-d02056bbfdc9,Atlantic Ave @ 111 St,40.692157,-73.834927,Brooklyn,5.5,medium,5,0,1
+8cc75cbc-e050-4947-aee8-639f63fe4ca7,Canal Street @ Chrystie Street,40.715821,-73.994913,Manhattan,0.0,low,0,0,0
+0f5e11ff-0ecc-4622-a32e-bb80a6b2c1c6,Hylan Blvd @ Arden Ave,40.529434,-74.161351,Staten Island,1.0,low,1,0,0
+4f8c2e84-c15a-4474-91fb-7e14554d4c4e,Central Park West @ 65 St,40.771797,-73.979217,Manhattan,5.0,medium,5,0,0
+0bb2c096-0377-41f7-a451-56944aa8dae2,Belt Pkwy @ 125 St,40.665007,-73.819358,Queens,0.0,low,0,0,0
+cbd86999-5bb1-4f2d-addd-dbf15fa3609d,Boston Rd @ Gun hill Rd,40.873347,-73.853317,Bronx,6.0,medium,6,0,0
+07f88e60-2b93-4bba-9784-8cac3c9b7f52,C3-SIE-02-EB_at_WSE_Int-Ex3,40.622323,-74.174917,Staten Island,0.0,low,0,0,0
+2f28f8df-5eb5-4327-ab1f-7feaf2630b34,Grand Concourse @ Bedford Park Blvd,40.872207,-73.887658,Bronx,4.0,low,4,0,0
+ae1960ee-1f34-4774-88f5-b195b9c2a505,C5-LIE-15-WB_at_Queens_Blvd-Ex19,40.732725,-73.8692,Queens,0.0,low,0,0,0
+984ebbad-ca64-41d8-8008-63aaae316952,Central Park West @ 72 St,40.776225,-73.975974,Manhattan,1.7999999999999998,low,0,6,0
+3576217a-82e8-4f2a-854f-3de97ef37362,BQE  @ Pearl St,40.701273,-73.987712,Brooklyn,7.0,medium,7,0,0
+ad3df063-d5d6-458c-84e7-1242060649cf,Ft Washington @ 179 St,40.849349,-73.93894,Manhattan,7.0,medium,7,0,0
+67f77766-bd19-4082-adeb-88d59866c490,Long Island Expy @ QMT @ Pulaski Br,40.74148,-73.9509,Queens,4.0,low,4,0,0
+4284c61f-eb9c-419d-99e4-48a7ef681e62,PELHAM PKWY @ WILLIAMSBRIDGE RD,40.856997,-73.856265,Bronx,1.0,low,1,0,0
+053e8995-f8cb-4d02-a659-70ac7c7da5db,Broadway @ 45 St,40.757953,-73.98549,Manhattan,10.1,medium,8,7,0
 0ccf3a51-8981-4e03-92a9-00b1c59f0b9b,BB-24 South Rdwy @ Above South St,40.708186,-73.999623,Manhattan,0.0,low,0,0,0
-053e8995-f8cb-4d02-a659-70ac7c7da5db,Broadway @ 45 St,40.757953,-73.98549,Manhattan,4.1,low,3,2,1
-9cc8495e-aeee-4759-adba-5a6bf5efd4b9,3 Ave @ 23 St,40.7388335617157,-73.9831563349364,Manhattan,2.0,low,2,0,0
-975c7dd6-d6d7-4eaa-843d-fbe8eb7a1eb3,QBB UL CM @ York Ave,40.7590599112718,-73.9594663180461,Manhattan,1.0,low,1,0,0
-b1d5d592-9e36-478e-bedc-5fb02d836bc3,Sutton Pl @ 58 St,40.758044,-73.960189,Manhattan,3.0,low,3,0,0
-09b1235e-d2d1-4451-83a5-5a1c3ec280aa,St Nicholas Ave @ 145 St,40.824031,-73.94477,Manhattan,0.6,low,0,2,0
-1572a83a-0a4f-4a7b-84a0-fec0890a2de3,C4-WST-03-Med_at_Vestry_St,40.723031,-74.01141,Manhattan,3.0,low,2,0,2
-ec9ffb62-e3bf-4352-8bcf-7c9adf5fbe9c,8th Ave @ 31st St,40.750297,-73.99483,Manhattan,7.9,medium,7,3,0
-155b2bff-5dd2-4109-bd10-e098376c8476,FDR Dr @ 96 Street,40.7821012323438,-73.9436960220336,Manhattan,0.0,low,0,0,0
-34674be5-4791-47f1-b0b2-2db0ff619732,6 Ave @ 39 St,40.752946,-73.98548,Manhattan,11.6,medium,11,2,0
-3095997f-dd41-4e71-a810-9290576c17a6,12 Ave @ 57 St,40.7715319506809,-73.9942101957323,Manhattan,1.0,low,1,0,0
+068461e2-c62f-4ce4-adac-5f9efe92af1d,Bushwick Ave @ De Kalb Ave,40.695092,-73.928357,Brooklyn,1.3,low,1,1,0
+8e07d72b-94cd-44c4-b92a-48decda031d2,Queens Blvd @ 39 St - East,40.74383,-73.926217,Queens,1.0,low,1,0,0
+b18d0e36-c053-435d-921e-813ab5f65a0a,C2-BQE-22-WB_at_Lee_Ave-Ex31,40.705248,-73.959172,Brooklyn,0.0,low,0,0,0
+332f161d-47cb-4c8a-b6b6-5ad48a55c978,Ave of Americas @ Central Park South,40.765683,-73.976229,Manhattan,6.2,medium,5,4,0
+9cc8495e-aeee-4759-adba-5a6bf5efd4b9,3 Ave @ 23 St,40.7388335617157,-73.9831563349364,Manhattan,10.0,medium,10,0,0
+07c5a9ab-38b0-4176-a932-395cded5858e,Cadman Plz West @ Tillary St,40.696267,-73.991073,Brooklyn,0.0,low,0,0,0
+975c7dd6-d6d7-4eaa-843d-fbe8eb7a1eb3,QBB UL CM @ York Ave,40.7590599112718,-73.9594663180461,Manhattan,0.0,low,0,0,0
+0bbea8bd-10f1-4126-b3c5-9e9432eab749,Atlantic Ave @ Pennsylvania Ave,40.675787,-73.896898,Brooklyn,4.0,low,4,0,0
+16d86749-6ec5-4594-8ccc-56c9507fedc3,Rockaway Blvd @ S. Conduit Ave,40.6668,-73.779833,Queens,0.0,low,0,0,0
+073df904-1699-4b0d-b779-d3a95305e4fd,C1-BRE-08-NB_at_Waterbury_Ave-Ex7B,40.838087,-73.824953,Bronx,4.0,low,4,0,0
+ec9ffb62-e3bf-4352-8bcf-7c9adf5fbe9c,8th Ave @ 31st St,40.750297,-73.99483,Manhattan,9.1,medium,8,2,1
+279720e5-7db3-4143-9608-531cfc50dc25,College Point Blvd @ 35 Ave,40.763583,-73.836038,Queens,2.0,low,2,0,0
+ed8fac76-2128-4099-8dfd-80144bd059d4,Kissena Blvd @ Holly Ave,40.750627,-73.819113,Queens,0.6,low,0,2,0
+b5d8fe4f-1cf5-4cd8-8211-8353e68da1cb,Atlantic Ave @ Vanderbilt Ave,40.6809634749315,-73.9670419692993,Brooklyn,0.0,low,0,0,0
+0ff541bf-1be1-4bbf-88c5-3a570541e7d2,Father Capodanno Blvd @ Sands LN,40.590366,-74.066659,Staten Island,2.0,low,2,0,0
+b1d5d592-9e36-478e-bedc-5fb02d836bc3,Sutton Pl @ 58 St,40.758044,-73.960189,Manhattan,4.0,low,4,0,0
+09b1235e-d2d1-4451-83a5-5a1c3ec280aa,St Nicholas Ave @ 145 St,40.824031,-73.94477,Manhattan,1.3,low,1,1,0
+8ccc0c64-65a5-42f9-9eba-cf7aa4a51b09,Belt Pkwy @ Cross Island Split,40.682884,-73.726459,Queens,0.0,low,0,0,0
+edb8b647-1abb-4e20-b0e6-e446c17ac9c0,Jackie Robinson Pkwy @ Forest Pk Dr,40.70273,-73.8624,Queens,0.0,low,0,0,0
+0ed1503d-23fc-4102-ada3-5d647a7b20cb,Metropolitan Ave @ Marcy Ave,40.714062,-73.954333,Brooklyn,5.0,medium,5,0,0
+eca4e591-4ac8-471c-8e76-4710b52e6f9b,Beach Channel Dr @B Mott Ave,40.605347,-73.75518,Queens,0.0,low,0,0,0
+171d87f4-033f-4769-ae00-7819baa8034e,SIE @ Fingerboard Rd,40.603841,-74.069281,Staten Island,2.3,low,2,1,0
+1572a83a-0a4f-4a7b-84a0-fec0890a2de3,C4-WST-03-Med_at_Vestry_St,40.723031,-74.01141,Manhattan,6.5,medium,6,0,1
+d401c83b-2f78-49dd-8974-14c819a992b2,C2-PE-05-Ctr_at_7th_Ave-Ex4,40.660049,-73.986988,Brooklyn,4.0,low,4,0,0
+111e79a9-eb5a-44d0-b062-481ac0a81901,Belt Pkwy @ Plumb 3 St,40.585,-73.9288,Brooklyn,1.0,low,1,0,0
+155b2bff-5dd2-4109-bd10-e098376c8476,FDR Dr @ 96 Street,40.7821012323438,-73.9436960220336,Manhattan,1.0,low,1,0,0
+3095997f-dd41-4e71-a810-9290576c17a6,12 Ave @ 57 St,40.7715319506809,-73.9942101957323,Manhattan,8.0,medium,8,0,0
 9b648eba-3e4a-4c2c-9afc-e659c1083804,MHB-19 Manh N URDW @ Anch,40.710705,-73.992304,Manhattan,0.0,low,0,0,0
-f06979b2-3497-4330-9882-a06c8a442b7c,6 Ave @ 34 St,40.749808,-73.987746,Manhattan,5.4,medium,4,3,1
-6847c104-0117-4e3f-b30e-e1a859bc8107,FDR Dr @ 101 St ,40.785502,-73.94032,Manhattan,3.0,low,3,0,0
-23bcc0dd-d395-45fe-8106-676ba7293208,Varick St @ Watt St,40.72379,-74.006138,Manhattan,4.0,low,4,0,0
-e229e0fd-559b-4c1e-bcba-ac23db1d01e3,6 Ave @ 57 St,40.7643348872061,-73.9772018595711,Manhattan,9.3,medium,9,1,0
-6d3a21dd-0434-4d92-a0d1-3ca8b77297db,5 Ave @ E 58 St,40.763753,-73.973548,Manhattan,1.9,low,1,3,0
-08328372-55a2-448a-b180-9b4bce0b8d9e,Broadway @ Morris St,40.70589,-74.0133,Manhattan,2.3,low,2,1,0
-41397b64-d035-4b41-a03e-170fe4103d89,Park Ave @ 79 St,40.775652,-73.96035,Manhattan,9.0,medium,9,0,0
-9b923606-16ba-45ad-a105-aabcc98ef1fa,12 Ave @ 22 St,40.748276,-74.007636,Manhattan,0.0,low,0,0,0
+39b42007-16d8-4302-8b8c-602bbb9e9683,Northern Blvd @ 114 St,40.758271,-73.855567,Queens,0.0,low,0,0,0
+6d3a21dd-0434-4d92-a0d1-3ca8b77297db,5 Ave @ E 58 St,40.763753,-73.973548,Manhattan,1.6,low,0,2,2
+34674be5-4791-47f1-b0b2-2db0ff619732,6 Ave @ 39 St,40.752946,-73.98548,Manhattan,12.2,medium,11,4,0
+1817f0b6-148f-4105-a5d6-2a53079aad39,C5-CVE-01-SB_at_Union_Turnpike,40.732235,-73.765665,Queens,0.0,low,0,0,0
+1d839733-c963-44bc-9da4-f02ba20ca307,Woodhaven Blvd @ Rockaway Blvd,40.681271,-73.844625,Queens,4.0,low,4,0,0
+08328372-55a2-448a-b180-9b4bce0b8d9e,Broadway @ Morris St,40.70589,-74.0133,Manhattan,3.0,low,3,0,0
+9b4553f1-6aa3-46eb-8905-ecbfecb83ce3,Northern Blvd @ Honeywell Bridge,40.752004,-73.931943,Queens,7.3,medium,7,1,0
+f06979b2-3497-4330-9882-a06c8a442b7c,6 Ave @ 34 St,40.749808,-73.987746,Manhattan,3.6,low,3,2,0
+0951f345-28ef-447c-af7f-1cb4e0e16aa8,Bruckner Blvd E / White Plains Rd- Camera 1,40.825717,-73.859182,Bronx,0.0,low,0,0,0
+ea774ec2-327b-4f3d-97ac-fd404c612cb1,C2-BQE-02_WB_at_Union_St-Ex26,40.684051,-74.001538,Brooklyn,9.0,medium,8,0,2
+6847c104-0117-4e3f-b30e-e1a859bc8107,FDR Dr @ 101 St ,40.785502,-73.94032,Manhattan,1.0,low,1,0,0
+15ccea84-99db-4e7d-8ce4-2dc93c7d23a0,Cross Bay Blvd @ 6 Rd,40.609628,-73.819118,Queens,4.0,low,4,0,0
+e229e0fd-559b-4c1e-bcba-ac23db1d01e3,6 Ave @ 57 St,40.7643348872061,-73.9772018595711,Manhattan,6.2,medium,5,4,0
+23bcc0dd-d395-45fe-8106-676ba7293208,Varick St @ Watt St,40.72379,-74.006138,Manhattan,0.0,low,0,0,0
+41397b64-d035-4b41-a03e-170fe4103d89,Park Ave @ 79 St,40.775652,-73.96035,Manhattan,0.3,low,0,1,0
+09cc9eed-0732-4199-a6ca-b3d0bbbad860,C1-MDE-06-NB_at_Macombs_Dam_Br-Ex5,40.828221,-73.930969,Bronx,13.0,medium,13,0,0
+13064b49-6f97-43a2-9cf8-947767afaa12,C5-BQE-42-WB_at_30th_Ave-Ex43,40.759356,-73.901707,Queens,2.0,low,2,0,0
+243e945a-b872-4bac-9898-94ce8963ef44,Flatbush Ave @ DeKalb Ave,40.689993,-73.98163,Brooklyn,7.0,medium,7,0,0
+5d055599-875a-4010-991f-e7e454889052,7 Ave @ 40 St,40.754746,-73.987894,Manhattan,2.6,low,2,2,0
+83655dbc-7902-4fdb-926c-15fee4396b83,Broadway @ 38 St,40.752453,-73.987123,Manhattan,10.2,medium,9,4,0
+20503e73-1829-4275-a645-5be6a02fd7cd,Belt Pkwy @ 158 Ave,40.659301,-73.854457,Queens,0.0,low,0,0,0
+2e70dd1f-b21f-4215-bc22-237a1d79eb71,C3-KWV-02-NB_at_Bloomngdale_Rd-Ex2,40.52806,-74.216696,Staten Island,0.0,low,0,0,0
 ecba28cb-ac70-4d25-abcb-6506111ea120,FDR Dr @ Brooklyn Bridge ,40.708414,-73.998515,Manhattan,2.0,low,2,0,0
-5d055599-875a-4010-991f-e7e454889052,7 Ave @ 40 St,40.754746,-73.987894,Manhattan,2.2,low,1,4,0
-20b2298a-90cf-463f-b172-0b398a34f061,Park Ave @ 37 St,40.74906,-73.979818,Manhattan,1.0,low,1,0,0
-83655dbc-7902-4fdb-926c-15fee4396b83,Broadway @ 38 St,40.752453,-73.987123,Manhattan,6.4,medium,4,8,0
-f581cdc7-684b-4309-8c12-34b0bacd72bf,3 Ave @ E 125 St,40.803512,-73.935808,Manhattan,3.9,low,3,3,0
-9d86d84c-6d3a-45a6-a8ad-fb5ab52f2b52,E 57 St @ QBB,40.7589949664454,-73.9644856628626,Manhattan,1.5,low,1,0,1
-1e60ade7-c760-48cf-acd9-d9d6cbfa9420,7 Ave @ 32 St,40.749508,-73.991493,Manhattan,5.6,medium,5,2,0
-152e384f-7d80-4240-8995-bd75b78b582f,2 Ave @ E 128 Street,40.804468,-73.932327,Manhattan,2.0,low,2,0,0
-91567cf3-e527-4bb7-a6a6-e95656af5ca8,1 Ave @ E 120 Street ,40.798583,-73.933382,Manhattan,5.3,medium,5,1,0
-5adef8a1-5ad0-4a73-8d87-e1e545ba8cbb,FDR Dr @ 73 St,40.766599,-73.950845,Manhattan,10.0,medium,10,0,0
-9c6dae83-0258-489e-a9cd-83396cf8dad7,Lexington Ave @ E 128 Street,40.806312,-73.935957,Manhattan,10.0,medium,10,0,0
-330e2a88-3cea-4ce5-b1a2-ae8440de9b1a,1 Ave @ 84 St,40.7755,-73.9502,Manhattan,5.8,medium,5,1,1
-156b0613-239a-4e77-aa0e-0a4becfc0b05,Lenox Ave @ 125 St,40.80798,-73.945472,Manhattan,3.0,low,3,0,0
-0dc7c2b4-614d-46a3-9610-3ba09f3f1284,6 Ave @ 30 St,40.747287,-73.989615,Manhattan,8.6,medium,8,2,0
-6728d273-d20b-44b7-868a-d54c00e50fab,Amsterdam @ 178 St,40.846142,-73.932426,Manhattan,0.0,low,0,0,0
-0cef143f-b3d8-4066-84ee-6114fa6e76e0,Lexington Ave @ E 110 Street,40.795015,-73.944542,Manhattan,5.0,medium,5,0,0
-07b8616e-373e-4ec9-89cc-11cad7d59fcb,Worth St @ Centre St,40.715157,-74.00213,Manhattan,3.6,low,3,2,0
-a6bd09c7-9195-4e0b-ac0f-78114a7d63a1,Park Ave @ E 125 St,40.805313,-73.93924,Manhattan,6.3,medium,6,1,0
-04e09ed5-2d97-4e29-8438-b87748850dbb,Columbus Ave @ 65 St,40.77297,-73.981993,Manhattan,3.0,low,3,0,0
-06ea08ec-5cd8-4bd6-9535-502acf651abc,5 Ave @ 86 St,40.781556,-73.960389,Manhattan,1.5,low,0,0,3
-175cc1f1-0543-41c9-85fb-464ec29687de,Park Ave @ E 116 Street,40.799265,-73.94294,Manhattan,11.9,medium,11,3,0
-04ffc69c-92a7-4c02-aa18-2b16e7ba81f2,FDR Dr @ 36 St,40.744441,-73.971242,Manhattan,4.0,low,4,0,0
-1fe143ba-7133-422f-b594-d6712559c523,2 Ave @ 125 St,40.80275,-73.933633,Manhattan,1.0,low,1,0,0
-5caa3ace-277b-42db-97bd-585f29b0d49f,Central Park West @ W 61 St,40.769303,-73.980882,Manhattan,5.0,medium,5,0,0
-5ce5f31b-fce3-4f60-9534-5986c8b668eb,3 Ave @ E 120 Street,40.800503,-73.938107,Manhattan,3.0,low,3,0,0
+2e43a9d0-1df8-4a38-ae20-2e0f359bb55d,Flatbush Ave @ Empire Blvd,40.663093,-73.96236,Brooklyn,4.0,low,4,0,0
+29aaea67-bf67-4d6f-b572-f810f48f5b48,Drumgoogle Rd E @ Vernon Ave,40.532779,-74.200233,Staten Island,0.0,low,0,0,0
+01ffcaef-7c54-4f16-8668-bce6efbcfcb1,Hylan Ave @ Page Ave,40.507726,-74.230003,Staten Island,0.0,low,0,0,0
+9b923606-16ba-45ad-a105-aabcc98ef1fa,12 Ave @ 22 St,40.748276,-74.007636,Manhattan,3.0,low,3,0,0
+21fc45fc-30fb-4d6a-ae1b-7d2d2730dfca,Cross Bay Blvd @ 107 Ave,40.678784,-73.844359,Queens,1.0,low,1,0,0
+9c4c2657-6796-4953-bbe6-c50f24bb5820,5 Ave @ 57 St,40.7629820055328,-73.9739858644822,Manhattan,2.3,low,1,1,2
+0f657445-4729-4c98-8f3a-9591c1879b92,Bruckner Blvd E / White Plains Rd- Camera 2,40.825717,-73.859182,Bronx,0.0,low,0,0,0
+154a987b-7f71-4c09-a932-f256d085a34a,GCP @ 214 St,40.726934,-73.75371,Queens,0.0,low,0,0,0
+20b2298a-90cf-463f-b172-0b398a34f061,Park Ave @ 37 St,40.74906,-73.979818,Manhattan,3.5,low,2,0,3
+33ea5ed1-0d62-4f44-9fda-fda5c2327eed,Main St @ Sanford Ave,40.756669,-73.828794,Queens,5.3,medium,5,1,0
+91567cf3-e527-4bb7-a6a6-e95656af5ca8,1 Ave @ E 120 Street ,40.798583,-73.933382,Manhattan,9.0,medium,9,0,0
+9955d671-39ad-4fb7-b63e-4e78cf6ac157,Flatbush Ave and 4 Ave,40.6838924508798,-73.9779424667358,Brooklyn,6.6,medium,6,2,0
+a0ecf291-582c-4c42-933f-0b9ed4ce885c,Queens Plaza N @ Northern Blvd,40.749897,-73.937695,Queens,3.0,low,3,0,0
+1dc7794b-62bb-4cb7-93ee-df87e5ac671d,Clearview Expy @ 56 Ave,40.751323,-73.775287,Queens,0.0,low,0,0,0
+152e384f-7d80-4240-8995-bd75b78b582f,2 Ave @ E 128 Street,40.804468,-73.932327,Manhattan,3.0,low,3,0,0
+a454105b-8f59-4d96-a656-9a2d29f1353d,WBB-1 @ Bklyn Plaza,40.710341,-73.961088,Brooklyn,0.0,low,0,0,0
+9d86d84c-6d3a-45a6-a8ad-fb5ab52f2b52,E 57 St @ QBB UPPER LEVEL,40.758995,-73.964486,Manhattan,8.0,medium,5,0,6
+5adef8a1-5ad0-4a73-8d87-e1e545ba8cbb,FDR Dr @ 73 St,40.766599,-73.950845,Manhattan,6.0,medium,6,0,0
+053afe02-e1b3-4bea-9995-787e72c7fff4,Atlantic Ave @ Barclays Center,40.683572,-73.976083,Brooklyn,8.5,medium,8,0,1
+9c6dae83-0258-489e-a9cd-83396cf8dad7,Lexington Ave @ E 128 Street,40.806312,-73.935957,Manhattan,11.0,medium,11,0,0
+1e60ade7-c760-48cf-acd9-d9d6cbfa9420,7 Ave @ 32 St,40.749508,-73.991493,Manhattan,11.3,medium,11,1,0
+260fc63c-773a-45e3-a04b-9f05c3184a44,Belt Pkwy @ Bay 8 St,40.603775,-74.019009,Brooklyn,3.0,low,3,0,0
+e38f2549-cdbf-4d78-a0c6-d71e5421ac1e,Bruckner Expy @ Sheridian Blvd,40.82215,-73.88803,Bronx,2.0,low,2,0,0
+f1912436-d91e-407e-b4a3-d163090f226f,Prospect St @ Old Fulton St -156.63,40.700815,-73.99039,Brooklyn,4.3,low,4,1,0
+8df73045-61fd-4394-b21a-dfa3f440d6e7,C3-MLK-01-SB_at_Watchogue_Rd-Ex10,40.618503,-74.151462,Staten Island,2.0,low,2,0,0
+76ce9adc-f73d-46b7-9ca7-fe6d7521b603,Queens Plaza North @ 2811 (Westside),40.750267,-73.938607,Queens,3.0,low,3,0,0
+a0d4d925-37f5-45f4-b25a-a65c6577c008,BB-47 North Rdwy @ West of Bklyn Twr,40.705446,-73.9959166,Brooklyn,0.0,low,0,0,0
+b19c9130-3a2d-4f7a-94a5-495eeea219ef,C1-BRE-11-SB_at_Buhre_Ave-Ex8A,40.84897,-73.827533,Bronx,0.0,low,0,0,0
+195870e2-8714-45c6-86ba-8ae079ef738c,McGuinness Blvd @ Green St,40.734007,-73.952283,Brooklyn,1.0,low,0,0,2
+41610046-fbab-40be-b824-4afa48119bec,C2-BQE-28-WB_at_Manhattan_Ave-Ex33,40.718992,-73.946421,Brooklyn,4.0,low,4,0,0
+0dc7c2b4-614d-46a3-9610-3ba09f3f1284,6 Ave @ 30 St,40.747287,-73.989615,Manhattan,5.9,medium,5,3,0
+0cef143f-b3d8-4066-84ee-6114fa6e76e0,Lexington Ave @ E 110 Street,40.795015,-73.944542,Manhattan,1.0,low,1,0,0
+156b0613-239a-4e77-aa0e-0a4becfc0b05,Lenox Ave @ 125 St,40.80798,-73.945472,Manhattan,1.0,low,1,0,0
+a6bd09c7-9195-4e0b-ac0f-78114a7d63a1,Park Ave @ E 125 St,40.805313,-73.93924,Manhattan,4.0,low,4,0,0
+6728d273-d20b-44b7-868a-d54c00e50fab,Amsterdam @ 178 St,40.846142,-73.932426,Manhattan,1.0,low,1,0,0
+34af619f-c745-4f09-a81c-e3635dd764c6,Richmond Ave @ Forest Ave,40.625094,-74.148789,Staten Island,3.5,low,3,0,1
+2f504422-66f8-4ddc-805f-8744279a1a6e,Northern Blvd @ 68 St,40.753662,-73.898592,Queens,0.0,low,0,0,0
+07b8616e-373e-4ec9-89cc-11cad7d59fcb,Worth St @ Centre St,40.715157,-74.00213,Manhattan,2.0,low,2,0,0
+175cc1f1-0543-41c9-85fb-464ec29687de,Park Ave @ E 116 Street,40.799265,-73.94294,Manhattan,6.0,medium,6,0,0
+04e09ed5-2d97-4e29-8438-b87748850dbb,Columbus Ave @ 65 St,40.77297,-73.981993,Manhattan,4.5,low,3,5,0
+6a841f4c-93ef-4f51-b38d-80e70053ff8d, WEBSTER AVE @ NEREID AVE,40.9011,-73.8616,Bronx,1.0,low,1,0,0
+420a58c7-3b5b-4a20-9f8d-d722d03f19ca,Bruckner Blvd E @ Castle Hill Ave ,40.826943,-73.850095,Bronx,1.0,low,1,0,0
+138a0bcb-15af-46a4-baf0-8724016c73fa,GCP @ Astoria Blvd @ 49 St,40.767003,-73.901191,Queens,0.0,low,0,0,0
+2d1ed99a-c3d3-4616-a0d6-a9fe16f3e48c,SIE @ Clove Rd,40.610941,-74.098029,Staten Island,0.0,low,0,0,0
+330e2a88-3cea-4ce5-b1a2-ae8440de9b1a,1 Ave @ 84 St,40.7755,-73.9502,Manhattan,6.8,medium,6,1,1
+f1acca9b-0030-49c5-b589-33ab6ac24657,C1-TNE-01-SB_at_Otis-Ave,40.835488,-73.824394,Bronx,2.0,low,2,0,0
+04ffc69c-92a7-4c02-aa18-2b16e7ba81f2,FDR Dr @ 36 St,40.744441,-73.971242,Manhattan,3.0,low,3,0,0
+1e88b34b-2058-402e-9a3d-aca1c57696bf,GCP @ 31 ST,40.770109,-73.917131,Queens,0.0,low,0,0,0
+1fe143ba-7133-422f-b594-d6712559c523,2 Ave @ 125 St,40.80275,-73.933633,Manhattan,0.0,low,0,0,0
 36672d97-80d3-48f0-b3c4-6e6125069b90,Riverside Dr @ 79 St,40.784922,-73.982865,Manhattan,0.0,low,0,0,0
-ae2f7e1a-e781-4d24-9434-12f4f4ef4f2b,WBB -17  SOR - 2  @ Delancey St/FDR,40.71481,-73.976595,Manhattan,0.0,low,0,0,0
-17b6c7dd-2aa7-442a-8832-d39051a47d1b,Park Ave @ 34 St,40.747084,-73.981357,Manhattan,4.0,low,4,0,0
-3ad126cc-3f99-4626-a229-b9ba4d3f4b63,St Nicholas Ave @ 181 St,40.849314,-73.933739,Manhattan,2.5,low,1,5,0
-927f8797-4a7e-4b6d-b11f-cee68a027dc9,2 Ave @ E 102 St,40.788045,-73.944275,Manhattan,7.0,medium,7,0,0
-09d9335c-097e-47ef-af1d-122eb3206f7c,Rockefeller Plaza @ W 49 St,40.75836,-73.978867,Manhattan,1.8,low,1,1,1
-a9fb8f19-98a1-4b2b-a920-a3537cc4908f,Lexington Ave @ E 120 St,40.80105,-73.939747,Manhattan,7.3,medium,7,1,0
-3809d95f-f99e-4eca-9121-9c7db73f8cbd,12 Ave @ 34 St,40.75697,-74.004812,Manhattan,3.0,low,3,0,0
-301002c0-fe39-4fad-998a-fdc66e531b1d,Lincoln Tun Approach(Bet 9Ave & 10Ave) @ W31 ST ,40.752268,-73.999448,Manhattan,2.0,low,1,0,2
+83404149-7deb-43ee-81b5-66fe804c0feb,BB-63 North Rdwy@ Bklyn Twr East,40.703912,-73.994062,Brooklyn,2.0,low,2,0,0
+5caa3ace-277b-42db-97bd-585f29b0d49f,Central Park West @ W 61 St,40.769303,-73.980882,Manhattan,7.0,medium,7,0,0
+5ce5f31b-fce3-4f60-9534-5986c8b668eb,3 Ave @ E 120 Street,40.800503,-73.938107,Manhattan,7.0,medium,7,0,0
+1f92fccf-56b8-4f9f-bfd2-48e53984606e,NE Thruway @ Conner St,40.8839,-73.8259,Bronx,0.0,low,0,0,0
+0bf496dc-36dd-4311-808e-84ab6acec605,Queens Blvd @ 63 Dr,40.730072,-73.86235,Queens,3.0,low,3,0,0
+abda729c-9f02-4ecf-b164-228b1528cfac,Queens Blvd @ Skillman,40.7460324,-73.9344491,Queens,3.0,low,3,0,0
+2ade65cd-0d12-4c31-9a65-da75d9d62d4e,Hicks St NB @ Sackett St,40.6846,-74.0009,Brooklyn,0.0,low,0,0,0
+40213626-3ef8-4d63-be77-e1d84ca4d19c,Metropolitan Ave @ Berry St,40.715924,-73.961926,Brooklyn,9.0,medium,9,0,0
+351d3d12-fd9e-4e4c-b279-cd8f3f1f194c,C1-MDE-01-Cntr_at_E.135th_St-Ex1,40.803545,-73.916135,Bronx,3.0,low,3,0,0
+60fbce69-38fa-42b2-9ae8-41aea66abddf,Sands St @ Brooklyn Bridge Ent,40.699961,-73.986828,Brooklyn,0.0,low,0,0,0
+60982889-171e-4208-ae1d-8f179f91231e,Queens Blvd E/B @ 43 St,40.743316,-73.921505,Queens,2.0,low,2,0,0
+3793f20a-28ce-411d-b09b-f7baa2b6d55b,Grand Central Pkwy @ Midland Pkwy - 62.138,40.719913,-73.785009,Queens,0.5,low,0,0,1
+572b1058-c33a-4de2-8f35-0f3e9e92bc33,CBX @ Morris Ave & 174th ST,40.844785,-73.909282,Bronx,2.0,low,2,0,0
+17b6c7dd-2aa7-442a-8832-d39051a47d1b,Park Ave @ 34 St,40.747084,-73.981357,Manhattan,1.0,low,1,0,0
+0ee4eb1e-77ce-47a1-a145-0cb115656aad,Marmion Av. @ Cross Bronx Expwy,40.841586,-73.888508,Bronx,5.0,medium,5,0,0
+21ca79e4-eec6-4073-914d-117409a7e677,Kissena Blvd @ LIE N S/R,40.739234,-73.815061,Queens,1.0,low,1,0,0
+1222cb4f-2ed6-44f6-9550-29dd2cd6b839,C3-WSE-07-NB_at_Frsh_Kills_Crk-Ex5,40.578916,-74.190673,Staten Island,2.0,low,1,0,2
+a9fb8f19-98a1-4b2b-a920-a3537cc4908f,Lexington Ave @ E 120 St,40.80105,-73.939747,Manhattan,5.0,medium,5,0,0
+3ad126cc-3f99-4626-a229-b9ba4d3f4b63,St Nicholas Ave @ 181 St,40.849314,-73.933739,Manhattan,4.3,low,4,1,0
+ae2f7e1a-e781-4d24-9434-12f4f4ef4f2b,WBB -17  SOR - 2  @ Delancey St/FDR,40.71481,-73.976595,Manhattan,1.0,low,1,0,0
+927f8797-4a7e-4b6d-b11f-cee68a027dc9,2 Ave @ E 102 St,40.788045,-73.944275,Manhattan,8.9,medium,8,3,0
+09d9335c-097e-47ef-af1d-122eb3206f7c,Rockefeller Plaza @ W 49 St,40.75836,-73.978867,Manhattan,7.0,medium,7,0,0
+8ea73365-6c7b-423a-87fc-4b6fc279dafa,BQE @ Sands St,40.700185,-73.985185,Brooklyn,3.0,low,3,0,0
+38a9cb68-6d0c-4171-a809-344c581dfcb0,C5-BQE-44-Med_at_31st_Ave-Ex41,40.758099,-73.899761,Queens,0.0,low,0,0,0
+2048e8ae-11df-4ff9-8f4d-b8621af47081,Rockaway Pkwy @ Flatlands Ave,40.643693,-73.900847,Brooklyn,0.0,low,0,0,0
+046d6b99-ffe1-4761-beb4-5c0a2fc6000e,Woodhaven Blvd @ Furmanville Ave,40.720287,-73.865571,Queens,0.0,low,0,0,0
+1389ca99-0d3f-4c27-bc45-b0aa238ea7d2,SIE @ Richmond Ave,40.614885,-74.157435,Staten Island,0.0,low,0,0,0
+3809d95f-f99e-4eca-9121-9c7db73f8cbd,12 Ave @ 34 St,40.75697,-74.004812,Manhattan,6.0,medium,6,0,0
+32bf4789-4142-4484-b110-88343799a40b,C1-MDE-15-NB_at_Jerome_Ave-Ex13,40.897282,-73.879845,Bronx,0.0,low,0,0,0
+24101bcf-29a7-4417-b77d-1f0368dc212d,Hudson St @ Laight St,40.721932,-74.008155,Manhattan,0.3,low,0,1,0
+08ad39a9-300a-47f7-a708-2670843e6add,2 Ave @ E 116 St,40.79688,-73.937698,Manhattan,1.0,low,1,0,0
+b062d611-e0e8-40be-a180-c583391276f5,Park Ave @ 72 St,40.77114,-73.963907,Manhattan,4.0,low,4,0,0
+36d14f1c-b6fb-474c-9703-ecfd101ead72,Northern Blvd @ 51 St,40.752967,-73.910238,Queens,1.0,low,1,0,0
+efea49ae-8d39-4ebd-b2a9-9259361d4233,C1-CBE-10-SB_at_Brx.Rvr_Pkwy-Ex4A,40.836506,-73.873027,Bronx,2.0,low,2,0,0
+54d81029-7015-4c05-941b-94688c5aae85,BB-45 South Rdwy @ 350Ft West of Bklyn Twr,40.704726,-73.9953,Brooklyn,3.0,low,3,0,0
 af741eca-a192-41be-890a-22c7ae7d159a,WBB-10 NIR-4 @ FDR RD,40.714971,-73.976438,Manhattan,0.0,low,0,0,0
-08ad39a9-300a-47f7-a708-2670843e6add,2 Ave @ E 116 St,40.79688,-73.937698,Manhattan,0.0,low,0,0,0
-b062d611-e0e8-40be-a180-c583391276f5,Park Ave @ 72 St,40.77114,-73.963907,Manhattan,4.3,low,4,1,0
-24101bcf-29a7-4417-b77d-1f0368dc212d,Hudson St @ Laight St,40.721932,-74.008155,Manhattan,2.6,low,2,2,0
-65440c6b-ee6c-4406-8542-2992b6edf3f5,Lexington Ave @ 72 St,40.770429,-73.962214,Manhattan,2.8,low,2,1,1
-5c505897-b475-4359-897d-b064bdb9feef,8 AVE @ 44 St,40.75851,-73.9888,Manhattan,1.3,low,1,1,0
-9cdf1f47-307d-48e8-8627-e77e189b5fed,207 ST @ 9 Ave,40.863685,-73.917066,Manhattan,9.0,medium,9,0,0
-56b99f9c-1f5c-47e2-8c85-d34de045a4ce,Varick St @ Beach St ,40.720434,-74.006699,Manhattan,11.0,medium,11,0,0
-f7c4d5d5-f4d4-4590-9459-6491507ae9f9,1 Ave @ 59 St,40.759615,-73.961967,Manhattan,3.2,low,2,4,0
-8c1ea3b6-0db6-4222-ba50-2545f8f82d71,Hudson St @ Erickson Pl/Beach,40.720694,-74.008455,Manhattan,3.0,low,3,0,0
-1dddf912-4718-4b2a-94dd-1f793a9ed22c,6 Ave @ 49 St,40.759281077223,-73.9808977882913,Manhattan,1.9,low,1,3,0
-06d36cfe-a331-4cfd-8ff1-84e4d711e418,E 63 St @ QBB,40.762708,-73.961589,Manhattan,1.0,low,1,0,0
-1927b469-e2dc-4943-a70c-e6e52fd4c48c,Broadway @ 46 St- Quad South,40.758692,-73.985371,Manhattan,1.6,low,1,2,0
-4bd443cf-374f-493b-a99e-5f7ef81bb62c,3 Ave @ E 88 St,40.780144,-73.953037,Manhattan,6.0,medium,6,0,0
-1f0cfaad-4c0a-46e8-a5e3-f206d83a875d,Delancy St @ Essex St,40.718557,-73.988199,Manhattan,4.0,low,4,0,0
+0b7a91d5-e33e-42b3-a05a-951be0ab1663,Staten Island Expy @ Hylan Blvd,40.606261,-74.077786,Staten Island,0.0,low,0,0,0
+301002c0-fe39-4fad-998a-fdc66e531b1d,Lincoln Tun Approach(Bet 9Ave & 10Ave) @ W31 ST ,40.752268,-73.999448,Manhattan,9.0,medium,9,0,0
+ae67eb8d-0aed-4204-b7a1-3621ed9eef65,Tillary St EB @ Jay St,40.696002,-73.987094,Brooklyn,8.0,medium,8,0,0
+4b99e17b-d784-4ae3-a8f4-fb20e05895ee,Beach Channel Dr @B 90 St,40.589356,-73.815578,Queens,1.0,low,1,0,0
+65440c6b-ee6c-4406-8542-2992b6edf3f5,Lexington Ave @ 72 St,40.770429,-73.962214,Manhattan,1.0,low,1,0,0
+9010e3c3-c888-43d4-9c26-59e9b802dbcb,Old Fulton St @ Furman St,40.702956,-73.994687,Brooklyn,3.5,low,3,0,1
+8c1ea3b6-0db6-4222-ba50-2545f8f82d71,Hudson St @ Erickson Pl/Beach,40.720694,-74.008455,Manhattan,0.0,low,0,0,0
+5920b7ab-9e05-429f-971a-b235f3ea8dd9,Amboy Rd @ Nelson Ave,40.549932,-74.150849,Staten Island,0.0,low,0,0,0
+19c66e73-e218-42d8-af0b-a0ca53e6bf86,Queens Blvd @ 51 St,40.742627,-73.914056,Queens,0.0,low,0,0,0
+5933e055-d8a8-4248-a125-fc2ce861b1bc,Cross Island Pkwy @ 100 Ave,40.715694,-73.729213,Queens,0.5,low,0,0,1
+5c505897-b475-4359-897d-b064bdb9feef,8 AVE @ 44 St,40.75851,-73.9888,Manhattan,2.0,low,2,0,0
+7305c9dc-a6c3-4eab-83df-fd42296efbea,Southern Bl. @ Cross Bronx Expwy,40.840532,-73.886229,Bronx,0.0,low,0,0,0
+4302c1d7-48aa-45a8-a9cc-93e3132c1530,C1-CBE-03_N_NB_at_Nelson_Ave-Ex02A,40.844781,-73.920574,Bronx,4.0,low,4,0,0
+f7c4d5d5-f4d4-4590-9459-6491507ae9f9,1 Ave @ 59 St,40.759615,-73.961967,Manhattan,3.0,low,3,0,0
+6d1bd95a-307b-4067-a31c-f28d48c578b1,Metropolitan Ave @ Grand St,40.714251,-73.931525,Brooklyn,0.0,low,0,0,0
+4c47eda8-a4a1-4e40-baea-578e0a99e1d8,Beach Channel Dr @B 32 St,40.598651,-73.766059,Queens,4.0,low,4,0,0
+6cc9b754-096d-4c5c-94b7-64f6b69523d5,C3-WSE-12-NB_at_Bloomfield_Ave_Ex9,40.612239,-74.180319,Staten Island,0.0,low,0,0,0
+6d5e4eee-f777-4623-9206-92495b39bae5,C2-GE-07-WB_at_63rd_St,40.64076309,-74.02182521,Brooklyn,2.0,low,2,0,0
+56b99f9c-1f5c-47e2-8c85-d34de045a4ce,Varick St @ Beach St ,40.720434,-74.006699,Manhattan,6.0,medium,6,0,0
+1c3a5c25-a40c-40d6-8f6b-030294269fd1,Lily Pond Ave @ School Rd,40.604846,-74.065641,Staten Island,0.0,low,0,0,0
+97190ee9-e92c-46ef-a3fc-e8c75d416a9a,Henry Hudson Pkwy @ 232 St,40.884521,-73.914547,Bronx,0.0,low,0,0,0
+9cdf1f47-307d-48e8-8627-e77e189b5fed,207 ST @ 9 Ave,40.863685,-73.917066,Manhattan,1.5,low,1,0,1
+6c4cf1a1-0a5c-4d32-b502-e4f28fe609fd,South St @ Broad St,40.701797,-74.011144,Manhattan,2.0,low,2,0,0
+1f0cfaad-4c0a-46e8-a5e3-f206d83a875d,Delancy St @ Essex St,40.718557,-73.988199,Manhattan,5.3,medium,5,1,0
+1dddf912-4718-4b2a-94dd-1f793a9ed22c,6 Ave @ 49 St,40.759281077223,-73.9808977882913,Manhattan,1.5,low,1,0,1
+06d36cfe-a331-4cfd-8ff1-84e4d711e418,E 63 St @ QBB,40.762708,-73.961589,Manhattan,3.0,low,3,0,0
+4bd443cf-374f-493b-a99e-5f7ef81bb62c,3 Ave @ E 88 St,40.780144,-73.953037,Manhattan,3.0,low,3,0,0
+7384e16f-2921-4b14-b5a8-15cf58ef7ef0,C5-BQE-31-EB_at_54th_Ave,40.732548,-73.924803,Queens,23.0,high,23,0,0
+1b2c9e6b-8c35-47a2-aa60-fdd688cb61bf,Woodhaven Blvd @ Union Tpke,40.70561,-73.8582,Queens,0.0,low,0,0,0
+0a49d947-2a5b-498d-a386-2cef5ce883fa,50 St Btwn 8 Ave & Broadway,40.761861,-73.985123,Manhattan,4.0,low,4,0,0
 18afd744-f7ce-41c2-98d1-93e87929f627,2 Ave @ E 110 Street,40.793068,-73.94049,Manhattan,0.0,low,0,0,0
-3a3cf44d-6c42-46fb-b774-1441a8582076,Canal St @ Hudson St,40.723677,-74.008095,Manhattan,6.7,medium,5,4,1
-0a49d947-2a5b-498d-a386-2cef5ce883fa,50 St Btwn 8 Ave & Broadway,40.761861,-73.985123,Manhattan,4.5,low,4,0,1
-2be7f4d2-3a72-45ba-95ad-b526643ef248,West Street @ Intrepid,40.764275,-73.998569,Manhattan,7.0,medium,7,0,0
+52b1ec32-8603-41e1-af1f-b1e1e33752cb,Drumgoole Rd E @ Arden Ave - quad - Ptz - 1.130,40.54655,-74.18044,Staten Island,1.0,low,1,0,0
+0173e3be-ac26-49b0-bf76-642428d0721a,QBB NOR @ W Channel,40.758048,-73.957042,Manhattan,0.0,low,0,0,0
+3a3cf44d-6c42-46fb-b774-1441a8582076,Canal St @ Hudson St,40.723677,-74.008095,Manhattan,1.5,low,1,0,1
+57e5f44a-4515-4bc2-877b-e6373fce5a66,Queens Blvd @ Union TPKE,40.714316,-73.830834,Queens,1.0,low,1,0,0
+1927b469-e2dc-4943-a70c-e6e52fd4c48c,Broadway @ 46 St- Quad South,40.758692,-73.985371,Manhattan,2.3,low,2,1,0
+2b391c96-b487-4e60-81ad-784766fa48da,LIE @ Marathon Pkwy,40.760716,-73.73183,Queens,0.0,low,0,0,0
+2b4ed602-312d-4f31-a531-153ac33b4d87,Gowanus Expy @ 49 St,40.648255,-74.013992,Brooklyn,1.0,low,1,0,0
+7dbe41f8-0ec7-416c-9281-65bbff3a8d76,Rockaway Blvd @ Guy Brewer Blvd,40.656274,-73.767364,Queens,0.0,low,0,0,0
+1c51b3ec-3d29-4025-928d-4e182e7c0bd5,Grand Army Plaza,40.672744,-73.968781,Brooklyn,0.0,low,0,0,0
+10299e9d-efa0-4b1c-8b25-ce6e1657bc1b,C2-GE-06-WB_at_63rd_St,40.64076393,-74.02182574,Brooklyn,0.0,low,0,0,0
+2be7f4d2-3a72-45ba-95ad-b526643ef248,West Street @ Intrepid,40.764275,-73.998569,Manhattan,4.0,low,4,0,0
+2d1a4d63-7755-4a4f-bce2-79a24bd212bc,Victory Blvd @ Christopher/Lamberts La - quad - ptz -131.3,40.60841,-74.15539,Staten Island,0.0,low,0,0,0
 dce301aa-b937-4041-b9fc-960abcd79178,Varick St @ Laight St,40.721808,-74.006436,Manhattan,4.0,low,4,0,0
-23994d9e-7e59-4808-8d47-405f779d19cf,1 Ave @ 14 St,40.731361,-73.982486,Manhattan,0.3,low,0,1,0
+0ad90cca-a6b0-4968-abdd-ca81ae497848,Henry Hudson @ 135 St,40.821994,-73.957257,Manhattan,0.0,low,0,0,0
+23994d9e-7e59-4808-8d47-405f779d19cf,1 Ave @ 14 St,40.731361,-73.982486,Manhattan,1.3,low,1,1,0
+11ce0ee6-349b-4120-a66e-6299d28915f5,3rd Av. @ E 156 St.,40.820143,-73.913075,Bronx,0.0,low,0,0,0
 0f12dfd0-76dc-4b34-80ee-b10ceeb84058,2nd Camera South Bound BPU-148.57,40.704515,-74.016696,Manhattan,0.0,low,0,0,0
 b6ce5739-ca1f-4a8d-bfd7-5979d6ff6dfc,2nd Camera North Bound BPU -148.52,40.702496,-74.015762,Manhattan,0.0,low,0,0,0
-e38fd7b8-c074-4b6e-bc52-4dd932145239,Rockefeller Plaza @ W 50 St,40.75907,-73.97846,Manhattan,0.0,low,0,0,0
-311a7ce2-4648-45f7-8b69-32709361adb7,1 Ave @ 96 St,40.783304,-73.944662,Manhattan,0.0,low,0,0,0
-04589f46-2429-4e26-ad46-12a1198e9a9c,6 Ave @ West Houston St,40.728348,-74.002878,Manhattan,1.3,low,1,1,0
-5674d0ea-703a-43c3-bea7-2b372d1eb00b,2 Ave @ 72 St,40.768801,-73.958427,Manhattan,0.6,low,0,2,0
-fcc24aa5-4da0-48f2-aa43-e70e4677517c,6 Ave @ 23 St,40.7429025573452,-73.992797766009,Manhattan,9.2,medium,8,4,0
+26b347aa-b8c0-4539-b061-87c8a6472d04,Ocean Pkwy @ Kings Hwy,40.605697,-73.966819,Brooklyn,0.0,low,0,0,0
+5ea363ef-b9d6-4863-967a-0b4ba9cb0bf5,Flatbush Ave @ Aviator Sports & Golf Club,40.5902,-73.900803,Brooklyn,4.0,low,4,0,0
+e38fd7b8-c074-4b6e-bc52-4dd932145239,Rockefeller Plaza @ W 50 St,40.75907,-73.97846,Manhattan,6.0,medium,6,0,0
+53295394-387c-4a43-b472-52494ac8122e,Drumgoole Rd E @ Bloomingdale Rd - quad - ptz - 143.26,40.52793,-74.21655,Staten Island,0.0,low,0,0,0
+10a4be9a-8a1e-4b0c-84c3-b51c887b5e27,Northern Blvd @ 48 St,40.753647,-73.914468,Queens,0.0,low,0,0,0
 38c07664-0329-471e-997f-6a9015a5bcef,1 Ave @ 124 St,40.801009,-73.931756,Manhattan,0.0,low,0,0,0
-482e6d35-2a67-4bbf-b36f-fdf7e031d607,5 AVE @ 50 St,40.75856,-73.9772,Manhattan,8.0,medium,5,10,0
-98c2de4e-fa0c-41d0-b1ea-6d1df833d792,Allan St (1 Ave) @ Houston St (B),40.72289,-73.988622,Manhattan,2.0,low,2,0,0
-10c5f42d-6b32-4533-9c35-5715af4e4c76,3 Ave @ E 86 St,40.778737,-73.953921,Manhattan,4.5,low,2,5,2
-67a4769b-dfb2-4a0d-9605-114df107646c,West St @ West Houston St,40.729104,-74.010528,Manhattan,4.0,low,3,0,2
-5c4582a7-6492-41ac-9bac-fa872878117b,West st and Fulton,40.71303,-74.014039,Manhattan,6.0,medium,6,0,0
+989b2f37-3fd6-4ccc-bcb5-ea2199bd2645,BQE @ Sands St (westbound) - video detection,40.700292,-73.985032,Brooklyn,0.0,low,0,0,0
+4d92ff93-b8cd-4bec-a70b-91b4cfb75857,C3-MLK-03_NB_at_Walkr_St-Bayonne_Br,40.630779,-74.145543,Staten Island,0.0,low,0,0,0
+04589f46-2429-4e26-ad46-12a1198e9a9c,6 Ave @ West Houston St,40.728348,-74.002878,Manhattan,4.3,low,4,1,0
+c18f480c-e7a9-494b-b435-26adb0d9f881,C2-BQE-29_WB_at_Morgan_Street,40.722951,-73.939997,Brooklyn,5.0,medium,5,0,0
+5674d0ea-703a-43c3-bea7-2b372d1eb00b,2 Ave @ 72 St,40.768801,-73.958427,Manhattan,3.0,low,3,0,0
+023cc794-4600-4c02-91e7-4603597172e1,Wythe Ave @ Williamsburg st w,40.701667,-73.961476,Brooklyn,4.0,low,4,0,0
+fcc24aa5-4da0-48f2-aa43-e70e4677517c,6 Ave @ 23 St,40.7429025573452,-73.992797766009,Manhattan,2.3,low,2,1,0
+98c2de4e-fa0c-41d0-b1ea-6d1df833d792,Allan St (1 Ave) @ Houston St (B),40.72289,-73.988622,Manhattan,0.0,low,0,0,0
+311a7ce2-4648-45f7-8b69-32709361adb7,1 Ave @ 96 St,40.783304,-73.944662,Manhattan,3.0,low,3,0,0
+c361e170-2da7-4e96-9546-296e766b37ad,Queens Blvd @ 39 ST,40.744152,-73.926136,Queens,1.3,low,1,1,0
+42e78c2b-3c70-47dc-8685-f1b5eca3deb5,C2-BQE-30B_W_at_Stewart Ave,40.725102,-73.933022,Brooklyn,6.0,medium,6,0,0
+23cb2c44-1a40-4950-a914-ee7f1390553c,West Shore Expy @ Arden Ave,40.559754,-74.199386,Staten Island,0.0,low,0,0,0
+482e6d35-2a67-4bbf-b36f-fdf7e031d607,5 AVE @ 50 St,40.75856,-73.9772,Manhattan,3.2,low,2,4,0
+10c5f42d-6b32-4533-9c35-5715af4e4c76,3 Ave @ E 86 St,40.778737,-73.953921,Manhattan,2.3,low,2,1,0
+2fe54994-17f6-499d-a3ab-8c6dc9dbda9e,Atlantic Ave @ Bedford Ave,40.678742,-73.953032,Brooklyn,7.0,medium,7,0,0
+3cb76a99-5f52-4628-870e-bbc09caef0fa,Cross Bay Blvd @ N. Conduit Ave,40.668793,-73.842395,Queens,0.5,low,0,0,1
+2a0ec6ff-9284-466a-9785-9f6df84ea4cf,Fordham Rd @ Hughes Ave,40.858209,-73.884347,Bronx,6.0,medium,6,0,0
 3c39ff3e-a81c-4f92-9a96-7861aa244fda,BB-43 North Rdwy @ Center Expansion Jt,40.705626,-73.9962,Manhattan,0.0,low,0,0,0
-214340ac-8243-4820-b924-f36caff361e2,2 Ave @ 36 St-Midtown Tunnel,40.7460850794673,-73.9749605630373,Manhattan,5.0,medium,5,0,0
-4d39d6d1-a009-480f-9851-2571a5df1174,Amsterdam Ave @ 181 St,40.84833,-73.930868,Manhattan,2.0,low,1,0,2
+67a4769b-dfb2-4a0d-9605-114df107646c,West St @ West Houston St,40.729104,-74.010528,Manhattan,1.0,low,1,0,0
+5c4582a7-6492-41ac-9bac-fa872878117b,West st and Fulton,40.71303,-74.014039,Manhattan,8.5,medium,8,0,1
+1d799f04-00cb-4ac7-a8bb-f090b750dee1,Victory Blvd @ Richmond Ave - quad - ptz - 130.146,40.60728,-74.16261,Staten Island,0.0,low,0,0,0
+3c1e0011-7dbc-4bc9-af2d-e9347754bf91,Myrtle Ave @ 79 Lane - 73.74,40.7029,-73.8691,Queens,0.8,low,0,1,1
+40ffec9e-3d55-454f-927e-6a602869a451,Northern Blvd @ Parsons Blvd,40.764641,-73.82347,Queens,1.0,low,1,0,0
+4d39d6d1-a009-480f-9851-2571a5df1174,Amsterdam Ave @ 181 St,40.84833,-73.930868,Manhattan,0.5,low,0,0,1
+214340ac-8243-4820-b924-f36caff361e2,2 Ave @ 36 St-Midtown Tunnel,40.7460850794673,-73.9749605630373,Manhattan,0.8999999999999999,low,0,3,0
+1a64aa06-3f40-4f0e-b752-09ec44415ac0,C5-VWE-25-NB_at_GCP-Intr.-Ex14,40.715955,-73.8263,Queens,0.0,low,0,0,0
 097a7d75-1c6f-4817-aa34-1de4bb9202f4,MHB-23 Manh LRDWY @ Twr,40.708814,-73.991511,Manhattan,0.0,low,0,0,0
+2b06cd6d-e698-4c1a-b306-6827fb19ced7,BQE @ BELT PKWY Ramp & 60 St,40.641938,-74.020277,Brooklyn,0.0,low,0,0,0
+28880add-7b37-4d5f-8414-ad32aaab6c13,Beach Channel Dr @B 101 St,40.585808,-73.823158,Queens,0.5,low,0,0,1
+5d1261df-ddca-435a-9292-a0474c44c104,Woodhaven Blvd @ 91 ave,40.689844,-73.850149,Queens,1.0,low,1,0,0
+08c57946-9560-49b9-97a5-43dc5b74fd86,Cadman Plz E/Washington St @ Prospect St,40.700743,-73.989736,Brooklyn,0.0,low,0,0,0
+6316453d-6161-4b98-a8e7-0e36c69d267c,2 Ave @ 74 St,40.770142,-73.957381,Manhattan,3.3,low,3,1,0
+7a0d9e49-875c-4c25-a92b-3d239de40d43,Old Fulton St @ Prospect St,40.700757,-73.991042,Brooklyn,0.0,low,0,0,0
+4678c08d-9b89-4dd4-9fa0-234412822bb7,C3-MLK-02-NB_at_Forest_Ave-Ex11,40.624655,-74.146146,Staten Island,8.0,medium,8,0,0
+575d8f33-7923-4ec6-983e-82c58efd8110,Cross Bronx Expy @ Arthur Ave,40.843732,-73.894798,Bronx,3.0,low,3,0,0
+67ef8775-026c-4152-8a81-c7251e0677ca,Northern Blvd @ 161 St,40.762638,-73.804617,Queens,3.0,low,3,0,0
+97ace0b4-fcd2-4c3a-8c05-dbf73639ead3,Crescent st @ 39 Ave,40.7547,-73.93678,Queens,0.0,low,0,0,0
+1e627100-9bce-4e78-bcd3-736344a2236c,FDR Dr @ Brooklyn Bridge Exit NB,40.708446,-73.998459,Manhattan,2.0,low,2,0,0
+5654d38e-e305-4119-8cd9-8a7bba65460b,Pelham Pkwy E/B @ Boston Rd,40.855609,-73.869347,Bronx,3.0,low,3,0,0
+98b37dd5-bd64-4ace-add0-37f5135df600,St Nicholas Ave @ 125 St,40.810767,-73.952593,Manhattan,3.0,low,3,0,0
+4d84b5d0-c9da-4916-8b0d-4f3d573d3509,Old Fulton @ Vine St @ Hicks St,40.701936,-73.992574,Brooklyn,0.0,low,0,0,0
 25ad72fe-e74c-49af-b4c0-34c9eac14655,Canal St @ Greenwich St ( Holland Tunnel ),40.725039,-74.01009,Manhattan,0.0,low,0,0,0
-1e627100-9bce-4e78-bcd3-736344a2236c,FDR Dr @ Brooklyn Bridge Exit NB,40.708446,-73.998459,Manhattan,0.0,low,0,0,0
-6316453d-6161-4b98-a8e7-0e36c69d267c,2 Ave @ 74 St,40.770142,-73.957381,Manhattan,9.3,medium,9,1,0
-98b37dd5-bd64-4ace-add0-37f5135df600,St Nicholas Ave @ 125 St,40.810767,-73.952593,Manhattan,3.1,low,2,2,1
-86d418ab-10bc-4b73-a283-153abffabb0f,West st and West Thames (Battery tunnel),40.70769,-74.01565,Manhattan,2.0,low,2,0,0
-421960d6-54a8-4f12-a5ee-7a07390def4c,MADISON @ 57 ST,40.7622962700164,-73.9723570534941,Manhattan,2.2,low,1,4,0
-61890a52-c90e-41a1-b032-d5c6f39746d9,7 Ave @ 145 St,40.821639,-73.939078,Manhattan,2.5,low,2,0,1
-37e2a4b6-2fbd-42f5-9d2d-130b664783f2,9 Ave @ 57 St,40.7679306900999,-73.9857235137761,Manhattan,0.0,low,0,0,0
-957fc40e-675c-4121-a3bc-ca3c0a246831,10 Ave @ 49 St,40.764212,-73.992385,Manhattan,4.6,low,4,2,0
+52f3d48e-3bb4-4c83-bec2-1fb664d56501,Qns Blvd @ QnCnt Mall,40.733568,-73.869324,Queens,0.0,low,0,0,0
+2e0d5197-6073-411f-9d1a-326b30841679,Flushing Ave @ Williamsburg W St,40.698104,-73.962851,Brooklyn,1.0,low,1,0,0
+4ab788f8-4a07-4604-a1f6-f47ce72ea01e,Major Deegan Expy @ Macombs Dam Bridge,40.828115,-73.931447,Bronx,9.0,medium,9,0,0
+37bb364c-7288-4481-a17d-0ba244d30baa,Rockaway Blvd @ Baisley Blvd,40.672635,-73.785637,Queens,3.5,low,3,0,1
+5a9ebe48-fb36-4de7-8666-f50de83c7941,Flatbush Ave @ Nostrand Ave,40.632889,-73.947672,Brooklyn,0.0,low,0,0,0
+02ac2943-68f1-478d-b8d5-148a97e77e27,C3-KWV-01-NB_at_Tyrllan_Ave-Outrbr,40.525433,-74.230189,Staten Island,16.0,high,16,0,0
+7b84a612-a340-49ae-b3e8-1c558049cb3c,Sands St @ BQE Ent,40.699916,-73.98621,Brooklyn,0.0,low,0,0,0
+6029af32-7e3c-412f-804e-b34166300799,Pelham Pkwy @ Stillwell Ave,40.856678,-73.836682,Bronx,0.0,low,0,0,0
+2293205b-2b15-44da-8220-6833a13c5a80,Ocean Pkwy @ Church Ave,40.644933,-73.974359,Brooklyn,4.0,low,4,0,0
+957fc40e-675c-4121-a3bc-ca3c0a246831,10 Ave @ 49 St,40.764212,-73.992385,Manhattan,9.8,medium,9,1,1
+557af346-2f9f-4306-8388-3974b7a49e4d,Crescent st @ 41 Ave,40.75224,-73.9391,Queens,1.5,low,1,0,1
+1c6033e3-3872-41ce-9fc2-12fbddcfd7e6,Hylan Blvd @ Midland Ave,40.577965,-74.102264,Staten Island,0.0,low,0,0,0
+353368c2-7307-4923-a86b-5d7e6e0d0e6a,C3-SIE-04-WB_at_Lambert_St_Ex6,40.618041,-74.161434,Staten Island,18.0,high,18,0,0
+61890a52-c90e-41a1-b032-d5c6f39746d9,7 Ave @ 145 St,40.821639,-73.939078,Manhattan,3.5,low,3,0,1
+37e2a4b6-2fbd-42f5-9d2d-130b664783f2,9 Ave @ 57 St,40.7679306900999,-73.9857235137761,Manhattan,1.0,low,1,0,0
+4334f995-5cae-4725-b7d2-ccaf72447237,Washington St @ Prospect St,40.700743,-73.989736,Brooklyn,1.0,low,1,0,0
+401c14c4-516f-48af-ad5d-fc36ddcff149,C5-VWE-28-SB_at_67th_Rd-Ex11,40.733128,-73.835773,Queens,0.0,low,0,0,0
+8ee72946-49e0-4f49-991d-4f52b1206ed7,Broadway @ 6 Ave / 33 St,40.749412,-73.98806,Manhattan,7.9,medium,5,8,1
 5beee073-18a8-4349-af6b-75eff7a78371,Church Street @ Vesey,40.712078,-74.010108,Manhattan,1.0,low,1,0,0
-8f692f55-8118-423b-8bcb-1ea49eaf442b,2 Ave @ 42 St,40.7498342023994,-73.9722170340956,Manhattan,4.6,low,4,2,0
-8ee72946-49e0-4f49-991d-4f52b1206ed7,Broadway @ 6 Ave / 33 St,40.749412,-73.98806,Manhattan,3.9,low,3,3,0
-5ed9017b-c053-4c5e-b858-752516683ada,Dyer Ave @ W 36 St,40.75516,-73.996557,Manhattan,1.0,low,1,0,0
+c8b15922-4262-459a-85d5-17442ec9c54f,C1-MDE-09-SB_at_Depot_Pl-Ex7-CBX,40.84154,-73.928612,Bronx,2.0,low,2,0,0
+5bcf06f4-dbf0-4c7b-b6f3-241aea4e92c6,Hempstead Ave @ Springfield Ave,40.713306,-73.735855,Queens,6.0,medium,6,0,0
+247c548c-da8e-45fc-8183-6f82be28edee,Clearview Expy @ 35 Ave,40.766534,-73.780961,Queens,4.0,low,4,0,0
+8f692f55-8118-423b-8bcb-1ea49eaf442b,2 Ave @ 42 St,40.7498342023994,-73.9722170340956,Manhattan,6.0,medium,5,0,2
+9f118098-cee3-4964-8630-b932c94f70a3,Under Cliff Ave @ Boscobe Pl,40.844403,-73.925012,Bronx,1.0,low,1,0,0
+421960d6-54a8-4f12-a5ee-7a07390def4c,MADISON @ 57 ST,40.7622962700164,-73.9723570534941,Manhattan,4.5,low,4,0,1
+8645493f-d08c-4c0e-a572-b40f5fbeec56,Van Dam St @ 48 Ave,40.741099,-73.9343,Queens,6.0,medium,6,0,0
+6dd4b946-8704-4690-aa87-017a19e778c5,Woodhaven Blvd @ Jamaica Ave,40.694,-73.852,Queens,3.0,low,3,0,0
 9dbb3101-9918-4b61-946f-a34d7c7c662b,East Houston St @ Ave B,40.721437,-73.983838,Manhattan,0.0,low,0,0,0
-6a85384f-d82e-4bff-b5f1-15c22cca70e6,8th Ave @ 33rd St,40.751512,-73.993913,Manhattan,3.0,low,3,0,0
-0267c1e2-6eaf-49d4-a063-df89e9242993,FDR Dr @ 79 St,40.770256,-73.947626,Manhattan,1.0,low,1,0,0
-db5f8b82-99b1-45f3-a520-7d1f91d0a49a,1 Ave @ E 14 St,40.731331,-73.982561,Manhattan,1.5,low,1,0,1
-9bd74b87-32d1-4767-8081-86a2e83f28f2,12 Ave @ 42 St,40.761978792937,-74.0010637153985,Manhattan,0.0,low,0,0,0
-a409e9bd-6a0f-4cdc-81d8-290d5709dc74,FDR @ 38 St,40.7458,-73.9705,Manhattan,1.0,low,1,0,0
-0ff11926-fcf0-4e3b-8aea-ffc0ea4f2228,West Houston @ Hudson St,40.728739,-74.007137,Manhattan,5.8,medium,5,1,1
+a409e9bd-6a0f-4cdc-81d8-290d5709dc74,FDR @ 38 St,40.7458,-73.9705,Manhattan,3.0,low,3,0,0
+9bd74b87-32d1-4767-8081-86a2e83f28f2,12 Ave @ 42 St,40.761978792937,-74.0010637153985,Manhattan,1.0,low,1,0,0
+5ed9017b-c053-4c5e-b858-752516683ada,Dyer Ave @ W 36 St,40.75516,-73.996557,Manhattan,2.0,low,2,0,0
+db5f8b82-99b1-45f3-a520-7d1f91d0a49a,1 Ave @ E 14 St,40.731331,-73.982561,Manhattan,1.5,low,0,5,0
+40961631-fb83-4f48-8ffb-3385448d4e5f,7 Ave @ 18 St,40.660584,-73.987209,Brooklyn,4.0,low,4,0,0
+a2d92e4b-f041-4bd4-9f13-3ece7451a752,C3-SIE-05-WB_at_MLK-Int-Ex9,40.612621,-74.153868,Staten Island,11.0,medium,11,0,0
+1da7a29e-9993-4b93-b13a-e29b40c2069d,C2-BQE-04_WB_at_Sackett_St-Ex26,40.684718,-74.001218,Brooklyn,13.0,medium,13,0,0
+27cc1c4b-fb4a-41b3-845c-8fd9e2fa0a2c,Woodhaven Blvd @ Park ln,40.69755,-73.852925,Queens,0.0,low,0,0,0
+699cc803-c1db-4307-becf-9604a45c7c5c,McGuinness Blvd @ Bayard St,40.720839,-73.944951,Brooklyn,4.0,low,4,0,0
+6a85384f-d82e-4bff-b5f1-15c22cca70e6,8th Ave @ 33rd St,40.751512,-73.993913,Manhattan,14.4,medium,13,3,1
+1ede87de-aba2-45bb-a792-cadf59eb792e,C3-WSE-04-SB_at_Rossville_Ave-Ex4,40.554843,-74.213329,Staten Island,5.0,medium,5,0,0
+6a5f91d8-042f-4678-a722-2c3c560dedf2,Wythe Ave @ North 12 St,40.72231,-73.957447,Brooklyn,2.0,low,2,0,0
+69278f3b-9d11-4256-8ef7-70c02a01bfc2,Pennsylvania Ave @ Flatlands Ave,40.652728,-73.886256,Brooklyn,5.0,medium,5,0,0
+cc6c54fa-43fb-4484-a598-20feea2adb89,Queens Blvd @ 36 St,40.744584,-73.928866,Queens,0.0,low,0,0,0
+0267c1e2-6eaf-49d4-a063-df89e9242993,FDR Dr @ 79 St,40.770256,-73.947626,Manhattan,5.0,medium,5,0,0
+b5b12361-b5b6-483f-a76e-b6cf98e06694,C5-BQE-37-EB_at_41st_Ave,40.744962,-73.894487,Queens,10.0,medium,10,0,0
 2a0021de-869a-4a31-b151-0be7f78d9c05,MHB-17 Manh LRW @ X OVER,40.712361,-73.993504,Manhattan,0.0,low,0,0,0
-7d10cfbb-0465-4958-90fc-ddd5349d6635,West St @ Canal St,40.725812,-74.011063,Manhattan,4.0,low,4,0,0
-17855127-7fe2-45d4-920c-ed14e80ec4d7,Third Ave Bridge,40.807061,-73.933681,Manhattan,9.0,medium,9,0,0
-879ab924-18ac-4779-a681-395d73a0f0cc,Madison Ave @ E 44 St,40.754038,-73.97827,Manhattan,6.6,medium,6,2,0
-7cfc551d-403d-46a8-aa74-89f472b7136b,Broadway @ Battery pl,40.70461,-74.0142,Manhattan,1.6,low,1,2,0
+17855127-7fe2-45d4-920c-ed14e80ec4d7,Third Ave Bridge,40.807061,-73.933681,Manhattan,1.0,low,1,0,0
+0ff11926-fcf0-4e3b-8aea-ffc0ea4f2228,West Houston @ Hudson St,40.728739,-74.007137,Manhattan,3.1,low,2,2,1
+879ab924-18ac-4779-a681-395d73a0f0cc,Madison Ave @ E 44 St,40.754038,-73.97827,Manhattan,8.0,medium,8,0,0
 08e77bd0-c673-4303-b772-243fdee28d6c,BB-28A Manhattan Tower North,40.707365,-73.998188,Manhattan,0.0,low,0,0,0
-16de4b9a-83fe-4d11-91cd-d775cc1e559c,FDR Dr @ 111 ST,40.791666,-73.935403,Manhattan,2.0,low,2,0,0
-6c2996f1-3d8f-44a9-8ce0-a827ae8d3680,FDR @ 145 St,40.81961,-73.9342,Manhattan,4.0,low,4,0,0
-4f3f56e3-f68e-4b60-a4ba-153ecb9094f7,6 AVE @ 50 St,40.75994,-73.9805,Manhattan,5.0,medium,5,0,0
-7a6da464-d347-438c-b599-818760cc218b,11 Ave @ 49 St,40.765188,-73.99499,Manhattan,1.0,low,1,0,0
-0b0cbcfb-7c14-4b94-8bac-be494472c396,Amsterdam @ 86 St,40.787693,-73.975016,Manhattan,0.3,low,0,1,0
-9565e94d-66f2-4965-9c13-82d5500d6cfd,Broadway @ 42 St,40.7558094297322,-73.9864124090652,Manhattan,5.0,medium,5,0,0
-bf8404ae-6ab7-47a1-8b3e-2f57f537a71f,5 Ave @ 96 St,40.787916,-73.955752,Manhattan,1.0,low,1,0,0
-4048d465-2272-446e-bccb-c49ea6d62bd3,FDR Dr @ BPU Entrance,40.701797,-74.010764,Manhattan,5.0,medium,5,0,0
-ccd1abb9-0683-4d93-a62f-b2b121612d28,9 Ave @ 42 St,40.7584430039686,-73.9926394975013,Manhattan,5.6,medium,5,2,0
-28107d1c-08da-4cd3-9777-09471ca30225,Henry Hudson Pkwy @ 96 St,40.795618,-73.976183,Manhattan,1.0,low,1,0,0
-3546896d-d4c6-4966-8a43-2fe62e26526f,E 8 St @ Lafayette St,40.730175,-73.991076,Manhattan,2.2,low,1,4,0
-02d7db8e-481d-477e-9cdb-a2b6c6ec1ca3,2 Ave @ E 14 St,40.732373,-73.984954,Manhattan,9.8,medium,9,1,1
+7a6da464-d347-438c-b599-818760cc218b,11 Ave @ 49 St,40.765188,-73.99499,Manhattan,5.9,medium,5,3,0
+7cfc551d-403d-46a8-aa74-89f472b7136b,Broadway @ Battery pl,40.70461,-74.0142,Manhattan,0.0,low,0,0,0
+7be9623c-4f70-4815-bc54-5f0411491b83,Narrows Rd South @ Fingerboard Rd,40.603647,-74.069355,Staten Island,3.0,low,3,0,0
+6c2996f1-3d8f-44a9-8ce0-a827ae8d3680,FDR @ 145 St,40.81961,-73.9342,Manhattan,0.0,low,0,0,0
+7d10cfbb-0465-4958-90fc-ddd5349d6635,West St @ Canal St,40.725812,-74.011063,Manhattan,6.0,medium,6,0,0
+3f85b7f5-564d-4098-9ffd-580ab6f88ed5,Hempstead Ave at Jamaica Ave,40.716182,-73.744776,Queens,2.0,low,2,0,0
+7a183d27-7c22-4014-ac9a-726efa472c79,Northern Blvd @ Bell Blvd,40.760288,-73.769377,Queens,4.3,low,4,1,0
+7033b4d2-13e5-4405-ab86-da33c12734c3,BQE E/B Ent. Ramp @ Broadway,40.748641,-73.895892,Queens,0.0,low,0,0,0
+7609996b-ec61-4c06-bb58-c9aa93c65b80,Grand St @ Graham Ave,40.711646,-73.943913,Brooklyn,1.0,low,1,0,0
+74fcddb5-5030-4be4-864c-e315e58b86f4,Long Island Expy @ Douglaston Pkwy,40.75692,-73.73928,Queens,0.0,low,0,0,0
+4355c2af-b181-4cc2-98ef-cec3b1475c51,Veterans Rd @ Bloomingdale Rd - quad - ptz - 0.130,40.52869,-74.21684,Staten Island,0.0,low,0,0,0
+4f3f56e3-f68e-4b60-a4ba-153ecb9094f7,6 AVE @ 50 St,40.75994,-73.9805,Manhattan,4.0,low,4,0,0
+08c40d18-cacf-4139-aa64-ba8f8602af53,Northern Blvd @ 82 St,40.755492,-73.885347,Queens,0.0,low,0,0,0
+16de4b9a-83fe-4d11-91cd-d775cc1e559c,FDR Dr @ 111 ST,40.791666,-73.935403,Manhattan,0.0,low,0,0,0
+6e9a1a7e-63ad-4cab-b14a-1864040409fb,Hylan Blvd @ Richmond Ave,40.534229,-74.153896,Staten Island,0.0,low,0,0,0
+38580316-60fc-4adf-a04a-87fc8cf523ad,Bruckner Blvd W @ Castle Hill Ave,40.827617,-73.850183,Bronx,0.5,low,0,0,1
+4053642d-dd92-4045-ac55-069110659563,Crotona Pkwy @ Cross Bronx Expwy,40.840259,-73.885677,Bronx,1.0,low,1,0,0
+3546896d-d4c6-4966-8a43-2fe62e26526f,E 8 St @ Lafayette St,40.730175,-73.991076,Manhattan,0.0,low,0,0,0
+cda76289-afd2-498e-a0e9-420a1854c38a,Flatbush Ave @ Fulton St,40.6880253424274,-73.9803886413574,Brooklyn,5.0,medium,5,0,0
+bf8404ae-6ab7-47a1-8b3e-2f57f537a71f,5 Ave @ 96 St,40.787916,-73.955752,Manhattan,0.3,low,0,1,0
+ccd1abb9-0683-4d93-a62f-b2b121612d28,9 Ave @ 42 St,40.7584430039686,-73.9926394975013,Manhattan,1.0,low,1,0,0
+bfcb2b32-7ae7-4060-a39b-80f71a1db289,QBB UL @ Queens Pier,40.755254,-73.950939,Queens,2.0,low,2,0,0
+33dda383-4778-48ee-97e7-abcd68b5d365,BB-64 South Rdwy @ Bklyn Twr Side Sapn,40.703795,-73.994062,Brooklyn,1.0,low,1,0,0
+3cede892-0c4e-47ac-9a1a-1c837e9753c4,Beach Channel Dr @ Beach 69 St,40.59277,-73.7981,Queens,0.0,low,0,0,0
+36b00c79-b2a0-49d3-800a-42b7db1847a8,Jamaica Ave @ Sutphin Blvd,40.701756,-73.80795,Queens,2.3,low,2,1,0
+43e3d020-e4f2-4599-a19f-72ae778f1dcd,C5-LIE-02-EB_at_27th_St-Ex15,40.739299,-73.941697,Queens,11.0,medium,11,0,0
+28107d1c-08da-4cd3-9777-09471ca30225,Henry Hudson Pkwy @ 96 St,40.795618,-73.976183,Manhattan,0.0,low,0,0,0
+0b0cbcfb-7c14-4b94-8bac-be494472c396,Amsterdam @ 86 St,40.787693,-73.975016,Manhattan,1.3,low,1,1,0
+4048d465-2272-446e-bccb-c49ea6d62bd3,FDR Dr @ BPU Entrance,40.701797,-74.010764,Manhattan,3.0,low,3,0,0
+7efa7790-bbec-4118-bae4-ddb390d0eaa8,C2-BQE-13_WB_at_Middagh_St-Ex28A,40.701206,-73.994465,Brooklyn,7.0,medium,7,0,0
+9565e94d-66f2-4965-9c13-82d5500d6cfd,Broadway @ 42 St,40.7558094297322,-73.9864124090652,Manhattan,9.0,medium,6,10,0
+261853c1-91c6-4007-9d52-ed530d1a826a,C3-SIE-15-EB_at_Fingerboard_Rd_Ex15,40.603743,-74.069126,Staten Island,4.0,low,4,0,0
+3f32e246-a88d-4b87-995f-b9dad6a092b1,Prospect Expy @ 3rd Ave & 4th Ave,40.666,-73.994,Brooklyn,6.0,medium,6,0,0
+6eee8e60-805b-403c-9c82-bac9e60d9cd9,C1-BRE-09-SB_at_Lasalle_Ave-Ex7C,40.840811,-73.825902,Bronx,10.0,medium,10,0,0
+4bb3c648-45f8-4134-9ac8-fb56f2f851fa,West Shore Expy @ Rossville Ave,40.554668,-74.213079,Staten Island,0.0,low,0,0,0
+90775fd8-1c70-42f1-aee1-594db85be7ba,Clearview Expy @ 26 Ave,40.775439,-73.78418,Queens,0.0,low,0,0,0
+4ec4d8da-6dcb-444d-b33a-096a7d07bb51,Metropolitan Ave @ Fresh Pond Rd,40.71261,-73.9004,Queens,1.0,low,1,0,0
+89177410-fe37-46fa-8021-5951e3d443c0,Columbia St & BQE ENT and EXIT,40.690405,-74.00012,Brooklyn,4.0,low,4,0,0
+4476f829-989d-4618-bef1-2ecb5dce4a5c,C3-WSE-09-SB_at_Meredith_Blvd-Ex8,40.597318,-74.191548,Staten Island,0.0,low,0,0,0
+3fd80992-482b-4e88-ad7f-8c74690a8d37,BB-26 South Rdwy @ West of Manhattan Twr,40.707458,-73.998712,Brooklyn,1.0,low,1,0,0
+21add4fd-bf30-404e-a2ff-18b16688fe0d,C5-GCP-12_WB_at_69th_Rd-Ex11,40.726696,-73.837873,Queens,2.0,low,2,0,0
+8188de4c-c144-4897-bee4-767022b832e9,Grand St (Borinquen Pl) @ Union Ave,40.71096,-73.951087,Brooklyn,1.8,low,1,1,1
+02d7db8e-481d-477e-9cdb-a2b6c6ec1ca3,2 Ave @ E 14 St,40.732373,-73.984954,Manhattan,4.0,low,4,0,0
+86d418ab-10bc-4b73-a283-153abffabb0f,West st and West Thames (Battery tunnel),40.70769,-74.01565,Manhattan,4.3,low,3,1,2
 5efba010-6a58-4df5-ae2c-ef1eda48fad0,West street underpass entrance,40.70858,-74.0153,Manhattan,0.0,low,0,0,0
-bff66919-97a3-47ca-b16d-ca07ff93a546,Lexington Ave @ 23 St,40.7395059171263,-73.9847405603646,Manhattan,0.6,low,0,2,0
-3dc1adcd-7a47-45c3-a667-9d8fae9fdcd0,8 Ave @ 14 St,40.7397525513578,-74.0025212013102,Manhattan,1.6,low,1,2,0
-24c402b2-915d-49f8-9529-f723a171c134,FDR @ Grand St,40.713209,-73.977491,Manhattan,4.0,low,4,0,0
-0b4bd3d3-1741-49b3-87cc-d0960fa5f424,Lexington Ave @ 34 St,40.7464005840423,-73.9797313879486,Manhattan,2.0,low,2,0,0
-936d479d-402f-468a-b1c6-b2c2a68a0b4c,Harlem River Dr Ramp @ Before GWB & Amst_179St Exit,40.84359,-73.9315,Manhattan,0.0,low,0,0,0
-180dcc87-d861-43e3-8898-9ad5ee1a26a9,Lexington Ave @ 57 ST,40.7609271914359,-73.9691468531185,Manhattan,3.3,low,3,1,0
+89f83119-67ea-4395-9402-66cc19f5d57b,Farmers Blvd @ N Conduit Ave,40.667436,-73.766763,Queens,0.0,low,0,0,0
+4b601090-d552-4c2c-804f-1360305f3dd5,McGuinness Blvd @ Greenpoint Ave,40.730514,-73.951543,Brooklyn,5.0,medium,5,0,0
+3dc1adcd-7a47-45c3-a667-9d8fae9fdcd0,8 Ave @ 14 St,40.7397525513578,-74.0025212013102,Manhattan,1.9,low,1,3,0
+7badcb3f-7cb5-4fa6-90fd-40c3b6c40eac,Bronx River Pkwy @ Wakefield Ave,40.906302,-73.856407,Bronx,4.0,low,4,0,0
+041f8f94-fcf8-4860-9a5d-c81fb5c97501,Major Deegan Expwy @ 230 St,40.8765141,-73.9047832,Bronx,0.0,low,0,0,0
+bfdc1e75-c363-49c6-8236-7e9e9c9c1cdd,C1-MDE-05-SB_at_E.153rd_St-Ex4,40.825097,-73.931354,Bronx,5.0,medium,5,0,0
+24c402b2-915d-49f8-9529-f723a171c134,FDR @ Grand St,40.713209,-73.977491,Manhattan,3.0,low,3,0,0
+1b127707-c45a-40d6-b0d3-8a76d3de6053,Roosevelt Ave @ Parsons Blvd,40.761617,-73.822077,Queens,4.0,low,4,0,0
+372d3b88-994d-483c-bc8f-5f584477b9c1,Metropolitan Ave @ Grand Ave,40.714551,-73.930217,Queens,3.0,low,3,0,0
+0b4bd3d3-1741-49b3-87cc-d0960fa5f424,Lexington Ave @ 34 St,40.7464005840423,-73.9797313879486,Manhattan,8.0,medium,8,0,0
+00077ee3-2c13-4674-adbd-a51b3484b0be,MHB-30 @ BRK S URW @ TWR Walk Way,40.705035,-73.98958,Brooklyn,0.0,low,0,0,0
+180dcc87-d861-43e3-8898-9ad5ee1a26a9,Lexington Ave @ 57 ST,40.7609271914359,-73.9691468531185,Manhattan,0.6,low,0,2,0
+167fabd4-70d7-4b74-add4-8cc077efe3f6,East 21 st @ QBB Upper Roadway Exit Ramp,40.75113,-73.94518,Queens,3.3,low,3,1,0
+936d479d-402f-468a-b1c6-b2c2a68a0b4c,Harlem River Dr Ramp @ Before GWB & Amst_179St Exit,40.84359,-73.9315,Manhattan,1.0,low,1,0,0
+63930c04-926c-4730-821e-95b486513843,RT. 9A @ N. Moore St,40.720319,-74.012171,Manhattan,4.0,low,4,0,0
+69cc3528-455a-47a5-85c5-6f6a954d45f6,Woodhaven Blvd @ Hoffman Dr,40.733178,-73.870783,Queens,0.0,low,0,0,0
+97315cc7-688a-4139-93de-4c58c59fbede,Staten Island Expy @ West Shore Expy,40.62124,-74.168972,Staten Island,0.0,low,0,0,0
+57a8e506-1b7d-4a44-94c2-5cb2a4d31b21,Roosevelt Ave @ 79St,40.747351,-73.8867,Queens,8.0,medium,8,0,0
+5f91d1f5-bc11-44dd-a6a5-a36435ed680c,Long Island Expy @ East Hampton Blvd,40.752129,-73.74689,Queens,4.0,low,4,0,0
+5e7535c0-fee4-4989-8481-0addea488020,Hylan Blvd @ Huguenot Ave,40.524067,-74.186177,Staten Island,4.0,low,4,0,0
+48cd1b5b-f361-4683-9d83-492d4789d7ea,Grand St @ Allen St,40.717382,-73.991308,Manhattan,2.0,low,2,0,0
+69833518-8972-4147-b518-2ab15dfe1b24,LIE ( S S/R ) @ Kissena Blvd,40.738943,-73.815047,Queens,3.0,low,3,0,0
+6d42b7fb-604b-4172-b35d-c0556c5d3fcf,C2-BQE-20-WB_at_Wythe_Ave-Ex31,40.701706,-73.961222,Brooklyn,1.0,low,1,0,0
+cea3d6a8-b248-441a-8acd-188ffa5ea630,C3-SIE-06A-E_at_Crafton_Ave_Ex10,40.607469,-74.141823,Staten Island,22.0,high,22,0,0
 58ca7f66-a60c-4b2d-9cb5-a68e8ac545ac,Varick st @ Broome st,40.724402,-74.006047,Manhattan,5.0,medium,5,0,0
-63930c04-926c-4730-821e-95b486513843,RT. 9A @ N. Moore St,40.720319,-74.012171,Manhattan,0.5,low,0,0,1
-48cd1b5b-f361-4683-9d83-492d4789d7ea,Grand St @ Allen St,40.717382,-73.991308,Manhattan,0.0,low,0,0,0
-22df28bd-413a-4847-9bb7-35a36c914264,1st camera North Bound BPU -148.51,40.701349,-74.012679,Manhattan,1.0,low,1,0,0
-9bb33444-d2ec-47bd-952a-174f87013736,7 AVE / ADAM CLAYTON POWELL BLVD@ 125 St,40.80896,-73.9483,Manhattan,1.6,low,1,2,0
-9fda4742-9a18-4a32-b090-8825b201f0d5,FDR Drive @ 124 St,40.799477,-73.929293,Manhattan,2.0,low,2,0,0
+936e562d-df76-4120-b2b6-112bc450aa94,Belt Pkwy @ Pennsylvania Ave,40.642517,-73.87589,Brooklyn,0.0,low,0,0,0
+52399045-4691-4258-8f82-12000f5719a8,Jamaica Ave @ 168 St,40.706371,-73.792539,Queens,6.0,medium,6,0,0
+7d06c900-a5e5-49ca-96b9-93a0662a2069,Belt Pkwy @ Verrazano Bridge,40.606337,-74.031758,Brooklyn,6.0,medium,6,0,0
+7d1db29e-90a9-4027-b1fc-6e6af4f4f0d9,Narrow Rd N @ Richmond Rd,40.609433,-74.090081,Staten Island,0.0,low,0,0,0
+22df28bd-413a-4847-9bb7-35a36c914264,1st camera North Bound BPU -148.51,40.701349,-74.012679,Manhattan,0.0,low,0,0,0
+9aeb8a21-e4be-459a-ac9c-9ac282f0f929,1 Avenue @ East 60 Street,40.760204,-73.961502,Manhattan,5.0,medium,5,0,0
+5179f300-88f0-4597-8586-04760e482077,Pennsylvania ave @ Jamaica Ave,40.678135,-73.897275,Brooklyn,2.0,low,2,0,0
+21dd2187-79ff-4cf9-bc11-055a04cdfb3f,C5-LIE-08-EB_48th_St_LL-Ex16,40.731963,-73.919235,Queens,1.0,low,1,0,0
+858ef4e8-5058-4db2-96e2-70f71b65aa24,GCP @ 166 St,40.716879,-73.800069,Queens,5.0,medium,5,0,0
+48a0813b-60b4-4dd2-953f-a40731ae1fba,Jackie Robinson Pkwy @ Jamaica Ave,40.678191,-73.897749,Brooklyn,0.0,low,0,0,0
+7e36617c-4210-4371-90df-89cfc2d25df2,Van Dam St Bet. 48 Ave & Hunter Pt,40.740368,-73.9345,Queens,9.5,medium,9,0,1
 30bcfac8-ebd1-40c7-ae4c-1d93113bd465,BB-21 North Rdwy @ Above South St,40.708272,-73.999488,Manhattan,0.0,low,0,0,0
-6a49e889-4397-4c5a-a942-2225c1f1c5e7,C4-WST-07-Med_at_W.23rd_St,40.749346,-74.008089,Manhattan,0.0,low,0,0,0
-3486cafa-aab2-418a-baa4-89dcc438e8c9,5 Ave @ 23 St,40.7415700588724,-73.9895780597063,Manhattan,2.3,low,2,1,0
-8cd15417-5b79-4065-9165-4b6ff0ff3f53,Broadway @ 46 St- Quad West,40.75872,-73.98539,Manhattan,0.8999999999999999,low,0,3,0
-19a2c89d-ea4d-437a-ae0c-2902ade217d6,Central Park West @ 96 St,40.791667,-73.964697,Manhattan,0.0,low,0,0,0
-3a3d7bc0-7f35-46ba-9cca-75fe83aac34d,5 Ave @ 34 St,40.7484435553342,-73.9845677012874,Manhattan,8.2,medium,7,4,0
-35a808cf-7e4d-4ca5-891d-36ac48518662,West Side HWY BPU Entrance -148.54,40.7051851,-74.0166288,Manhattan,3.0,low,3,0,0
-aacb43bf-ed37-44c6-a2fe-8449a7851306,5 Ave @ 35 St ,40.749128,-73.984083,Manhattan,10.2,medium,9,4,0
-73b66e92-508f-407c-bada-883ab992fde0,Broadway @ Vesey St,40.711408,-74.008688,Manhattan,1.3,low,1,1,0
-96be7098-dda4-42da-bfe2-55bc5c6b94fb,Baxter St @ Canal Street,40.7175537302479,-73.999310720446,Manhattan,4.0,low,4,0,0
-0c9a2836-c408-48d3-85c7-1977c33d9133,Broadway @ 46 St,40.758741,-73.985437,Manhattan,2.3,low,2,1,0
-404fac12-9b5c-430b-a01b-12b50d39521c,9 Ave @ 49 St,40.7628734544829,-73.9894306186342,Manhattan,4.2,low,3,4,0
-b03d3f18-928f-4fcf-b0f5-bbd18314f492,12 Ave @ W 49 St,40.766158,-73.997147,Manhattan,11.0,medium,11,0,0
+49a571bf-f15e-4726-9937-aadde6c837ba,Queens Blvd @ 48 St - 52.130,40.742755,-73.916943,Queens,0.0,low,0,0,0
+235fef3b-3335-4368-849a-1f15065bedb4,QBB North @ 21 St,40.752426,-73.943947,Queens,0.3,low,0,1,0
+6a49e889-4397-4c5a-a942-2225c1f1c5e7,C4-WST-07-Med_at_W.23rd_St,40.749346,-74.008089,Manhattan,0.3,low,0,1,0
+2d59011b-a99e-45a1-85d9-1fe127b19fad,WBB #25 SIR 4 @ Bklyn Twr,40.712875,-73.9700304,Brooklyn,0.0,low,0,0,0
+9fda4742-9a18-4a32-b090-8825b201f0d5,FDR Drive @ 124 St,40.799477,-73.929293,Manhattan,2.0,low,2,0,0
+23605598-4eb1-46c2-8b80-8a8c124f020a,Main St @ Roosevelt Ave,40.759565,-73.830121,Queens,5.3,medium,5,1,0
+08922d10-ec77-4e36-aa87-962ebfc39212,C3-SIE-08-EB_at_Bradley_Ave-Ex11,40.607945,-74.131892,Staten Island,0.0,low,0,0,0
+2aed4b42-b46e-4f27-9cf9-d1d72ee5f036,C3-WSE-08-SB_at_Victory_Blvd-Ex7,40.589805,-74.193632,Staten Island,0.0,low,0,0,0
+88278063-8891-4144-9295-f5dc9a94d2ea,3 Ave @ 60 St,40.642195,-74.020635,Brooklyn,3.0,low,3,0,0
+9bdd7740-762f-48e9-b40c-3db03c2a43f5,Belt Pkwy @ Ocean Pkwy,40.583257,-73.966656,Brooklyn,0.0,low,0,0,0
+90361876-3521-4aa4-a924-701716d5d506,C2-GE-01-WB_at_92nd_St-Vrrazano_Br,40.6163,-74.026827,Brooklyn,2.0,low,2,0,0
+36ff050c-ba9c-4920-beaf-ea3b02f2cde5,Bronx River Pkwy @ East Gun Hill RD (NB),40.878251,-73.869826,Bronx,1.0,low,1,0,0
+3486cafa-aab2-418a-baa4-89dcc438e8c9,5 Ave @ 23 St,40.7415700588724,-73.9895780597063,Manhattan,2.7,low,1,4,1
+86bdee28-1c05-4ead-900a-f252043e6029,Grand Central Pkwy @ Parson Blvd - 102.50,40.71592,-73.807822,Queens,7.0,medium,7,0,0
+523499eb-29b7-4ab9-a2a7-4b7f7836f311,Rockaway Blvd @ Division St,40.637021,-73.740434,Queens,0.3,low,0,1,0
+7faf5dd7-7f16-48c2-a35e-fee36f3da7d4,3 Ave @ 63rd St,40.640525,-74.022404,Brooklyn,3.0,low,3,0,0
+35a808cf-7e4d-4ca5-891d-36ac48518662,West Side HWY BPU Entrance -148.54,40.7051851,-74.0166288,Manhattan,10.0,medium,10,0,0
+5cc1f365-af4a-48be-8819-8f12e18725a3,4 Ave @ 38 st - 179.90,40.653191,-74.005389,Brooklyn,2.8,low,2,1,1
+a01a8c98-d314-4eb4-b97c-4a4f80d71c4b,Seagirt Blvd @ B 32 St,40.5958,-73.764771,Queens,7.0,medium,7,0,0
+19a2c89d-ea4d-437a-ae0c-2902ade217d6,Central Park West @ 96 St,40.791667,-73.964697,Manhattan,1.0,low,1,0,0
+cf034f0c-de3f-44ba-be1b-51f135d7d665,C2-BQE-26-Cntr_at_Grand_Ave-Ex32,40.712792,-73.954462,Brooklyn,0.0,low,0,0,0
+9fa5b0dd-e955-449e-97e1-9c53ad9c23a8,GCP @ LGA 94 St Exit,40.771466,-73.877462,Queens,10.0,medium,10,0,0
+91c033b3-ecfd-4fb9-b27d-d256eb720789,Prospect Pkwy @ 3 Ave,40.666593,-73.994958,Brooklyn,0.0,low,0,0,0
+894dd92a-90a3-46d5-a996-4ddb2b6091cc,Soundview Ave @ Lafayette Ave,40.820962,-73.865847,Bronx,4.0,low,4,0,0
+089d8066-4e5e-4549-9496-a5f4ffb56ef5,7 Ave @ 9 St,40.666941,-73.981419,Brooklyn,5.4,medium,4,3,1
+9b57d5a0-d4fb-47ab-8df5-1d093228189e,West Shore Expy @ Bloomingdale Rd,40.548922,-74.220292,Staten Island,0.0,low,0,0,0
+8cd15417-5b79-4065-9165-4b6ff0ff3f53,Broadway @ 46 St- Quad West,40.75872,-73.98539,Manhattan,7.0,medium,7,0,0
+75402734-fe4d-4a4e-9b92-391cc0c2a8c7,QBB South @ 21 St,40.752242,-73.944125,Queens,0.0,low,0,0,0
+3a3d7bc0-7f35-46ba-9cca-75fe83aac34d,5 Ave @ 34 St,40.7484435553342,-73.9845677012874,Manhattan,5.6,medium,5,2,0
+aacb43bf-ed37-44c6-a2fe-8449a7851306,5 Ave @ 35 St ,40.749128,-73.984083,Manhattan,8.3,medium,8,1,0
+15c0758b-5c9a-4841-8514-c04bc7320c70,NB Cross Brx Expy-Webster Av Exit ramp @ E 174 St & Cater Av,40.844531,-73.903627,Bronx,5.6,medium,5,2,0
+9bb33444-d2ec-47bd-952a-174f87013736,7 AVE / ADAM CLAYTON POWELL BLVD@ 125 St,40.80896,-73.9483,Manhattan,3.3,low,3,1,0
+a7ea0f7b-b44a-4dee-af25-e37820845eac,Nassau Expwy @ N. Hanger Rd,40.661845,-73.778703,Queens,2.0,low,2,0,0
+73b66e92-508f-407c-bada-883ab992fde0,Broadway @ Vesey St,40.711408,-74.008688,Manhattan,0.0,low,0,0,0
+1d5b7624-9334-4348-8119-4d0221988d24,Boston Rd @ Claremont Pkwy @ Wilkins Ave,40.834938,-73.894132,Bronx,0.0,low,0,0,0
+282429c3-3f55-4fa6-bca2-b128262699d4,QBB LL CM @ 11 St,40.753446,-73.946533,Queens,1.0,low,1,0,0
+a23d8461-9d7c-4e11-a392-777ef35b48ba,Northern Blvd @ Little Neck Pkwy,40.770649,-73.735503,Queens,0.0,low,0,0,0
+38790585-9444-46a7-b85e-2db8f163ecf7,43 Ave @ 27 St,40.748228,-73.9417,Queens,0.0,low,0,0,0
+3869bbbf-b9ce-4157-a6e6-9040f1540827,C3-WSE-01-NB_at_Englewood_Ave-Ex2,40.532368,-74.223617,Staten Island,7.0,medium,7,0,0
+a4fa36ac-f546-4ec1-b579-135f0ab204de,Gatling Pl @ 86 St - 186.2,40.619944,-74.023763,Brooklyn,2.0,low,2,0,0
+7374a49f-373d-479a-b630-52bd07639260,Roosevelt Ave @ Elmhurst Ave,40.748456,-73.876234,Queens,2.3,low,2,1,0
+a67d1358-ca36-4f9a-a432-056361f7c904,Hylan Blvd @ Seaview Ave,40.586632,-74.091912,Staten Island,0.0,low,0,0,0
+6a896a3f-45cc-4611-86aa-5ded034217ea,Cadman Plz W @ Prospect St - quad - ptz - 1.2,40.700756,-73.990942,Brooklyn,0.0,low,0,0,0
+56fafa1b-3a26-49de-a6c0-1e6f804a1b0c,C2-GE-14A-WB_at_Cole_St,40.67980655,-74.00432445,Brooklyn,4.0,low,4,0,0
+6b81f2fd-acf3-4af2-adc1-42250156ece8,Flatbush Ave @ Tillary St,40.6955094542638,-73.9841222763061,Brooklyn,3.5,low,3,0,1
+7740c40a-5250-4692-9a1a-c4326dc7d508,Astoria Blvd @ 82 St,40.765038,-73.887086,Queens,1.5,low,1,0,1
+bfcd953c-3faf-48ea-a49a-848c706399b6,Narrows Rd South @ Hylan Blvd,40.605488,-74.076704,Staten Island,0.0,low,0,0,0
+96be7098-dda4-42da-bfe2-55bc5c6b94fb,Baxter St @ Canal Street,40.7175537302479,-73.999310720446,Manhattan,5.0,medium,5,0,0
+a40475d9-6266-4f92-b695-bb6addd39892,Flatbush Ave @ Ave U,40.609864,-73.922379,Brooklyn,2.0,low,2,0,0
+311fa910-d8d6-4dde-acd4-ebaf275eba77,Atlantic Ave @ Hicks Ave - quad - ptz - 165.202,40.691006,-73.99784,Brooklyn,7.0,medium,7,0,0
+a6095c69-aef9-4a64-8091-9a2cb8645ee7,Main St @ LIE N S/R,40.742587,-73.825432,Queens,0.0,low,0,0,0
+cbd7c7a6-9bc5-4d6d-baf4-61b648dd589d,Astoria Blvd N S/R @ 32 St,40.770472,-73.916515,Queens,2.0,low,2,0,0
+951e899e-bc73-4bef-ad6a-feaeaa17e9c9,Ocean Pkwy @ Ave I,40.626558,-73.970924,Brooklyn,0.0,low,0,0,0
+ab0daf96-702f-4f07-8b8f-08264e0051ee,Narrows Rd South @ Lily Pond Ave,40.601206,-74.065126,Staten Island,0.0,low,0,0,0
+ae88c4d8-5638-4f90-bbdb-e15999936d31,Astoria Blvd @ 94 St,40.762982,-73.875305,Queens,4.0,low,4,0,0
+bedbc19d-977d-40b6-ba48-01c5454bea69,College Point Blvd @ Sanford Ave,40.75467,-73.833092,Queens,3.0,low,3,0,0
 beda95e2-f7d1-43a3-9a8b-7ab89e03f296,FDR Dr @ Catherine Street,40.708979,-73.996036,Manhattan,0.0,low,0,0,0
+aa857aaf-dd05-46e7-9091-a6c8596a3fbf,S Conduit Ave @ 150 St,40.665993,-73.78955,Queens,2.0,low,1,0,2
+0c9a2836-c408-48d3-85c7-1977c33d9133,Broadway @ 46 St,40.758741,-73.985437,Manhattan,5.3,medium,5,1,0
+42446823-2f5a-4db0-a99e-3766d0822485,Bronx River Pkwy @ E Gun Hill RD,40.8783,-73.87004,Bronx,1.0,low,1,0,0
+404fac12-9b5c-430b-a01b-12b50d39521c,9 Ave @ 49 St,40.7628734544829,-73.9894306186342,Manhattan,3.3,low,3,1,0
+cb68b8b1-9093-4f2e-acf2-8133b047e8df,Flatbush Ave @ Eastern Pkwy,40.672796,-73.969278,Brooklyn,2.5,low,2,0,1
+b03d3f18-928f-4fcf-b0f5-bbd18314f492,12 Ave @ W 49 St,40.766158,-73.997147,Manhattan,7.0,medium,7,0,0
+2cde9c13-0146-4d4a-8d26-b6e7d34d9eec,C5-BQE-39-WB_at_Broadway-Ex40,40.749296,-73.896779,Queens,5.0,medium,5,0,0
+cf6d1124-f012-4678-9277-2dca8d18232b,Gowanus Expy @ Gatling Pl @ 92 St - 4.34,40.61637,-74.026182,Brooklyn,5.0,medium,5,0,0
 0acd4543-183d-40c7-993e-e39eb831de0b,QBB LL CM @ York Ave,40.759021,-73.959431,Manhattan,0.0,low,0,0,0
-434094f8-1be4-4c19-8067-1e11049e46b4,Madison Ave @ 46 St - Manhattan,40.755508,-73.977437,Manhattan,2.0,low,2,0,0
-43bb4857-e86e-4775-916e-6b26cedaf554,Broadway @ 125 St,40.81575,-73.9585,Manhattan,2.0,low,2,0,0
-2334b7bd-a237-4bf5-9224-5241bd4ee29e,WBB-6 South Rdwy @ Delancy St and Clinton St,40.717622,-73.985843,Manhattan,3.0,low,3,0,0
-b0cbb042-de0a-449f-b5d1-49f68a9bf2ae,7 Ave @ 36 St,40.752128,-73.989657,Manhattan,9.8,medium,8,6,0
-aacbd8a1-56b6-4757-b0b0-1bea396469c6,11 Ave @ 34 ST,40.755787,-74.00198,Manhattan,3.0,low,3,0,0
-8437bc26-9eb8-4915-93f7-f8ea4170e739,9 AVE @ 14 St,40.74095,-74.0053,Manhattan,1.0,low,1,0,0
-a4417c97-9878-4b98-902f-58860d63e7cb,WBB - 11  NIR-5 @ East of Manhattan Tower,40.714394,-73.974648,Manhattan,0.0,low,0,0,0
-a9979a0c-71f2-4f5e-a87c-4d29c1104d5c,WBB-6 North Rdwy @ Delancey St & Clinton St,40.717805,-73.985691,Manhattan,5.0,medium,5,0,0
+a8b56a8b-1451-4290-9d8f-c770f80c855a,Northern Blvd @ Francis Lewis Blvd,40.757774,-73.783335,Queens,3.5,low,2,0,3
+a7611e0c-1028-4975-b94b-14e75ec0b217,Grand Central Pkwy @ Springfield Blvd - 0.98,40.732333,-73.746767,Queens,1.0,low,1,0,0
+6851bbf7-e079-4379-b021-e5c7dafcb8c9,8 Ave @ 9 St,40.665895,-73.979249,Brooklyn,5.5,medium,4,5,0
+d019c28c-80f5-490b-8a35-198477ac3fb0,Woodhaven Blvd @ Dry Harbor Rd,40.727879,-73.870974,Queens,7.0,medium,7,0,0
+8437bc26-9eb8-4915-93f7-f8ea4170e739,9 AVE @ 14 St,40.74095,-74.0053,Manhattan,3.1,low,2,2,1
+aacbd8a1-56b6-4757-b0b0-1bea396469c6,11 Ave @ 34 ST,40.755787,-74.00198,Manhattan,9.0,medium,9,0,0
+03051d28-db9c-4527-97c7-0bb3f35e7cef,C2-BQE-11-WB_at_Furmn_St_UP-Ex28A,40.699951,-73.996223,Brooklyn,10.0,medium,10,0,0
+434094f8-1be4-4c19-8067-1e11049e46b4,Madison Ave @ 46 St - Manhattan,40.755508,-73.977437,Manhattan,3.0,low,3,0,0
+b08600e6-7189-4104-a484-709dc81a3fa7,Grand Ave @ Hamilton Pl,40.724536,-73.898416,Queens,2.0,low,2,0,0
+b6cd1640-fdc3-4525-bbb4-f148699876df,Major Deegan Expy @Van Cortland Pk S,40.885972,-73.896784,Bronx,2.0,low,2,0,0
+b0670166-0aa0-4f93-a6f6-8bf07a9ea663,Morningstar Rd @ Richmond Terr.,40.637939,-74.144797,Staten Island,1.0,low,1,0,0
+b6558fc0-d62b-4b25-b7aa-6b592bde2c44,Flatbush Ave @ Marine Park,40.601134,-73.913036,Brooklyn,1.0,low,0,0,2
+433c7f12-86e0-41ea-bb29-781bef1b2444,C2-BQE-30-EB_at_Stewrt_Ave_Kosc-Br,40.724979,-73.934058,Brooklyn,10.0,medium,10,0,0
+2334b7bd-a237-4bf5-9224-5241bd4ee29e,WBB-6 South Rdwy @ Delancy St and Clinton St,40.717622,-73.985843,Manhattan,0.0,low,0,0,0
+789b70ea-f0f9-4e61-b72d-e4bf79fd2218,Cross Island Pkwy @ Clearview Expy,40.786661,-73.793472,Queens,0.0,low,0,0,0
+43bb4857-e86e-4775-916e-6b26cedaf554,Broadway @ 125 St,40.81575,-73.9585,Manhattan,4.0,low,4,0,0
+d766db98-8b2c-406a-b0ea-f437e2216157,Smith St @ 9 St - 170.106,40.674746,-73.997865,Brooklyn,3.8,low,3,1,1
+abdd6b29-6f7b-4662-bb43-078fe2c76199,Cross Bay Blvd @ North Channel Bridge,40.588759,-73.819342,Queens,0.0,low,0,0,0
+a4417c97-9878-4b98-902f-58860d63e7cb,WBB - 11  NIR-5 @ East of Manhattan Tower,40.714394,-73.974648,Manhattan,0.3,low,0,1,0
+a9979a0c-71f2-4f5e-a87c-4d29c1104d5c,WBB-6 North Rdwy @ Delancey St & Clinton St,40.717805,-73.985691,Manhattan,6.0,medium,6,0,0
+a65f8b8a-c0ba-4138-81a5-783ba837490d,Major Deegan Expwy @ 225 St,40.8732637,-73.9058863,Bronx,4.1,low,3,2,1
+b0cbb042-de0a-449f-b5d1-49f68a9bf2ae,7 Ave @ 36 St,40.752128,-73.989657,Manhattan,3.3,low,3,1,0
+43d53907-8b02-4793-8b0c-c816c9cf979a,C3-WSE-10-SB_at_South_Ave-Ex8,40.602249,-74.18798,Staten Island,0.0,low,0,0,0
+ba3d9734-3871-4d49-b46b-88d88dd96e71,AVE C @ 23 St,40.73545,-73.9751,Manhattan,5.1,medium,4,2,1
+bb9ce48d-0458-4493-89ad-ae51065b5796,Lincoln Tun Approach(Bet. 9Av & 10Av) @ W 33 St - 3.50,40.753522,-73.998587,Manhattan,0.0,low,0,0,0
 46181c0e-f2ae-4daa-8a94-74dd5b2bbc19,QBB NOR @ York Ave,40.759134,-73.959401,Manhattan,0.0,low,0,0,0
-ba3d9734-3871-4d49-b46b-88d88dd96e71,AVE C @ 23 St,40.73545,-73.9751,Manhattan,5.0,medium,5,0,0
-bc2fd2da-1d56-46fa-a1ab-8674fac93877,7 Ave @ 43 St - 64.186 - PTZ,40.756707,-73.986442,Manhattan,6.9,medium,6,3,0
-45cb119b-0e4a-442e-9410-b810ab8c255d,7 Ave @ 43 St,40.756691,-73.986476,Manhattan,10.0,medium,10,0,0
-2191c11c-1757-4938-a608-a2c6ae0e6486,9 Ave @ 30 St,40.75092,-73.99816,Manhattan,4.3,low,4,1,0
-bb9ce48d-0458-4493-89ad-ae51065b5796,Lincoln Tun Approach(Bet. 9Av & 10Av) @ W 33 St - 3.50,40.753522,-73.998587,Manhattan,1.0,low,1,0,0
-140a20d7-7ae7-409c-8c18-67d6b2ef7b2d,West st and Battery place,40.704859,-74.016946,Manhattan,3.0,low,3,0,0
-bca4a4b0-d73f-4937-9301-85ff8293bd94,7 AVE @ 42 St,40.75609,-73.9869,Manhattan,4.2,low,3,4,0
-19789499-03ac-45de-9401-a7a71ea60d1e,7 AVE @ 44 St,40.75736,-73.986,Manhattan,10.0,medium,10,0,0
-4850e464-1111-4b5d-a72d-f54a0e12a789,8 Ave @ 49 St,40.761676,-73.986581,Manhattan,4.6,low,4,2,0
-50725dbd-6e39-4ed0-aa3b-89f9c8feff4e,FDR Dr @ 135 Street,40.8109509339364,-73.9343833923339,Manhattan,4.0,low,4,0,0
-3309fba1-cc5f-483a-92bc-7d85951f1558,FDR Dr @ Old Slip,40.703095,-74.007681,Manhattan,0.0,low,0,0,0
-4ebe49c8-3e68-43f7-b415-da3db9f72693,7 Ave @ 54 St,40.763617,-73.981436,Manhattan,4.3,low,4,1,0
-0bcfbc92-d455-4f62-846a-32afbefa3b4b,Amsterdam @ 72 St,40.7786,-73.9816,Manhattan,4.9,low,4,3,0
-bff9cee2-1513-4af3-9838-ea7a35552049,Rockefeller Plaza @ W 51 St,40.75973,-73.97807,Manhattan,3.8,low,2,6,0
-74bdd301-683c-4ea7-abf2-a5715dca8e17,York Ave @ 63 St,40.761216,-73.957815,Manhattan,1.5,low,1,0,1
-32651453-d9de-4cde-af4b-be42b8de2775,BB-39 North Rdwy @ Bridge Midspan,40.7060356,-73.9966579,Manhattan,2.0,low,2,0,0
-547cd268-58f9-4a84-a235-dbaa0432d79a,South Street @ Pike Street,40.709853,-73.991746,Manhattan,0.0,low,0,0,0
-5214cfe8-ccfc-42e9-8e2a-ff2865c1a518,Houston St @ Broadway,40.725458,-73.996756,Manhattan,4.0,low,4,0,0
-bb362cd8-057b-4538-bdee-cf846a725ea0,Dyer Ave @ W 40 St,40.7577,-73.9948,Manhattan,3.0,low,1,0,4
-63e79f0b-7dea-4c8e-864c-f3315f9cc62c,Grand St @ Broadway,40.720855,-74.000655,Manhattan,0.0,low,0,0,0
-c2b6f1ab-8baa-4384-9dc9-5bd2e374701e,FDR Dr @ 155 Street,40.8282,-73.9351,Manhattan,2.0,low,2,0,0
-5e0c441b-7587-494c-aade-6fea9efc1c73,Malcolm X Blvd/Lenox Ave @ 110 St/CPN,40.798238,-73.952408,Manhattan,0.3,low,0,1,0
-c0f05969-abc6-4fa6-b317-3e6ba03e989a,Dyer Ave @ W 41 St,40.7584,-73.9944,Manhattan,1.5,low,1,0,1
-b222af52-75f2-4588-80ef-354bb7c159c8,Church St @ Park Pl,40.713276,-74.009276,Manhattan,7.0,medium,7,0,0
-769a2e94-5bbc-4a03-86a7-39d3a70213f7,Broadway @ 96 St,40.794668,-73.971788,Manhattan,4.6,low,2,7,1
-d1363c77-e061-4414-be82-e6d749254859,Madison Ave @ 42 St,40.7528121596316,-73.9792838595713,Manhattan,3.8,low,3,1,1
-3df06012-4c10-46e1-81d0-55405342e8df,3 AVE @ 76 St,40.77234,-73.9587,Manhattan,2.0,low,2,0,0
-3d8e276f-b179-414d-a506-679d5e559d3e,Broadway @ 51 St,40.762077539856,-73.9836422756604,Manhattan,5.0,medium,5,0,0
-85837859-3e5d-4e1b-8740-1c2ea3ed5662,Broome St and Lafayette St,40.721091,-73.998074,Manhattan,4.0,low,4,0,0
-a249b3ee-bde9-4d6d-9a18-9cd2108d2eb0,Allen St @ Delancey St (B),40.719108,-73.99043,Manhattan,3.3,low,2,1,2
-b5a78bda-3ca9-4ad4-bd03-4cee70baba2d,5 Ave @ 59 St,40.764289,-73.973023,Manhattan,1.6,low,1,2,0
-d1c219c0-afdd-4fa4-a72c-cc1b1318b99d,9 Ave @ 23 St,40.7465085991952,-74.001366842392,Manhattan,4.3,low,4,1,0
-b7e5959c-1fc5-4fd2-a73e-426127b587b1,Park Ave @ 86 St,40.780167,-73.957114,Manhattan,7.0,medium,7,0,0
-33aa3bec-8143-421c-a0f7-866a2feaa352,QBB SOR @ W Channel,40.757855,-73.957152,Manhattan,0.0,low,0,0,0
-1eb66413-6761-4eb0-bc04-e2533bb74b42,Madison Ave @ 49 St,40.7572361824409,-73.9760573417802,Manhattan,1.0,low,1,0,0
-b95471db-03ed-4fc3-9b91-561328029fd4,Houston St @ Bowery St,40.724113,-73.992623,Manhattan,6.0,medium,6,0,0
-c880d0c4-db84-44c2-9f00-62f21a83b5d0,Broadway @ Columbus Circle,40.768532,-73.98209,Manhattan,0.0,low,0,0,0
-5b44d19e-de48-4941-b071-d2a4c08bd230,2 Ave @ 58 St,40.759333,-73.965302,Manhattan,2.5,low,2,0,1
-c6d82dbd-1c49-478f-819f-a38c1826b628,Canal St @ 6 Ave ,40.721872,-74.005346,Manhattan,8.0,medium,8,0,0
-b963b25c-9fcf-4a12-b502-c57468510315,QBB UL Entrance @ Thomson Ave,40.745235,-73.9377,Manhattan,1.5,low,1,0,1
-c5040f93-f4ec-4803-8370-8b931b0443e2,FDR Dr @ 64 St,40.761186,-73.955676,Manhattan,4.0,low,4,0,0
-5bb6d7d8-39ce-43b8-b539-376fbcf73927,3 Ave @ 49 St,40.7552116061846,-73.9712421172846,Manhattan,0.3,low,0,1,0
-d8122408-7092-41ba-a9db-ef8847edeaef,Broadway @ 43 St,40.756583,-73.986156,Manhattan,5.1,medium,3,7,0
-c6d013c9-e69b-4824-8dad-b6580491d916,Madison Ave @ E 43 St,40.753417,-73.97874,Manhattan,3.5,low,3,0,1
-15f7a00b-5afb-4193-a5e4-dfe7710a5dfe,3 AVE @ 34 ST,40.7457272953698,-73.9781169718397,Manhattan,0.3,low,0,1,0
-d892897d-5a64-4450-9502-2e91b3ce5eea,QBB SOR @ Sutton Pl,40.758904,-73.959539,Manhattan,0.0,low,0,0,0
-9eca011a-81b1-4e4a-b44a-4ee2bc8affff,Queens Midtown Tunnel Exit @ 37 St,40.747325,-73.976079,Manhattan,5.5,medium,4,0,3
-8385d983-6782-4219-8aab-98f26b224f9d,1 st Camera South Bound BPU-148.55,40.70414,-74.01667,Manhattan,0.0,low,0,0,0
-2e5f0c0e-575d-4323-86ec-63e75acbf129,QBB UL CM @ Roosevelt,40.75681,-73.95413,Manhattan,1.3,low,1,1,0
-5352e130-4668-4be5-a7b9-9e1ce4ea6d4c,3 Ave @ 42 St,40.7507631595424,-73.9744615986273,Manhattan,1.2,low,0,4,0
-ca545979-d0c1-4735-88d6-61b6311bb6bc,Henry Hudson Pkwy @ 125 St,40.818617,-73.96099,Manhattan,0.0,low,0,0,0
-c217a64e-95c3-4442-96d1-7a6c177615d7,CPW @ 110 St,40.800325,-73.958392,Manhattan,2.0,low,1,0,2
-0952329e-6b6f-4286-b5e3-b682eae94e52,Broadway @ Chambers St,40.714177,-74.006307,Manhattan,0.0,low,0,0,0
-444aa32f-8102-4ca6-a7f8-5c9fd8fd5571,Houston St @ Christies St,40.723591,-73.991117,Manhattan,8.0,medium,8,0,0
-3f04a686-f97c-4187-8968-cb09265e08ff,Central Park @ 72nd St Post 37,40.770785,-73.978337,Manhattan,0.3,low,0,1,0
-c34ca47e-e375-4b9f-a8d7-f9737566b783,6 Ave @ 42 St,40.7548488195947,-73.9841249380499,Manhattan,5.5,medium,4,5,0
-5f9ef54f-f3ac-4ce9-ad39-2e483467867a,WBB - 5 NOR-5 @ Delancey St North/FDR,40.715043,-73.976486,Manhattan,1.0,low,1,0,0
-dd80055d-ae29-469e-bce5-bf62228a3178,WBB - 16 SOR-4 @ Kent Ave South,40.712193,-73.967948,Manhattan,0.0,low,0,0,0
-99bd1846-c0e4-4689-b077-63d2525bf1aa,Amsterdam Ave @ W 180 st ,40.84652,-73.932073,Manhattan,3.0,low,3,0,0
-8d7e94a5-7a81-4e92-8171-9f6c0f0ca7bf,FDR @ E 53 St,40.754739,-73.96219,Manhattan,3.0,low,3,0,0
-a356e2c6-7d95-4d93-85c1-da3d05485d8c,MADISON @ 34 ST,40.7477755134971,-73.9829511142234,Manhattan,3.0,low,3,0,0
-1ccb8d7c-43d4-450e-b40c-79527766db75,Audobon Ave @ W 181 ST,40.848738,-73.932353,Manhattan,6.0,medium,6,0,0
-2589c0d6-c389-4861-b812-4ae68f560eba,46 St Bet. 5 Ave & Madison Ave,40.7557483,-73.9784187,Manhattan,1.0,low,1,0,0
-cd949f21-54b2-4d11-8aae-4ffba8654271,5 Ave @ E 60 St,40.764959,-73.972578,Manhattan,1.5,low,1,0,1
-62b3062d-542f-40f1-86ec-206710e789b6,3 Ave @ 57 St,40.760252895987,-73.967542473241,Manhattan,2.5,low,2,0,1
-8933100a-8229-42fe-b4b2-265db410d7ae,5 Ave @ 46 St,40.756036,-73.979014,Manhattan,3.0,low,3,0,0
+45756112-04f9-429f-9754-1939e25f4184,BB-68 South Rdwy @ Above Water St/Bklyn,40.703286,-73.99356,Brooklyn,0.0,low,0,0,0
+494a3907-4cc7-4a77-8d6f-1b6f3ca272c5,C3-WSE-03-SB_at_Bloomngdale_Rd-Ex3,40.548607,-74.220828,Staten Island,0.0,low,0,0,0
+b43f6602-fb0f-4eb4-a019-ac7101aab067,Tillary St @ Gold St,40.6962,-73.9829,Brooklyn,7.0,medium,7,0,0
+bf5db978-c464-44c9-ac88-af9977af4505,Springfield Ave @ Jamaica Ave,40.718516,-73.735207,Queens,4.0,low,4,0,0
+f2b94b32-fc41-42b6-935d-8330374ca05a,1 Ave @ 110 St,40.792177,-73.93825,Manhattan,6.0,medium,6,0,0
 e610bc71-9bfb-4a92-928d-ad33cd1b9afd,Harlem River Dr @ Dyckman St /10 Av,40.858893,-73.923042,Manhattan,1.0,low,1,0,0
-cd229284-a743-4ac4-9430-366f11e68d6c,Irving Pl @ 14 St,40.733984,-73.988693,Manhattan,2.0,low,2,0,0
-63bf5db0-582d-4482-ad51-52338c7f9906,3 Ave @ 14 St,40.733275,-73.987279,Manhattan,1.0,low,1,0,0
-05468f62-4092-4ff5-9bb6-0f70e56ff544,2 Ave @ 49 St,40.75426,-73.968991,Manhattan,5.0,medium,5,0,0
-606916f2-cd00-4893-9d2b-4c9f9d6d974f,AVE C @ 18 St,40.7316,-73.9742,Manhattan,1.0,low,1,0,0
-5531396b-856d-429b-8bde-a845ef87aead,Henry Hudson @ 158 St,40.835892,-73.948717,Manhattan,3.0,low,3,0,0
-0f3b6031-fe36-43df-b2c7-6120e0580309,Brooklyn Bridge - Ped Walk Way,40.709046,-74.000735,Manhattan,6.4,medium,4,8,0
-074b4e06-5090-47a5-b672-8b15780c9255,2 Ave @ 79 St,40.773298,-73.955022,Manhattan,1.9,low,1,3,0
-dfc5bbff-683c-483d-bed5-8ff2b7c4781b,Harlem River Dr @ 150 St,40.824074,-73.934464,Manhattan,3.0,low,3,0,0
-9e3e26ae-d49f-4f64-ba99-113b779c25a2,Park Ave @ 53 St,40.759067,-73.97261,Manhattan,4.6,low,4,2,0
-66810a94-7065-4f6e-b306-3d3088930d89,11 Ave/Rt 9A @ 14 St,40.742342,-74.008683,Manhattan,2.0,low,1,0,2
-03a8a2da-3ac2-45aa-a5ba-4ff7d1ecbd22,5 Ave @ 47 St,40.756682,-73.978578,Manhattan,3.0,low,3,0,0
-ce81bdbd-967b-4ad0-ab40-c4628bb59560,Park Ave @ 106 St,40.79294,-73.9479,Manhattan,10.0,medium,10,0,0
-cdfc2dbe-7ce3-4775-ab7a-8440a9828358,Worth Street @ Bowery,40.713578,-73.998542,Manhattan,6.0,medium,4,5,1
-326b2bab-d277-4c5a-9778-a7af791ad151,9 Ave @ 37 St,40.7552720843545,-73.9948547204017,Manhattan,2.5,low,2,0,1
-e278de5c-4cfa-46e7-aa85-59512db61f0d,FDR Dr @ 23 St,40.7348035082712,-73.9746809005737,Manhattan,4.3,low,4,1,0
-d138b651-e2ed-4065-a0f9-ef56a65f61d4,West Broadway @ West Houston St,40.726958,-73.999928,Manhattan,0.0,low,0,0,0
-d67e45e9-034f-4bd9-9bc3-12d07a12af48,3 Ave @ 114 St,40.7966,-73.9408,Manhattan,7.0,medium,7,0,0
-d78ebdc6-2211-479e-bda6-59d79db20258,8 Ave @ 57 St,40.766796,-73.9829,Manhattan,4.6,low,4,2,0
-d45fb588-de4c-4139-9e27-5b2d4c371b3d,York Ave @ 72 St,40.76687,-73.9538,Manhattan,8.5,medium,7,0,3
-9f6b60c8-b940-4eec-a3c5-4b60d24c751b,YORK AVENUE @ EAST 60 STREET,40.759324,-73.95905,Manhattan,0.5,low,0,0,1
-1546f761-039c-4b5c-af5e-75c83c9f603f,Lexington Ave @ 42 St,40.7514494972593,-73.976060779701,Manhattan,9.9,medium,9,3,0
-2bc8aef2-fc97-47e0-84cd-1efc8ee21bfe,10 Ave @ W 34 St,40.754591,-73.999142,Manhattan,3.2,low,2,4,0
+454e566c-e3e3-4426-b91a-e0ea709e70f7,C3-SIE-06-EB_at_Victory_Blvd-Ex10,40.609321,-74.150406,Staten Island,14.0,medium,14,0,0
+bc2fd2da-1d56-46fa-a1ab-8674fac93877,7 Ave @ 43 St - 64.186 - PTZ,40.756707,-73.986442,Manhattan,2.8,low,1,6,0
+45cb119b-0e4a-442e-9410-b810ab8c255d,7 Ave @ 43 St,40.756691,-73.986476,Manhattan,3.0,low,3,0,0
+4589cc19-b5b5-4696-a199-20f753ec74c4,C5-GCP-14_WB_at_76th_Road-Ex13,40.71676,-73.830245,Queens,0.0,low,0,0,0
+fcd793fc-d600-40a6-949b-b168d96368fd,LIE @ Oceania St,40.7458,-73.767759,Queens,0.0,low,0,0,0
+a6b2c1c8-1124-4dec-aa22-c8d87f6835ec,West Shore Expy @ South Ave ,40.60214,-74.18784,Staten Island,0.0,low,0,0,0
+2191c11c-1757-4938-a608-a2c6ae0e6486,9 Ave @ 30 St,40.75092,-73.99816,Manhattan,3.6,low,3,2,0
+140a20d7-7ae7-409c-8c18-67d6b2ef7b2d,West st and Battery place,40.704859,-74.016946,Manhattan,2.0,low,2,0,0
+ba4a1b3a-6e33-4742-a471-18f204f488ef,Metropolitan Ave @ Union Ave,40.714059,-73.951635,Brooklyn,11.0,medium,11,0,0
+6232350a-c27c-4964-a6e8-7bd0507b6826,C2-BQE-27-EB_at_Mtrpolitan_Av-Ex32,40.713701,-73.95327,Brooklyn,13.0,medium,13,0,0
+43a4279e-de3a-4ab3-8c86-b268eb5e8848,Flatbush Ave @ Fillmore Ave,40.614704,-73.928063,Brooklyn,4.0,low,4,0,0
+19789499-03ac-45de-9401-a7a71ea60d1e,7 AVE @ 44 St,40.75736,-73.986,Manhattan,1.6,low,1,2,0
+322bbce7-5011-43b2-9e3d-54eac839a3b6,BB-54 South East Brooklyn Tower,40.70403,-73.994422,Brooklyn,0.0,low,0,0,0
+1b874f5c-e1c6-481d-bb85-8d7d92c1793b,Rogers Ave @ Montgomery St,40.6656,-73.9536,Brooklyn,2.0,low,2,0,0
+62174b3a-f453-4108-9eb2-48d833528a7c,Springfield Blvd @ Merrick Blvd,40.680209,-73.753356,Queens,0.5,low,0,0,1
+4850e464-1111-4b5d-a72d-f54a0e12a789,8 Ave @ 49 St,40.761676,-73.986581,Manhattan,4.8,low,3,6,0
+a10cbaf4-ea20-4a01-93a3-b338cd92370b,Richmond Ave @ Wainwright Ave - quad - ptz - 0.146,40.56032,-74.16981,Staten Island,3.5,low,3,0,1
+1a626331-3c36-48bd-91a5-edd930c314c0,C1-MDE-12-SB_at_Heath_Ave-Ex9,40.867065,-73.908921,Bronx,0.0,low,0,0,0
+50725dbd-6e39-4ed0-aa3b-89f9c8feff4e,FDR Dr @ 135 Street,40.8109509339364,-73.9343833923339,Manhattan,5.0,medium,5,0,0
+3309fba1-cc5f-483a-92bc-7d85951f1558,FDR Dr @ Old Slip,40.703095,-74.007681,Manhattan,1.0,low,1,0,0
+4f688c33-672c-4bac-bf2b-98438d464ccd,BB-25 North Rdwy @ West of Manhattan Twr,40.707558,-73.998581,Brooklyn,3.0,low,3,0,0
+bca4a4b0-d73f-4937-9301-85ff8293bd94,7 AVE @ 42 St,40.75609,-73.9869,Manhattan,0.3,low,0,1,0
+4be502c3-830e-40d3-8c39-1047d50adc9c,C2-BQE-16-WB_at_Sands_St-Ex29A,40.699385,-73.983921,Brooklyn,0.0,low,0,0,0
+ac1d2a7e-8e7e-4dd7-9e4e-d43f531f04af,Belt Pkwy @ 130 St,40.6666,-73.8104,Queens,2.0,low,2,0,0
+be6b6830-b90d-40ab-98ab-9d67eb81e673,3 Ave @ 65 St - Ent. EB BQE/Gowanus,40.6393,-74.0236,Brooklyn,8.0,medium,8,0,0
+4ebe49c8-3e68-43f7-b415-da3db9f72693,7 Ave @ 54 St,40.763617,-73.981436,Manhattan,0.3,low,0,1,0
+bfeb2434-fd55-4024-8172-f9602ea6ae06,Hutchhinson River Pkwy @ Waterbury Ave,40.83536,-73.83849,Bronx,1.0,low,1,0,0
+bff9cee2-1513-4af3-9838-ea7a35552049,Rockefeller Plaza @ W 51 St,40.75973,-73.97807,Manhattan,6.3,medium,6,1,0
+70c286f0-78bc-43e4-9284-63ea2843c769,Father Capodanno Blvd @ Ocean Ave,40.595264,-74.062772,Staten Island,0.0,low,0,0,0
+0bcfbc92-d455-4f62-846a-32afbefa3b4b,Amsterdam @ 72 St,40.7786,-73.9816,Manhattan,5.5,medium,4,5,0
+5214cfe8-ccfc-42e9-8e2a-ff2865c1a518,Houston St @ Broadway,40.725458,-73.996756,Manhattan,0.0,low,0,0,0
+82ff853c-50e3-403a-855b-5f17708a4f38,Sands St @ Pearl St - quad - ptz - 1.10,40.700056,-73.987778,Brooklyn,1.0,low,1,0,0
+74bdd301-683c-4ea7-abf2-a5715dca8e17,York Ave @ 63 St,40.761216,-73.957815,Manhattan,1.0,low,1,0,0
+547cd268-58f9-4a84-a235-dbaa0432d79a,South Street @ Pike Street,40.709853,-73.991746,Manhattan,1.5,low,1,0,1
+66533d67-7fe3-4250-b850-88c2fd7ec0e0,Father Capodanno Blvd @ Midland Ave,40.570789,-74.090294,Staten Island,1.0,low,0,0,2
+513234e1-ea04-47bc-b607-c6ff1bb6a18d,C5-LIE-29-WB_at_220th_St-Ex29,40.74907941,-73.75828283,Queens,3.0,low,3,0,0
+50fed16e-8068-4b89-ada4-246fc112b924,C2-BQE-30A_W_at_Stewrt_Ave_Kosc-Br,40.724979,-73.934058,Brooklyn,5.3,medium,5,1,0
+bb362cd8-057b-4538-bdee-cf846a725ea0,Dyer Ave @ W 40 St,40.7577,-73.9948,Manhattan,0.0,low,0,0,0
+7c92c63b-2786-4600-9108-62cea2806345,Grand Ave @ LIE,40.725764,-73.895635,Queens,0.0,low,0,0,0
+53de1e7c-8443-47fa-8603-4e5ef0466c17,Queens Blvd @ Sunnyside Br,40.747615,-73.936121,Queens,0.0,low,0,0,0
+fbaafcae-6f48-46ab-b6c7-b8919bcd5986,Flatbush Ave @ Kings Hwy,40.622374,-73.936664,Brooklyn,6.0,medium,6,0,0
+c073c2d9-919f-4ba3-ad13-d331d378e12b,Columbia St @ Carroll St - 168.202,40.683144,-74.003728,Brooklyn,7.0,medium,7,0,0
+32651453-d9de-4cde-af4b-be42b8de2775,BB-39 North Rdwy @ Bridge Midspan,40.7060356,-73.9966579,Manhattan,0.0,low,0,0,0
+b1f2ef94-28b2-4ec6-9e0b-1f938e8c65d0,C5-GCP-11_EB_at_64th_Ave-Ex10,40.734074,-73.844484,Queens,3.0,low,3,0,0
+63e79f0b-7dea-4c8e-864c-f3315f9cc62c,Grand St @ Broadway,40.720855,-74.000655,Manhattan,0.0,low,0,0,0
+2f433a28-9a3f-4202-9b3b-a1dc7c6d1b1f,C3-WSE-11-SB_at_Edwrd_Crry_Ave-Ex9,40.60974,-74.18208,Staten Island,0.0,low,0,0,0
+5507fab3-3430-4747-a9ab-ed9f7b5ba959,Queens Blvd @ Jackson Ave,40.7489478,-73.9373769,Queens,5.3,medium,5,1,0
+b222af52-75f2-4588-80ef-354bb7c159c8,Church St @ Park Pl,40.713276,-74.009276,Manhattan,5.0,medium,5,0,0
+5e0c441b-7587-494c-aade-6fea9efc1c73,Malcolm X Blvd/Lenox Ave @ 110 St/CPN,40.798238,-73.952408,Manhattan,0.0,low,0,0,0
+b5a78bda-3ca9-4ad4-bd03-4cee70baba2d,5 Ave @ 59 St,40.764289,-73.973023,Manhattan,0.0,low,0,0,0
+54b2e31f-d9d7-43bd-b86f-3b15f4881ae8,C3-WSE-02-SB_at_Woodrow_Rd-Ex3,40.540946,-74.224364,Staten Island,9.0,medium,9,0,0
+3df06012-4c10-46e1-81d0-55405342e8df,3 AVE @ 76 St,40.77234,-73.9587,Manhattan,1.5,low,1,0,1
+85837859-3e5d-4e1b-8740-1c2ea3ed5662,Broome St and Lafayette St,40.721091,-73.998074,Manhattan,4.0,low,4,0,0
+d23ec5fd-f956-4283-975a-623514b001a3,C1-CBE-05_S_SB_at_Walton_Ave-Ex2A,40.845346,-73.911976,Bronx,0.0,low,0,0,0
+769a2e94-5bbc-4a03-86a7-39d3a70213f7,Broadway @ 96 St,40.794668,-73.971788,Manhattan,0.0,low,0,0,0
+3d8e276f-b179-414d-a506-679d5e559d3e,Broadway @ 51 St,40.762077539856,-73.9836422756604,Manhattan,1.0,low,1,0,0
+857e40b2-566a-4917-bc08-47920babf3f9,Rockaway Blvd @ Van Wyck Expy E S/R,40.674354,-73.801268,Queens,1.0,low,1,0,0
+c3169415-bb26-4cea-8a12-36afd3e37f18,Cross Island Pkwy @ Braddock Ave ,40.725456,-73.724261,Queens,0.0,low,0,0,0
+c2b6f1ab-8baa-4384-9dc9-5bd2e374701e,FDR Dr @ 155 Street,40.8282,-73.9351,Manhattan,0.0,low,0,0,0
+a249b3ee-bde9-4d6d-9a18-9cd2108d2eb0,Allen St @ Delancey St (B),40.719108,-73.99043,Manhattan,3.1,low,2,2,1
+c173fe45-9067-4582-81ef-cab0aad56afd,Grand St (Borinquen PL) @ South 4 St,40.710405,-73.958276,Brooklyn,2.5,low,2,0,1
+d1c219c0-afdd-4fa4-a72c-cc1b1318b99d,9 Ave @ 23 St,40.7465085991952,-74.001366842392,Manhattan,3.1,low,2,2,1
+d1363c77-e061-4414-be82-e6d749254859,Madison Ave @ 42 St,40.7528121596316,-73.9792838595713,Manhattan,3.6,low,3,2,0
+c0f05969-abc6-4fa6-b317-3e6ba03e989a,Dyer Ave @ W 41 St,40.7584,-73.9944,Manhattan,8.6,medium,8,2,0
+d3503d31-e652-4618-9442-cf613600ea0b,C5-GCP-07-EB_at_Ditmars_Blvd-Ex9,40.759784,-73.856583,Queens,4.0,low,4,0,0
+11ab327a-184e-4630-b510-485d18e4a896,6 Ave @ 65 St - Ent EB BQE/Gowanus,40.6352,-74.0171,Brooklyn,4.3,low,3,1,2
+8c4595b4-b1cd-4707-8fe8-3178c4ca93d1,Drumgoole Rd West @ Arthur Kill Rd  - ptz -141.58,40.56147,-74.17178,Staten Island,2.0,low,2,0,0
+b7e5959c-1fc5-4fd2-a73e-426127b587b1,Park Ave @ 86 St,40.780167,-73.957114,Manhattan,1.0,low,1,0,0
+33aa3bec-8143-421c-a0f7-866a2feaa352,QBB SOR @ W Channel,40.757835,-73.956944,Manhattan,0.0,low,0,0,0
+b963b25c-9fcf-4a12-b502-c57468510315,QBB UL Entrance @ Thomson Ave,40.745638,-73.939374,Manhattan,0.0,low,0,0,0
+c880d0c4-db84-44c2-9f00-62f21a83b5d0,Broadway @ Columbus Circle,40.768532,-73.98209,Manhattan,4.0,low,4,0,0
+1eb66413-6761-4eb0-bc04-e2533bb74b42,Madison Ave @ 49 St,40.7572361824409,-73.9760573417802,Manhattan,5.0,medium,5,0,0
+b95471db-03ed-4fc3-9b91-561328029fd4,Houston St @ Bowery St,40.724113,-73.992623,Manhattan,4.3,low,4,1,0
+d4add2b5-0a3c-43dd-ad8f-edc72b9ab2e5,WBB-8 NIR Bklyn Anch./Kent Av,40.712379,-73.967807,Brooklyn,0.0,low,0,0,0
+8ed1baa8-48ab-4ec7-9110-7b89162ce8c3,Hylan Blvd @ West Fingerboard Rd & Sand Ln,40.598942,-74.072231,Staten Island,1.0,low,1,0,0
+5bd248b9-1dab-4118-b4b2-d3ef3fbd7085,Adams St @ Tillary St,40.696346,-73.988845,Brooklyn,0.0,low,0,0,0
+5b44d19e-de48-4941-b071-d2a4c08bd230,2 Ave @ 58 St,40.759333,-73.965302,Manhattan,2.0,low,2,0,0
+c6d82dbd-1c49-478f-819f-a38c1826b628,Canal St @ 6 Ave ,40.721872,-74.005346,Manhattan,5.0,medium,4,0,2
+45b87983-6659-4be7-a354-15d756664204,Wythe Ave @ Williamsburg st E,40.701095,-73.96085,Brooklyn,0.0,low,0,0,0
+c5040f93-f4ec-4803-8370-8b931b0443e2,FDR Dr @ 64 St,40.761186,-73.955676,Manhattan,0.0,low,0,0,0
+5bb6d7d8-39ce-43b8-b539-376fbcf73927,3 Ave @ 49 St,40.7552116061846,-73.9712421172846,Manhattan,0.0,low,0,0,0
+418ae598-7cdd-48ff-8aea-97fc3d312407,Atlantic Ave @ Clinton ST,40.690208,-73.99431,Brooklyn,5.5,medium,5,0,1
+3fa07801-69d7-4d21-a807-4156b1b6602a,Hamilton Ave @ Hamilton Pl @ 15 St (N SR),40.669201,-73.99665,Brooklyn,7.0,medium,7,0,0
+4f806706-c888-4926-932c-f9f3f0255b60,New Eng Thru @ Bartow,40.868476,-73.832667,Bronx,0.0,low,0,0,0
+d8122408-7092-41ba-a9db-ef8847edeaef,Broadway @ 43 St,40.756583,-73.986156,Manhattan,3.4,low,1,8,0
+9750737e-90f5-4681-9fef-a396f9992540,Woodhaven Blvd @ Metropolitan Ave,40.711848,-73.859768,Queens,1.5,low,1,0,1
+c6d013c9-e69b-4824-8dad-b6580491d916,Madison Ave @ E 43 St,40.753417,-73.97874,Manhattan,2.3,low,2,1,0
+5c258011-2fa1-4b50-96c9-738ec3cf678c,C5-GCP-13-EB_at_72nd_Rd-Ex11,40.721099,-73.835199,Queens,5.0,medium,5,0,0
+0e8def41-11e2-45de-a8f6-b746b805b7c5,BB-72 South Rdwy @ Front St,40.702461,-73.992372,Brooklyn,3.0,low,3,0,0
+d892897d-5a64-4450-9502-2e91b3ce5eea,QBB SOR @ Sutton Pl,40.758977,-73.959504,Manhattan,0.0,low,0,0,0
+710191bf-5753-49f7-a524-d0db75526600,Morningstar Rd @ Walker St,40.631138,-74.146937,Staten Island,2.8,low,2,1,1
+14767de3-0b6f-4708-b63a-230f5883d932,BB-71 North Rdwy @ Front St  ,40.702524,-73.992283,Brooklyn,3.0,low,3,0,0
+500b7258-e2ec-4717-8f99-a5497e158ae6,Outerbridge Crossing @ Tyrellan Ave,40.525714,-74.230356,Staten Island,0.0,low,0,0,0
+5c2b7782-2fb8-486f-89d2-0c16b6eac70c,BB-15 North Rdwy @ Manhattan Anchorage,40.709185,-74.000555,Brooklyn,0.0,low,0,0,0
+c90f122a-2ea4-4614-b434-3599bcb04a19,Hutchhinson River Pkwy @ Bruckner Expy,40.83028,-73.83688,Bronx,0.0,low,0,0,0
+5e0a8966-79ae-4a7b-9561-aca2c37b22ff,C5-LIE-28-EB_at_213th_St-Ex28,40.74669647,-73.76365673,Queens,1.0,low,1,0,0
+2e5f0c0e-575d-4323-86ec-63e75acbf129,QBB UL CM @ Roosevelt,40.75681,-73.95413,Manhattan,0.3,low,0,1,0
+9eca011a-81b1-4e4a-b44a-4ee2bc8affff,Queens Midtown Tunnel Exit @ 37 St,40.747325,-73.976079,Manhattan,1.0,low,1,0,0
+64ed1f5d-ba90-4c12-afda-9a9c3e658efd,Ocean Pkwy @ Ave X,40.591079,-73.965347,Brooklyn,0.0,low,0,0,0
+bcafb919-3f51-4caa-b964-d6888ed4cecf,BQE @ Atlantic Ave Exit - westbound,40.691879,-73.999426,Brooklyn,9.0,medium,9,0,0
+67a7ce68-80ad-46d3-930c-7cf200109be7,Staten Island Expy @ Slosson Ave,40.611387,-74.11665,Staten Island,4.0,low,4,0,0
+15f7a00b-5afb-4193-a5e4-dfe7710a5dfe,3 AVE @ 34 ST,40.7457272953698,-73.9781169718397,Manhattan,4.0,low,4,0,0
+c8d37f98-5b6f-4a93-bfc5-eadf4f91726a,Beach Channel Dr @B 140 St,40.57757,-73.859754,Queens,0.0,low,0,0,0
+c89b62d1-35be-4bb8-b22b-a77c2583733c,Eastern Pkwy @ Utica Ave,40.668766,-73.931145,Brooklyn,0.0,low,0,0,0
+c914c9ae-00b2-4b77-abb9-0a85f903e34e,East Gun Hill RD @ Allerton Ave,40.865204,-73.836137,Bronx,4.0,low,4,0,0
+8385d983-6782-4219-8aab-98f26b224f9d,1 st Camera South Bound BPU-148.55,40.70414,-74.01667,Manhattan,0.3,low,0,1,0
+0360205b-183b-4dd3-a01f-e7f0deb5ff1f,Shore Front Pkwy @ Beach 108 St,40.580181,-73.828916,Queens,9.0,medium,9,0,0
+5352e130-4668-4be5-a7b9-9e1ce4ea6d4c,3 Ave @ 42 St,40.7507631595424,-73.9744615986273,Manhattan,3.0,low,3,0,0
+5ec4ce2f-d86d-4899-b464-436fdcde72eb,C3-SIE-09-EB_at_ Manor_Rd,40.610089,-74.105929,Staten Island,18.0,high,18,0,0
+77794e28-5ee9-4fdd-8c14-2615c46d8a40,BQE @ BROADWAY (37 Ave),40.74848,-73.8961,Queens,4.0,low,4,0,0
+0952329e-6b6f-4286-b5e3-b682eae94e52,Broadway @ Chambers St,40.714177,-74.006307,Manhattan,1.0,low,1,0,0
+c217a64e-95c3-4442-96d1-7a6c177615d7,CPW @ 110 St,40.800325,-73.958392,Manhattan,2.5,low,1,0,3
+c941aa1a-ebde-4589-9669-eaf67279dfab,Drumgoole Rd W @ Arden Ave - quad - ptz - 141.10,40.54696,-74.18117,Staten Island,0.0,low,0,0,0
+6ab24015-2446-4410-b7a4-d8dd13ed2f8b,LIE @ College Point Blvd,40.744001,-73.837011,Queens,0.0,low,0,0,0
+36d22d6d-bffd-4466-8a9c-9c78a1bb9021,Victory Blvd @ Bay St,40.637748,-74.076018,Staten Island,4.0,low,4,0,0
+ca545979-d0c1-4735-88d6-61b6311bb6bc,Henry Hudson Pkwy @ 125 St,40.818617,-73.96099,Manhattan,0.0,low,0,0,0
+c1b36d36-ce3d-43e3-af83-0cb29bd67e10,Boerum Pl @ Fulton St & Joralemon St,40.692174,-73.98913,Brooklyn,2.0,low,2,0,0
+444aa32f-8102-4ca6-a7f8-5c9fd8fd5571,Houston St @ Christies St,40.723591,-73.991117,Manhattan,6.0,medium,6,0,0
+84a2c36a-ef84-41b6-a4eb-3c3a2bf3bf10,Stillwell Ave @ Surf Ave,40.575565,-73.981202,Brooklyn,0.0,low,0,0,0
+54e7c710-bdef-411d-801a-806060a418f6,Father Capodanno Blvd @ 2000 FT N of Seaview Ave,40.583287,-74.073717,Staten Island,4.0,low,4,0,0
+5e621a58-dade-4b9a-aef8-24b3038455a4,Long Island Expy @ Greenpoint Ave,40.737146,-73.930969,Queens,0.0,low,0,0,0
+426d2789-3f58-4c5b-9db6-1647db7c4b5a,Belt Pkwy @ Erskine St,40.650918,-73.865762,Brooklyn,0.0,low,0,0,0
+5f1847a6-f7fa-4663-afb8-bcbcb93f0c69,C2-BQE-12-WB_at_Furmn_St_LL-Ex28A,40.69995,-73.996221,Brooklyn,5.0,medium,5,0,0
+5f4bef40-ddee-41fa-a623-6388d561f416,C2-PE-01-Cntr_at_Caton_Ave-Ex6,40.646969,-73.974784,Brooklyn,4.0,low,4,0,0
+5f9ef54f-f3ac-4ce9-ad39-2e483467867a,WBB - 5 NOR-5 @ Delancey St North/FDR,40.715043,-73.976486,Manhattan,0.0,low,0,0,0
+c34ca47e-e375-4b9f-a8d7-f9737566b783,6 Ave @ 42 St,40.7548488195947,-73.9841249380499,Manhattan,7.9,medium,7,3,0
+15fca74d-c3e9-42ee-8f32-5b708ef36477,Hutchhinson River Pkwy @ Westchester Ave,40.842852,-73.837795,Bronx,0.0,low,0,0,0
+cbb04872-5f62-4989-acaa-e4166fa7c819,8 Ave @ 18 St,40.659056,-73.985216,Brooklyn,0.0,low,0,0,0
+7e13d5e6-bd1a-47af-ba28-39c50e2736c2,Hylan Blvd @ Nelson Ave,40.542395,-74.145885,Staten Island,1.0,low,1,0,0
+dd80055d-ae29-469e-bce5-bf62228a3178,WBB - 16 SOR-4 @ Kent Ave South,40.712193,-73.967948,Manhattan,0.0,low,0,0,0
+0537e9a6-3e6f-480c-9c6e-bb3ad15356ae,Richmond Ave @ North Access Rd,40.585826,-74.168392,Staten Island,0.0,low,0,0,0
+8d7e94a5-7a81-4e92-8171-9f6c0f0ca7bf,FDR @ E 53 St,40.754739,-73.96219,Manhattan,0.0,low,0,0,0
+81c2390a-2dc5-4a44-9fc3-9870b360032e,Hempstead Ave @ Cross Island Pkwy (PTZ),40.710823,-73.727495,Queens,0.0,low,0,0,0
+99bd1846-c0e4-4689-b077-63d2525bf1aa,Amsterdam Ave @ W 180 st ,40.84652,-73.932073,Manhattan,0.0,low,0,0,0
+dd374f35-08c9-482d-ae36-ce8e7c0cfb54,Atlantic Ave @ BQE,40.691514,-73.998809,Brooklyn,3.0,low,3,0,0
+a356e2c6-7d95-4d93-85c1-da3d05485d8c,MADISON @ 34 ST,40.7477755134971,-73.9829511142234,Manhattan,2.0,low,1,0,2
+60793334-580b-4538-b947-7312e95039bf,Astoria Blvd S S/R @ 33 St,40.769839,-73.916794,Queens,1.0,low,1,0,0
+88895623-f6fa-4509-a927-8eae076725da,Ft. Hamilton Pkwy @ McDonald Ave,40.647697,-73.980373,Brooklyn,0.5,low,0,0,1
+3f04a686-f97c-4187-8968-cb09265e08ff,Central Park @ 72nd St Post 37,40.770785,-73.978337,Manhattan,0.0,low,0,0,0
+6024ac17-0c26-4435-96e5-560c41b920ad,11 Ave @ 57 St,40.770316,-73.991381,Manhattan,2.0,low,2,0,0
+2589c0d6-c389-4861-b812-4ae68f560eba,46 St Bet. 5 Ave & Madison Ave,40.7557483,-73.9784187,Manhattan,0.0,low,0,0,0
+1ccb8d7c-43d4-450e-b40c-79527766db75,Audobon Ave @ W 181 ST,40.848738,-73.932353,Manhattan,5.5,medium,5,0,1
+62b3062d-542f-40f1-86ec-206710e789b6,3 Ave @ 57 St,40.760252895987,-73.967542473241,Manhattan,5.0,medium,5,0,0
+05468f62-4092-4ff5-9bb6-0f70e56ff544,2 Ave @ 49 St,40.75426,-73.968991,Manhattan,10.0,medium,10,0,0
+63bf5db0-582d-4482-ad51-52338c7f9906,3 Ave @ 14 St,40.733275,-73.987279,Manhattan,4.6,low,4,2,0
+4602d793-d397-40c8-9748-de0d3dcddcfb,QBB LL CM @ W Channel,40.757784,-73.956813,Manhattan,3.0,low,3,0,0
+6504ada3-3a93-4811-b2cd-31c377066f66,C5-LIE-17-EB_at_GCP-Ex22A_GCP,40.740069,-73.844951,Queens,1.0,low,1,0,0
+cde75072-a814-46b4-8785-765b314c43e8,Korean War Veterans Pkwy @ Arden Ave,40.546677,-74.180783,Staten Island,0.0,low,0,0,0
+cd229284-a743-4ac4-9430-366f11e68d6c,Irving Pl @ 14 St,40.733984,-73.988693,Manhattan,3.0,low,3,0,0
+cdf63ef6-b7e7-47cd-a85c-3c50e0cdf36c,Woodhaven Blvd @ 97 Ave,40.685799,-73.846987,Queens,0.0,low,0,0,0
+83d034f2-584b-4dab-9e3d-d70a59995dc5,Grand Concourse @ Moshulu Pkwy ,40.87857,-73.884785,Bronx,3.5,low,3,0,1
+cd949f21-54b2-4d11-8aae-4ffba8654271,5 Ave @ E 60 St,40.764959,-73.972578,Manhattan,0.0,low,0,0,0
+606916f2-cd00-4893-9d2b-4c9f9d6d974f,AVE C @ 18 St,40.7316,-73.9742,Manhattan,0.0,low,0,0,0
+cbdd2872-4e00-4699-9679-871bc2c30834,Hamilton Ave @ Hicks St,40.680102,-74.003745,Brooklyn,1.0,low,1,0,0
+8933100a-8229-42fe-b4b2-265db410d7ae,5 Ave @ 46 St,40.756036,-73.979014,Manhattan,2.5,low,2,0,1
+62380b5a-8960-4c2b-9125-d7f088605a7f,Grand Concourse @ E 149 St,40.81857,-73.927322,Bronx,2.2,low,1,4,0
+0f3b6031-fe36-43df-b2c7-6120e0580309,Brooklyn Bridge - Ped Walk Way,40.709046,-74.000735,Manhattan,5.2,medium,4,4,0
+5531396b-856d-429b-8bde-a845ef87aead,Henry Hudson @ 158 St,40.835892,-73.948717,Manhattan,4.0,low,4,0,0
+64862ed3-03e3-4452-9e59-189dbeec4a4f,BB-22 BQE @ Old Fulton St,40.701565,-73.992009,Brooklyn,11.0,medium,11,0,0
+abb47d30-e011-47bc-ac00-622924bc5acd,Belt Pkwy @ Cropsey Ave,40.584105,-73.986885,Brooklyn,2.0,low,2,0,0
+074b4e06-5090-47a5-b672-8b15780c9255,2 Ave @ 79 St,40.773298,-73.955022,Manhattan,4.3,low,4,1,0
+df5bc905-6296-4f6e-ae6e-20a39b56da43,BB-51 North West Brooklyn Tower,40.704172,-73.994324,Brooklyn,0.0,low,0,0,0
+a8805cdb-e305-42d0-b011-cb825380cf8e,Bushwick Ave @ Cooper St,40.684818,-73.910158,Brooklyn,6.0,medium,6,0,0
+2064d8ab-597a-45d8-a3c9-5ab95a4e69e6,7 Ave @ Union St,40.674443,-73.975468,Brooklyn,1.0,low,1,0,0
+9e3e26ae-d49f-4f64-ba99-113b779c25a2,Park Ave @ 53 St,40.759067,-73.97261,Manhattan,2.0,low,2,0,0
+03a8a2da-3ac2-45aa-a5ba-4ff7d1ecbd22,5 Ave @ 47 St,40.756682,-73.978578,Manhattan,0.0,low,0,0,0
+66810a94-7065-4f6e-b306-3d3088930d89,11 Ave/Rt 9A @ 14 St,40.742342,-74.008683,Manhattan,3.0,low,3,0,0
+dfc5bbff-683c-483d-bed5-8ff2b7c4781b,Harlem River Dr @ 150 St,40.824074,-73.934464,Manhattan,2.0,low,2,0,0
+9d7c4525-fba3-4ffe-ae79-f814f7dccf4e,Roosevelt Ave @ Broadway &  74 st,40.746808,-73.891632,Queens,0.6,low,0,2,0
+9e3164a8-1c63-4790-bc24-f9d752f3ae41,Belt Pkwy @ Flatbush Ave,40.595641,-73.907647,Brooklyn,1.0,low,1,0,0
+d0ea28d7-e1d3-4277-aebc-586a70b60957,BQE @ Kane St,40.687257,-73.999876,Brooklyn,2.0,low,2,0,0
+ce81bdbd-967b-4ad0-ab40-c4628bb59560,Park Ave @ 106 St,40.79294,-73.9479,Manhattan,13.0,medium,13,0,0
+cdfc2dbe-7ce3-4775-ab7a-8440a9828358,Worth Street @ Bowery,40.713578,-73.998542,Manhattan,8.8,medium,8,1,1
+326b2bab-d277-4c5a-9778-a7af791ad151,9 Ave @ 37 St,40.7552720843545,-73.9948547204017,Manhattan,7.0,medium,7,0,0
+680f6950-8ae6-4746-b8ce-4bc28f10f79d,C2-GE-02-WB_at_Ft_Hmiltn_Pkwy-Ex19,40.621403,-74.022062,Brooklyn,0.0,low,0,0,0
+ddd3f06a-7e0e-4e00-b76a-52a511e9009d,C5-VWE-20_NB_at_Main_Street-Ex8,40.70854,-73.819371,Queens,0.0,low,0,0,0
+b995be5a-a469-4cf6-b2ee-197e8e9eecd9,Cross Bay Blvd @ 20 Rd,40.598884,-73.820711,Queens,0.0,low,0,0,0
+e278de5c-4cfa-46e7-aa85-59512db61f0d,FDR Dr @ 23 St,40.7348035082712,-73.9746809005737,Manhattan,5.0,medium,5,0,0
+e08c24be-e2fe-4d83-bc08-bf88cdebdd63,Webster Ave @ E 180 St,40.851889,-73.898344,Bronx,3.0,low,3,0,0
+d016d3ce-4399-4487-a1a8-2c16620a251d,Rockaway Pkwy @ Seaview Ave,40.633783,-73.889428,Brooklyn,5.5,medium,4,0,3
+d7496b4f-f3b5-4a49-89d3-4212e0606205,Gowanus Expy @ FT. Hamilton Pkwy,40.622258,-74.021137,Brooklyn,0.0,low,0,0,0
+d1e071f1-57c6-4e6a-b813-0c50b90f7b1a,Jackson Ave @ 42 Rd,40.74823,-73.93926,Queens,1.0,low,1,0,0
+cd52aa01-1d36-4d0a-bf03-79cb78ffadae,Sands St @ Jay St - quad - 149.27,40.699972,-73.986858,Brooklyn,0.0,low,0,0,0
+e5cd3feb-ca2f-4108-b6ae-678b5ec32dab,Webster Ave @ E 165,40.827872,-73.912005,Bronx,0.5,low,0,0,1
+b47d139f-69ae-427e-86b4-f970f9e990e1,Flushing Ave @ Grand Ave & 64 St,40.722749,-73.901592,Queens,3.3,low,3,1,0
+6d4bed01-9b6f-45c1-ae3a-159ca91125ba,QBB Uramp @ 23 St,40.75147,-73.942071,Queens,1.0,low,1,0,0
+d67e45e9-034f-4bd9-9bc3-12d07a12af48,3 Ave @ 114 St,40.7966,-73.9408,Manhattan,9.0,medium,9,0,0
+8431fefb-2068-4c83-920a-a6db628e7ce6,C1-BRP-01-SB_at_E.174th_St-Ex3,40.834406,-73.874177,Bronx,0.0,low,0,0,0
+d138b651-e2ed-4065-a0f9-ef56a65f61d4,West Broadway @ West Houston St,40.726958,-73.999928,Manhattan,4.0,low,4,0,0
+e51a2974-8ca2-4fe2-a90a-842685cbbcc9,C1-CBX-18-Med_at_Pennyfield_Av-TNB,40.819367,-73.81055,Bronx,0.0,low,0,0,0
+b9c20141-52ca-43a1-a7df-c2577ca384b6,Queens Plaza North @ East 21 st,40.75258,-73.94375,Queens,0.0,low,0,0,0
+e892a3e8-e4b5-4a70-ac2f-a1ad82af36a6,C2-GE-08_E_EB_at_54th_St,40.645287,-74.01669,Brooklyn,6.3,medium,6,1,0
+bdf81be6-bce0-4dfc-91d4-946647f2553e,Woodhaven Blvd @ Liberty Ave,40.680171,-73.844597,Queens,0.0,low,0,0,0
+d05b98ae-f2a7-4c26-8238-754081877484,Northern Blvd @ Utopia Pkwy,40.757685,-73.793017,Queens,6.0,medium,6,0,0
+d78ebdc6-2211-479e-bda6-59d79db20258,8 Ave @ 57 St,40.766796,-73.9829,Manhattan,6.0,medium,6,0,0
+d324cf02-ff01-4b1d-a480-39143ced22cc,Sands St @ Adams St,40.700378,-73.988693,Brooklyn,4.0,low,4,0,0
+1546f761-039c-4b5c-af5e-75c83c9f603f,Lexington Ave @ 42 St,40.7514494972593,-73.976060779701,Manhattan,5.699999999999999,medium,3,9,0
+ad00e0d3-02f2-4578-b0f1-b9d176d117d1,Richmond Ave @ Signs Rd - quad - ptz - 0.138,40.60171,-74.16325,Staten Island,2.0,low,2,0,0
+1f81dbf0-4360-49fd-b768-b1a09d730eb1,Gowanus Expy @ 7 Ave & 67 St,40.633188,-74.016338,Brooklyn,7.0,medium,7,0,0
+68fc6239-198c-4d14-a408-0128d6bf0ace,BQE @ Sands St (eastbound) - video detection,40.700246,-73.985136,Brooklyn,0.0,low,0,0,0
+d7d6c994-492d-4f3a-895e-745596825fb4,SEDGWICK AVE @ CEDAR AVE,40.8521,-73.9207,Bronx,3.0,low,3,0,0
+9f6b60c8-b940-4eec-a3c5-4b60d24c751b,YORK AVENUE @ EAST 60 STREET,40.759303,-73.959266,Manhattan,2.5,low,2,0,1
+d7ee32d6-895f-4e37-bdd9-f97b06b24f3d,Tillary St @ Jay St,40.696073,-73.987095,Brooklyn,5.0,medium,5,0,0
 d2940392-4ee6-433a-ae24-f4f4f15f2566,MHB-16A Manh East of Colonnade Entr,40.715131,-73.995022,Manhattan,1.0,low,1,0,0
-f2b94b32-fc41-42b6-935d-8330374ca05a,1 Ave @ 110 St,40.792177,-73.93825,Manhattan,8.0,medium,8,0,0
-d1d8cd99-7609-409a-a739-f5913dabf4e6,Lexington Ave @ 49 St,40.7558782935853,-73.972833819289,Manhattan,0.0,low,0,0,0
-db028e65-b4b4-4f83-a427-6be6cb3f2ace,Riverside DR. @ Pedestrian Crossing NOF 181 St,40.852383,-73.941088,Manhattan,1.0,low,1,0,0
-d9cd00ff-9b8e-492f-8b02-db27b6cf847c,BB - Ramp from Pearl St - 156.104,40.710974,-74.003631,Manhattan,2.0,low,2,0,0
+b2924000-6eb1-4449-b201-01c0653b6c68,Pelham Pkwy W/B @ Boston Rd,40.857212,-73.868891,Bronx,1.0,low,1,0,0
+374c2047-3868-47e0-9767-a1a701d3fc67,Bay Parkway @ Benson Ave,40.6003,-73.9955,Brooklyn,8.5,medium,8,0,1
+d45fb588-de4c-4139-9e27-5b2d4c371b3d,York Ave @ 72 St,40.76687,-73.9538,Manhattan,2.9,low,1,3,2
+2bc8aef2-fc97-47e0-84cd-1efc8ee21bfe,10 Ave @ W 34 St,40.754591,-73.999142,Manhattan,0.0,low,0,0,0
+52ecb55e-c8aa-4784-85e1-fd7d38faf7e4,E 138 st @ Major Deegan,40.813763,-73.930903,Bronx,4.0,low,4,0,0
+d1d8cd99-7609-409a-a739-f5913dabf4e6,Lexington Ave @ 49 St,40.7558782935853,-73.972833819289,Manhattan,2.3,low,2,1,0
+4c3de40f-6f13-491f-9253-1fc93cada807,Drumgoole Rd W @ Richmond Ave - quad - ptz - 0.162,40.56327,-74.16978,Staten Island,0.5,low,0,0,1
+db1570e7-17a4-4916-9f42-cc8ca17aa42e,Flatbush Ave Bet. 3 Ave & Fulton St,40.687106,-73.97967,Brooklyn,0.0,low,0,0,0
+9c0718c5-0ae9-4170-bea0-9b5d7d61e0c4,WBB-26 SIR @ Kent Ave,40.712282,-73.967862,Brooklyn,1.0,low,1,0,0
+d9cd00ff-9b8e-492f-8b02-db27b6cf847c,BB - Ramp from Pearl St - 156.104,40.710974,-74.003631,Manhattan,0.0,low,0,0,0
+34616ac5-0cc5-4b86-ac7a-82c77238a536,West st and Chambers,40.717179,-74.012897,Manhattan,4.0,low,4,0,0
+695c4b6d-78d1-4478-81e2-55c8e1acea68,C3-SIE-13_EB_at_Mosel_Avenue,40.603743,-74.069126,Staten Island,1.0,low,1,0,0
 efa9a3d5-e5fa-440e-8f6e-68436b8c397b,Malcom X Blvd @ 145 St,40.820458,-73.936233,Manhattan,0.0,low,0,0,0
-34616ac5-0cc5-4b86-ac7a-82c77238a536,West st and Chambers,40.717179,-74.012897,Manhattan,0.0,low,0,0,0
-d83aed40-b117-424b-8caf-35c3afe82527,East 60th St @ Queensboro Bridge Exit ,40.760695,-73.963158,Manhattan,1.0,low,1,0,0
-69c109a1-a8dd-4164-bbc1-88497dc67c1e,MHB-20 Mahn S URW @ Anch,40.710786,-73.992738,Manhattan,0.0,low,0,0,0
-6fc602cf-72c5-40cc-9a42-9a844de7bc1a,Grand St @ Essex St,40.716723,-73.989158,Manhattan,0.0,low,0,0,0
+d83aed40-b117-424b-8caf-35c3afe82527,East 60th St @ Queensboro Bridge Exit ,40.760807,-73.962886,Manhattan,1.0,low,1,0,0
+d88837a0-5f2d-4800-b4c8-57970aa929cd,Rockaway Blvd @ Lefferts Blvd,40.676012,-73.818977,Queens,4.0,low,4,0,0
+db028e65-b4b4-4f83-a427-6be6cb3f2ace,Riverside DR. @ Pedestrian Crossing NOF 181 St,40.852383,-73.941088,Manhattan,2.0,low,2,0,0
+5aa32e02-77f7-436b-9887-fbb7a84a3489,Cross Island Expy @ 14 Ave,40.787365,-73.81598,Queens,2.0,low,2,0,0
+5c29ba71-1757-45db-8318-e1a2bad57e75,Queens Blvd @ Hillside Ave,40.704168,-73.815211,Queens,3.0,low,3,0,0
+d872e1a0-8c5f-47da-9469-bf40a3673ade,BQE @ Queens Blvd,40.738762,-73.901557,Queens,2.0,low,2,0,0
+5361a6ea-95fe-44e1-99f8-dc7d6964a427,Flatbush Ave @ Concord St,40.697565,-73.985248,Brooklyn,2.0,low,2,0,0
+ef24beea-023c-4377-86c9-f9c8836c961b,C3-SIE-04A-WB_at_Richmond Ave,40.61544,-74.157459,Staten Island,0.0,low,0,0,0
+6bf2a18c-275b-4ec5-9242-00fee9d1a467,West Shore Expy @ Victory Blvd,40.590118,-74.193442,Staten Island,0.0,low,0,0,0
+74707723-013b-4bf1-9a8b-c209dbf71984,Bushwick Ave @ Gates Ave,40.690593,-73.918328,Brooklyn,5.0,medium,5,0,0
+d125f801-5576-4e42-874c-a643a86019c0,Bay St @ Richmond Terr.,40.642219,-74.075142,Staten Island,0.0,low,0,0,0
+dfed3e07-de07-4243-8a41-509a1800cd1e,Hamilton Ave @ 9 St,40.675583,-74.00068,Brooklyn,2.0,low,2,0,0
+cb0647f4-b9fd-4065-a297-ebfcd4f8d270,Queens Plz S @ 27 St,40.750353,-73.939631,Queens,4.0,low,4,0,0
 f9e26c16-1cd9-495d-a988-bd80666c28bb,WBB - NOR - 3 @  Kent Ave North,40.71241,-73.967779,Manhattan,1.0,low,1,0,0
-6d7298dd-f56a-4d33-b1d4-b2c1ec659dda,C4-WST-02-NB_at_Vestry_St,40.722898,-74.011638,Manhattan,0.0,low,0,0,0
-6fa8acf2-f5bf-4200-afde-1240868ca3e3,Houston St @ Lafeyette St,40.725063,-73.995413,Manhattan,4.8,low,3,6,0
-e0ac368d-414a-4606-bea5-236e94a2d5b5,Brooklyn Bridge @ Centre Street,40.712423,-74.004937,Manhattan,2.5,low,2,0,1
-74ca7d62-c8e5-4986-82fa-cd8d8db835b9,BB- 42 South Rdwy @ Bridge Midspan,40.705954,-73.996802,Manhattan,1.0,low,1,0,0
-76faba94-f9e5-42d7-981e-0cbbbfd4bc21,Broadway @ 46 Street,40.758711,-73.985366,Manhattan,3.6,low,3,2,0
-7ae8f58a-84e9-4c9f-9e90-daa2dc548f20,Pearl Street @ St. James Pl,40.711038,-74.000466,Manhattan,8.6,medium,8,2,0
-78a5c61d-9dce-4b52-b0da-bf7d22c1f501,8 Ave @ Columbus Cr South,40.767775,-73.982089,Manhattan,2.0,low,2,0,0
-e4542be1-fe19-4efa-a25e-0d0c1065c8a2,58 St @ QBB UL Approach,40.75959,-73.96396,Manhattan,2.5,low,2,0,1
+6fc602cf-72c5-40cc-9a42-9a844de7bc1a,Grand St @ Essex St,40.716723,-73.989158,Manhattan,0.0,low,0,0,0
+69c109a1-a8dd-4164-bbc1-88497dc67c1e,MHB-20 Mahn S URW @ Anch,40.710786,-73.992738,Manhattan,0.0,low,0,0,0
+db8c2d21-00cd-4508-945d-38fcd92367d2,3 Ave @ Prospect Ave,40.666772,-73.994834,Brooklyn,1.5,low,1,0,1
+f3ded76a-f110-4d7a-8eb4-230265affe83,4 Ave @ Shore Rd,40.61136,-74.034782,Brooklyn,0.0,low,0,0,0
+7a830ac8-1cce-4a85-b3de-44d74900b9bc,7 Ave NB @ Bay Ridge Pkwy,40.6264,-74.0178,Brooklyn,7.0,medium,7,0,0
+ddc62c2f-dab2-48e0-918e-742e62e78ec1,Fort Hamilton Pkwy @ 60 St,40.6332,-74.0057,Brooklyn,6.0,medium,6,0,0
+47070afa-8638-4dfe-8df0-bdfa391f57b7,C2-BQE-08-EB_at_Atlantic_Ave-Ex27,40.690581,-73.998548,Brooklyn,8.0,medium,8,0,0
+efc538d1-4711-4f6e-b81c-e555fc37d127,C3-WSE-06-NB_at_Muldoon_Ave-Ex5,40.568875,-74.191035,Staten Island,6.0,medium,6,0,0
+6bfee8ce-9d91-4ffb-9586-9b3a0675578d,Northern Blvd @ Steinway,40.752466,-73.924313,Queens,0.0,low,0,0,0
+66bcf232-3abf-4afc-951c-469e9e6cfd70,Hempstead Ave @ Cross Island Pkwy (Quad),40.710893,-73.727435,Queens,1.0,low,1,0,0
+6041c9a9-4414-4442-9acd-a723eccd9277,Cross Bay Blvd @ 157 Ave,40.662511,-73.840815,Queens,3.5,low,3,0,1
+e184e99b-6bbd-4dd7-a36b-ad17ca50ad36,Sands St @ Jay St - quad - ptz - 149.26,40.699972,-73.986858,Brooklyn,6.0,medium,6,0,0
+749f7d56-21e8-4716-8efc-624723f5b9a8,C1-CBE-01_N_NB_at_Amsterdam_Ave-Ex-HRD,40.845935,-73.931089,Bronx,0.0,low,0,0,0
+8255d395-eadd-46c6-87ad-f6c9340753a7,Belt Pkwy @ Rockaway Parkway ,40.630008,-73.886455,Brooklyn,1.0,low,1,0,0
+c562d33e-ee4d-4233-b2d2-cc301f64ed4a,Queens Plaza South @ 11 St (ramp to UL),40.753306,-73.94687,Queens,4.0,low,4,0,0
+6fa8acf2-f5bf-4200-afde-1240868ca3e3,Houston St @ Lafeyette St,40.725063,-73.995413,Manhattan,3.0,low,3,0,0
+a2a2f56a-7e69-4423-a014-e9503c8f97a4,Rockaway Blvd @ Farmers Blvd,40.659656,-73.773968,Queens,3.5,low,3,0,1
+7add8765-182d-40e5-b196-a0e3c02ed787,Victory Blvd @ Loop Rd -131.42,40.60879,-74.15355,Staten Island,1.0,low,1,0,0
+77ea2042-4c1b-4a2c-b861-88dfa9f579f8,C5-LIE-11-EB_at_60th_St-Ex18,40.726307,-73.905287,Queens,6.0,medium,6,0,0
+e016c2e4-a602-4c4d-ab9e-fadfa7f4e703,Atlantic Ave @ Highland Pl (Berriman St),40.679247,-73.880712,Brooklyn,1.0,low,1,0,0
+7ae83f13-3d0e-4fd3-bc88-6fc41bde04c3,Cross Island Pkwy @ Union Tpke,40.740169,-73.726501,Queens,4.0,low,4,0,0
+6c1d7768-9e5f-4541-99c4-77dc8fac932b,C3-SIE-03-WB_at_South_Ave-Ex5,40.621422,-74.16926,Staten Island,1.0,low,1,0,0
+74ca7d62-c8e5-4986-82fa-cd8d8db835b9,BB- 42 South Rdwy @ Bridge Midspan,40.705954,-73.996802,Manhattan,2.0,low,2,0,0
+8ff9080c-6ba7-483b-be58-3a77c73546d8,Jackie Robinson Pkwy @ Metropolitan Ave,40.709008,-73.841382,Queens,0.0,low,0,0,0
+76faba94-f9e5-42d7-981e-0cbbbfd4bc21,Broadway @ 46 Street,40.758711,-73.985366,Manhattan,5.3,medium,5,1,0
+78292730-3cfe-4f84-a6f7-d438f684849a,Northern Blvd @ Junction Blvd,40.756845,-73.873712,Queens,0.0,low,0,0,0
+e0ac368d-414a-4606-bea5-236e94a2d5b5,Brooklyn Bridge @ Centre Street,40.712423,-74.004937,Manhattan,0.0,low,0,0,0
+7bf1dd27-0a96-4381-bb7e-03123c4b7739,Cross Island Pkwy @ Throgsneck,40.788185,-73.790539,Queens,5.0,medium,5,0,0
+7ae8f58a-84e9-4c9f-9e90-daa2dc548f20,Pearl Street @ St. James Pl,40.711038,-74.000466,Manhattan,6.0,medium,6,0,0
 82b5a027-8b2d-43ce-ba8e-329382bd61bf,Galvin Ave @ W 40 St,40.7588,-73.9976,Manhattan,1.0,low,1,0,0
-786650de-d254-47dc-aa8a-de9a4c231a2a,2 Ave @ 23 St,40.737876,-73.980926,Manhattan,7.8,medium,7,1,1
+fcde67cd-f29e-40c6-8f84-1f3a336315c4,C1-MDE-13-SB_at_Van_Cortlandt-Ex11,40.88608,-73.896686,Bronx,2.0,low,2,0,0
+805528c0-be4f-4dc0-a150-d2b38bca189f,Cross Bay Blvd @ Wildlife Refuge,40.61998,-73.8257,Queens,1.0,low,1,0,0
+e348f285-d668-44a0-9d45-b3006f4ced6b,Victory Blvd @ Jersey St,40.635735,-74.083777,Staten Island,2.0,low,2,0,0
+fcfbaa3d-13e5-4687-9688-ae1eab37c723,7 Ave @ 23St,40.7441114245984,-73.9956503622239,Manhattan,3.0,low,3,0,0
+e4542be1-fe19-4efa-a25e-0d0c1065c8a2,58 St @ QBB UL Approach,40.75959,-73.96396,Manhattan,5.0,medium,3,0,4
+f801cf2f-cd02-4077-aa53-99ee8a00e1ab,3 Ave @ Atlantic Ave,40.685487,-73.98067,Brooklyn,9.3,medium,9,1,0
+786650de-d254-47dc-aa8a-de9a4c231a2a,2 Ave @ 23 St,40.737876,-73.980926,Manhattan,3.6,low,3,2,0
+85312947-96ae-4fce-a1f6-c6167e2f3004,Jamaica Ave @ 165 St,40.705468,-73.794902,Queens,0.0,low,0,0,0
 fcaf0a31-e2ec-4abe-815d-2623d5e7b87b,WBB SIR - 1 @ Manhattan Anchorage,40.7150465,-73.9772337,Manhattan,0.0,low,0,0,0
-fcfbaa3d-13e5-4687-9688-ae1eab37c723,7 Ave @ 23St,40.7441114245984,-73.9956503622239,Manhattan,0.3,low,0,1,0
-7a7016c5-a086-40fd-9298-90f17f8b6cea,5 Ave @ 49 St,40.7579183170509,-73.9776717716469,Manhattan,4.9,low,4,3,0
-db84e6bd-1436-4213-bbfb-f6e0ceab38c7,West Houston @ Varick St,40.7286,-74.005356,Manhattan,10.3,medium,10,1,0
-fd82a010-c29e-4bcb-8d70-dd2204879a97,Water St @ Whitehall,40.702389,-74.012806,Manhattan,0.0,low,0,0,0
-b55781b8-827c-40e3-b094-27c289d22f7a,10 Ave @ 42 St,40.759663,-73.995317,Manhattan,5.2,medium,4,4,0
-7e2400e3-cad2-407a-927b-d575a35048e3,Central Park West @ 66 St,40.772441,-73.978751,Manhattan,2.3,low,2,1,0
-79f45918-c13e-4357-9ccb-9e3e7ea5b6af,1 Ave @ 57 st,40.75823,-73.96289,Manhattan,1.6,low,1,2,0
-62ecb539-5e6c-40ff-a771-ea77153cc4ed,Rockefeller Plz @ 48 St (between 5 Ave and 6 Ave),40.757839,-73.979362,Manhattan,3.3,low,3,1,0
-7f865d20-e4f4-4f7c-88db-c0edf88a9501,Broadway @ 145 St,40.826446,-73.950423,Manhattan,0.0,low,0,0,0
-93dea5a7-a63f-4415-ae12-f32b62540f11,Kenmare St @ Cleveland pl,40.72147,-73.9974,Manhattan,2.0,low,2,0,0
-dbbf45f6-7d87-46fa-825f-454a7e2bbcad,Broadway @ 46 St- Quad East,40.7587,-73.985348,Manhattan,5.0,medium,5,0,0
-defa5e30-d6c7-4582-9ceb-03ff0fe7b93a,9 Ave @ 34 St,40.7534082474864,-73.9963142012874,Manhattan,5.2,medium,4,4,0
-843a0580-a31d-4e5b-90c5-c3875afdfa96,3rd Camera North Bound BPU,40.703181,-74.016191,Manhattan,0.0,low,0,0,0
-79e4e388-89f4-49ed-880f-390bb2b76651,QBB SOR @ 1 Ave,40.76006,-73.96167,Manhattan,2.0,low,2,0,0
-a6811e67-15ac-4289-97be-9c6dd1ae1c75,QBB NOR @ 1 Ave,40.760158,-73.961567,Manhattan,0.0,low,0,0,0
-fec41cf4-e167-48ae-9d40-785d8e86078d,MHB-16 Manhattan Colonade Entr,40.716139,-73.996063,Manhattan,6.1,medium,5,2,1
-c733e881-862d-4874-9d00-9bfdc3b27cbc,Grand St @ Bowery,40.718427,-73.99483,Manhattan,1.0,low,1,0,0
-85809312-60f2-4a52-a694-82628529c05a,Central Park S @ Columbus Cr,40.7677366852749,-73.9814615249633,Manhattan,1.2,low,0,4,0
-6be5adfc-1912-4811-9a04-01c8866280bb,West St @ Murray,40.715249,-74.013364,Manhattan,1.9,low,1,3,0
-874223a4-dc80-4764-8d91-1590cd3737d4,FDR Dr @ 90 St,40.777422,-73.942713,Manhattan,0.0,low,0,0,0
-a9b2501d-062f-43f8-9419-f89faa4f36ba,Riverside Dr @ Washington Br ENT ramp,40.84337,-73.9444,Manhattan,3.0,low,3,0,0
-81db80c2-13fe-4ae7-8b47-c08aa42d512f,5 Ave @ 66 St,40.768651,-73.969814,Manhattan,2.0,low,2,0,0
-ac9ea7e9-4ab8-4188-be33-40266bcf9378,2 AVE @ 86 St,40.77787,-73.9518,Manhattan,4.8,low,4,1,1
-7c9ef8dd-7587-4e39-b486-13ef4c7e5721,Central Park West @ 100 St,40.79421,-73.962857,Manhattan,4.8,low,4,1,1
-a26130e0-3c9b-4f43-b253-209d80d441f8,62 St @ QBB Upper Level exit ramp,40.76215,-73.96203,Manhattan,0.0,low,0,0,0
-a3058350-1552-459f-8379-2fd06895e70a,Delancey St @ Bowery St ,40.720317,-73.994016,Manhattan,4.0,low,4,0,0
-90c74649-458d-4b5f-8f58-9ab77f03f4ad,Central Park West @ 77 St,40.779481,-73.973578,Manhattan,3.0,low,3,0,0
-e777e4b4-25cb-4c39-98fc-8d6b25cf7de7,Lexington Ave @ 53 St ,40.758387,-73.971014,Manhattan,4.6,low,4,2,0
-9561ad5f-0eda-460b-ab12-41caa4e0a91e,47 St Bet. 5 Ave @ Madison Ave- Manhattan,40.75632,-73.9777487,Manhattan,6.0,medium,6,0,0
-ffae5a99-c403-41aa-9985-0633aee4aeff,"Henry Hudson pkwy @ Exit 14 ,165 St/ GWB  ramp",40.84148,-73.9455,Manhattan,1.0,low,1,0,0
-f9ed4dbb-7dd1-4b0c-80df-7f5586109599,Queens Midtown Tunnel @ 35 St exit,40.746038,-73.976804,Manhattan,4.0,low,4,0,0
-f388803c-7e1b-4d67-ad61-87b25934a8a2,10 Ave @ 23 St,40.747694,-74.004174,Manhattan,4.0,low,4,0,0
-a4c12003-9638-473d-bfe3-dddf509c80b8,6 Ave @ 58 St,40.765024,-73.976689,Manhattan,6.5,medium,6,0,1
-a4bb497d-7e15-47c4-9787-374b013efbbe,Madison Ave @ 79 St,40.776331,-73.962123,Manhattan,7.0,medium,7,0,0
-aa85b894-336d-42bb-9801-0359e452f845,1 Ave @ 62 St,40.761501,-73.960542,Manhattan,2.0,low,2,0,0
-a991a948-12b9-450a-a5ea-7ae01679f037,WBB -12 NIR-12 Manhattan Mid Span,40.71369,-73.972344,Manhattan,0.0,low,0,0,0
+78a5c61d-9dce-4b52-b0da-bf7d22c1f501,8 Ave @ Columbus Cr South,40.767775,-73.982089,Manhattan,6.5,medium,6,0,1
+7a7016c5-a086-40fd-9298-90f17f8b6cea,5 Ave @ 49 St,40.7579183170509,-73.9776717716469,Manhattan,1.6,low,1,2,0
+e3747738-4474-4c7b-ab2e-95c69945d302,Belt Pkwy @ Avenue X,40.616777,-73.89746,Brooklyn,2.0,low,2,0,0
+76c47885-cc54-4e0d-989c-01cf1256dd1a,Jackson Ave @ 11 ST,40.74327,-73.95146,Queens,3.0,low,3,0,0
+8820f260-11c9-49dd-8839-0ff47707b6f2,Atlantic Ave @ Hicks Ave - quad - 165.203,40.691006,-73.99784,Brooklyn,6.0,medium,6,0,0
+7bac53fa-8296-40f8-9297-e7e67597a92c,C5-BQE-45-EB_at_GCP-Astoria_Blvd,40.764773,-73.894705,Queens,4.0,low,4,0,0
+7e2400e3-cad2-407a-927b-d575a35048e3,Central Park West @ 66 St,40.772441,-73.978751,Manhattan,0.0,low,0,0,0
+fdb5054c-08b7-4a84-91cb-b61aa890d8b0,BQE @ Vander Voort Ave,40.72395,-73.937599,Brooklyn,6.0,medium,6,0,0
+7980448b-0d57-49ad-8b87-50174e5d3065,Richmond Ave @ Arthur Kill Rd - quad - ptz - 141.131,40.56106,-74.17012,Staten Island,0.0,low,0,0,0
+856ef0b2-123d-4211-9619-1334fb7ac219,Ocean Pkwy @ Surf Av @ Sea Breeze Ave,40.575219,-73.968764,Brooklyn,0.0,low,0,0,0
+7c996b88-8ee6-4b0d-99c8-5764cf68f3bc,C1-MDE-03-SB_at_E.138th_St-Ex3,40.812522,-73.931754,Bronx,1.0,low,1,0,0
+79f45918-c13e-4357-9ccb-9e3e7ea5b6af,1 Ave @ 57 st,40.75823,-73.96289,Manhattan,0.0,low,0,0,0
+8c13c3b4-b227-4278-9beb-e58314c042d5,Flushing Ave @ 61 St,40.721009,-73.904092,Queens,8.0,medium,8,0,0
+85d33af1-a82c-499c-b303-a16c8c891fe6,Stillwell Ave @ Neptune Ave,40.579195,-73.981856,Brooklyn,0.0,low,0,0,0
+fd82a010-c29e-4bcb-8d70-dd2204879a97,Water St @ Whitehall,40.702389,-74.012806,Manhattan,3.0,low,3,0,0
+b55781b8-827c-40e3-b094-27c289d22f7a,10 Ave @ 42 St,40.759663,-73.995317,Manhattan,2.6,low,2,2,0
+62ecb539-5e6c-40ff-a771-ea77153cc4ed,Rockefeller Plz @ 48 St (between 5 Ave and 6 Ave),40.757839,-73.979362,Manhattan,2.0,low,0,5,1
+80976618-bbf8-4e7a-8a9d-095f3594244c,Hylan Blvd @ Bay St,40.61405,-74.066176,Staten Island,1.3,low,1,1,0
+8a60eb4e-4069-4c0f-9bca-b8cc52915ffb,Jackson Ave @ 21 St,40.74464,-73.94847,Queens,8.3,medium,8,1,0
+80b83728-4712-4ab6-aa2f-ae384eb1b91c,Father Capodanno Blvd @ Seaview Ave,40.579328,-74.07784,Staten Island,0.0,low,0,0,0
+db84e6bd-1436-4213-bbfb-f6e0ceab38c7,West Houston @ Varick St,40.7286,-74.005356,Manhattan,8.0,medium,8,0,0
+adc07b1d-e5e1-45da-bfb7-db8a0519f231,Flushing Ave @ 54 St,40.715065,-73.913276,Queens,0.0,low,0,0,0
+7f865d20-e4f4-4f7c-88db-c0edf88a9501,Broadway @ 145 St,40.826446,-73.950423,Manhattan,2.5,low,2,0,1
+97e0da4b-551e-4ef4-a12a-7cbcc0b8560a,Qns Blvd @ 65 PL,40.740859,-73.899668,Queens,1.0,low,1,0,0
+936fce3c-14c3-42c2-8e0d-7bce5a81ecc6,Hylan Blvd @ Seguine Ave,40.519122,-74.197091,Staten Island,0.0,low,0,0,0
+95045f2c-9108-40c2-9439-a139001d4a74,Ocean Pkwy @ Ditmas Ave,40.636159,-73.972751,Brooklyn,4.0,low,4,0,0
+93dea5a7-a63f-4415-ae12-f32b62540f11,Kenmare St @ Cleveland pl,40.72147,-73.9974,Manhattan,4.0,low,4,0,0
+e49e8537-9891-44ba-ac1f-41db307934cf,Flatbush Ave @ Utica Ave,40.613168,-73.926315,Brooklyn,3.0,low,3,0,0
+9a44eb83-317e-4d83-8f0d-e753316c537e,QBB LL CM @ E Channel,40.757631,-73.956358,Queens,0.0,low,0,0,0
+dcef88ca-8811-4b82-8fa9-50225dd03bc4,Br Br-19 N Rdwy @ FDR Dr,40.708195,-73.999305,Manhattan,1.0,low,1,0,0
+9bf91436-9ea5-4451-aa9d-a309f8e26a0f,Roosevelt Ave @ 50 St,40.743472,-73.914821,Queens,6.3,medium,6,1,0
+9cf2184a-e075-47c2-9d02-8e6edcdf28b8,Major Deegan @ Triboro Bridge,40.805652,-73.920676,Bronx,0.0,low,0,0,0
+dbbf45f6-7d87-46fa-825f-454a7e2bbcad,Broadway @ 46 St- Quad East,40.7587,-73.985348,Manhattan,10.9,medium,10,3,0
+96f64a79-929b-4f8e-b160-306313054dec,BB-51A Brooklyn Tower - South Rdwy,40.704131,-73.994659,Brooklyn,0.0,low,0,0,0
+822f0cb4-827d-41cd-8f35-2b328a8c1d24,Northern Blvd @ 108 St,40.757824,-73.861028,Queens,5.0,medium,5,0,0
+907af141-b289-47d3-9f41-edc7667cff7e,Hylan Blvd @ Guyon Ave,40.560385,-74.120024,Staten Island,2.0,low,2,0,0
+82b0f566-cab5-4366-bc3a-67f82cc4fec7,Bruckner Blvd @ Lincoln Ave,40.807681,-73.929512,Bronx,2.0,low,2,0,0
+821d0c4e-f43f-4968-ad2d-566e40e53df6,Atlantic Ave @ Henry St,40.690718,-73.996235,Brooklyn,5.0,medium,5,0,0
+e4800abb-4eac-414e-b47e-5dd773bf0b90,Richmond Ave @ Forest Hills Rd,40.57093,-74.169764,Staten Island,0.0,low,0,0,0
+f4c47f52-9c8d-494a-92da-4dcc09a19fab,Eastern Pkwy @ Bedford Ave,40.670398,-73.955127,Brooklyn,9.0,medium,8,0,2
+82ccb93a-fe0d-4e92-8419-64336edf761e,C2-BQE-10-WB_at_State_St_UP-Ex27,40.692535,-73.999642,Brooklyn,9.0,medium,9,0,0
+800d29e7-aa14-4269-b7a3-22661fe48f55,C5-LIE-27-WB_at_Clearview_Exwy-Ex27,40.74516675,-73.76996066,Queens,20.5,high,20,0,1
+c733e881-862d-4874-9d00-9bfdc3b27cbc,Grand St @ Bowery,40.718427,-73.99483,Manhattan,3.0,low,3,0,0
+c74510ed-35cf-4908-ad10-f2c9575cc853,Hamilton Ave @ Henry St,40.678408,-74.002253,Brooklyn,0.0,low,0,0,0
+8246cf40-87f5-4f3a-b987-369e38a2d450,Staten Island Expy @ Forest Ave ,40.6253,-74.1779,Staten Island,1.0,low,1,0,0
+843a0580-a31d-4e5b-90c5-c3875afdfa96,3rd Camera North Bound BPU,40.703181,-74.016191,Manhattan,2.0,low,2,0,0
+be732c0a-c4f8-4ae4-a751-1fc011f160e7,Hylan Blvd @ New Dorp Lane,40.570469,-74.109749,Staten Island,3.5,low,3,0,1
+899dfa1e-a2c5-490a-b8ba-480493634846,Coney Island Ave @ Kings Hwy,40.607272,-73.961707,Brooklyn,4.8,low,4,1,1
+84eccaf1-05f2-428c-a086-983a85277278,MHB-21 Manh N URDWY @ Arch,40.708881,-73.991336,Manhattan,0.0,low,0,0,0
+79e4e388-89f4-49ed-880f-390bb2b76651,QBB SOR @ 1 Ave,40.759953,-73.961713,Manhattan,0.0,low,0,0,0
+c531c196-3944-4318-8c33-92eb2be792ac,Roosevelt Ave @ Baxter Ave,40.74778,-73.882616,Queens,0.0,low,0,0,0
+fec41cf4-e167-48ae-9d40-785d8e86078d,MHB-16 Manhattan Colonade Entr,40.716139,-73.996063,Manhattan,0.0,low,0,0,0
+c5af3e42-bb95-4aa3-a9d1-2d8071412dab,Jackson Ave @ Thomson Ave,40.746761,-73.943262,Queens,0.0,low,0,0,0
+a6811e67-15ac-4289-97be-9c6dd1ae1c75,QBB NOR @ 1 Ave,40.76009,-73.961613,Manhattan,0.3,low,0,1,0
+b591a4be-a1aa-4978-ab2c-be4a17eb190e,Fordham Rd @ Major Deegan Expy,40.861906,-73.912878,Bronx,5.0,medium,5,0,0
+defa5e30-d6c7-4582-9ceb-03ff0fe7b93a,9 Ave @ 34 St,40.7534082474864,-73.9963142012874,Manhattan,2.5,low,1,5,0
+dfac53ae-0460-409d-8514-6db67de9aff3,Bronx River Pkwy @ 233 St,40.89481,-73.86174,Bronx,0.0,low,0,0,0
+85809312-60f2-4a52-a694-82628529c05a,Central Park S @ Columbus Cr,40.7677366852749,-73.9814615249633,Manhattan,5.3,medium,5,1,0
+c3005e2b-a94c-44ab-80a4-29e6be8700d5,Jackie Robinson Pkwy @ burns St,40.712545,-73.834995,Queens,0.0,low,0,0,0
+6be5adfc-1912-4811-9a04-01c8866280bb,West St @ Murray,40.715249,-74.013364,Manhattan,0.8,low,0,1,1
+e676b48b-e3ff-4f8f-9388-7d1206094f83,Belt Pkwy @ Brookville Blvd,40.665275,-73.740406,Queens,1.0,low,1,0,0
+7b0f1486-6c0c-4bd4-ac8b-800c4bf2176e,Flushing Ave @ Navy St,40.698327,-73.980586,Brooklyn,2.3,low,2,1,0
+7bbbaf2a-ca8d-4fa7-bcc9-bac5ac78d0b9,Cross Island Pkwy @ 113 Ave,40.702317,-73.727481,Queens,4.0,low,4,0,0
+a9b2501d-062f-43f8-9419-f89faa4f36ba,Riverside Dr @ Washington Br ENT ramp,40.84337,-73.9444,Manhattan,1.0,low,1,0,0
+874223a4-dc80-4764-8d91-1590cd3737d4,FDR Dr @ 90 St,40.777422,-73.942713,Manhattan,0.5,low,0,0,1
+81db80c2-13fe-4ae7-8b47-c08aa42d512f,5 Ave @ 66 St,40.768651,-73.969814,Manhattan,0.0,low,0,0,0
+e6c39111-6d28-45bb-9698-509699e78b8f,Woodhaven Blvd @ 101 Ave,40.6841,-73.8463,Queens,1.0,low,1,0,0
+e64ec820-69c4-4cc9-b573-4d7d66c4a7eb,Atlantic Ave @ Boerum Pl,40.689102,-73.990748,Brooklyn,5.0,medium,5,0,0
+a26130e0-3c9b-4f43-b253-209d80d441f8,62 St @ QBB Upper Level exit ramp,40.76215,-73.96203,Manhattan,7.0,medium,7,0,0
+7014e990-19e3-4ed3-b175-7708374037e5,QBB SUR @ Vernon Blvd,40.75453,-73.9491,Queens,1.0,low,1,0,0
+a3058350-1552-459f-8379-2fd06895e70a,Delancey St @ Bowery St ,40.720317,-73.994016,Manhattan,3.2,low,2,4,0
+7c9ef8dd-7587-4e39-b486-13ef4c7e5721,Central Park West @ 100 St,40.79421,-73.962857,Manhattan,8.5,medium,8,0,1
+b9085289-750b-403a-8031-681678d35ae0,Flushing Ave @ Fresh Pond Rd,40.721888,-73.903107,Queens,3.5,low,3,0,1
+e6ba1d11-d27e-441f-b385-a8ae85a3fc74,Northern Blvd @ Union St,40.763955,-73.828126,Queens,3.0,low,3,0,0
+a2017340-a9a6-41d4-921f-8c7daa48cdac,Grand Central Pkwy @ 188 St,40.722319,-73.7768,Queens,3.0,low,3,0,0
+c0e47f5d-29d0-4103-9c69-9e461334a21b,Queens Blvd @ Yellowstone Blvd,40.722929,-73.847301,Queens,0.6,low,0,2,0
+ac9ea7e9-4ab8-4188-be33-40266bcf9378,2 AVE @ 86 St,40.77787,-73.9518,Manhattan,1.0,low,0,0,2
+96ea2271-4739-40bb-9aea-6429c63dfb34,Cadman Plz W @ Prospect St - quad - 1.3,40.700756,-73.990942,Brooklyn,0.3,low,0,1,0
+e85785e6-d889-4811-8ba5-2e389942431f,Kissena Blvd @ Sanford Ave,40.757138,-73.827106,Queens,2.6,low,2,2,0
+eec11fee-fc83-41c1-a9e9-5926d3ce0459,Richmond Ave @ Draper Pl,40.592668,-74.163322,Staten Island,3.0,low,3,0,0
+90c74649-458d-4b5f-8f58-9ab77f03f4ad,Central Park West @ 77 St,40.779481,-73.973578,Manhattan,1.0,low,1,0,0
+ec44d35d-829f-4bcf-a38f-3bf45a6d31b4,West shore Expy @ Park & Ride,40.526252,-74.223358,Staten Island,0.0,low,0,0,0
+95f77270-6143-4522-b55e-a3ef8cc48e18,Furman St @ Atlantic Ave,40.691928,-73.999892,Brooklyn,0.5,low,0,0,1
+ebd920f9-8522-4ae7-af8f-b887256fdaa1,Amboy Rd @ Annadale Rd,40.53598,-74.180867,Staten Island,0.0,low,0,0,0
+94051372-369e-4c2f-9850-90763a8faf88,C3-SIE-12-WB_Btwn_Clove_Road_and_Richmond_Road,40.606423,-74.077846,Staten Island,11.0,medium,11,0,0
+e86cf7d8-0782-40d7-885c-f4a9218988d9,Belt Pkwy @ 68 St,40.639889,-74.036124,Brooklyn,0.0,low,0,0,0
+f0f068df-4148-42e7-a208-7ec171777247,Belt Pkwy @ Cropsey Ave - quad - 2.3,40.584105,-73.986885,Brooklyn,0.0,low,0,0,0
+958d42a3-2b29-490f-ad0b-473423ee51e9,MHB-32 Bklyn S URDW @ Anch,40.702878,-73.98845,Brooklyn,2.0,low,2,0,0
+9561ad5f-0eda-460b-ab12-41caa4e0a91e,47 St Bet. 5 Ave @ Madison Ave- Manhattan,40.75632,-73.9777487,Manhattan,2.0,low,2,0,0
+99098e73-0848-4c19-895e-f81651f76c39,C1-CBX-17-Med_at_E.Tremont_Ave-Ex10,40.822093,-73.818676,Bronx,1.0,low,1,0,0
+9a01683c-321a-421b-b9c3-056bbf851f25,C2-PE-06-WB_at_6th_Ave-Ex2,40.662666,-73.988692,Brooklyn,2.0,low,2,0,0
+9c4194e4-adfb-4a35-a4ef-c8411459545b,Northern Blvd @ 61 St,40.75391,-73.901201,Queens,7.0,medium,6,0,2
+e777e4b4-25cb-4c39-98fc-8d6b25cf7de7,Lexington Ave @ 53 St ,40.758387,-73.971014,Manhattan,7.0,medium,7,0,0
+ebc0f1c7-1cc2-46c0-b8bd-365f94f09a0a,Guy Brewer Blvd @ N Conduit Ave,40.667978,-73.771617,Queens,2.0,low,2,0,0
+e96fb86f-4bf6-4f97-b7f3-ec4f2e960788,Clearview @ Northern Blvd,40.757725,-73.776798,Queens,1.0,low,1,0,0
+9b607ed0-dcb4-4cc3-8055-bbb23e5fe9d6,C2-GE-13-EB_at_Prospect_Expy-Ex24,40.666733,-73.995508,Brooklyn,3.0,low,3,0,0
+a1295144-6d4b-4e63-8475-a4fff6020e53,C3-SIE-07-EB_at_Woolley_Ave-Ex10,40.607476,-74.140649,Staten Island,16.0,high,16,0,0
+a654976f-34a5-46d3-a57d-efe949153f41,C1-MDE-02-NB_at_Willis_Ave-Ex2,40.806729,-73.923727,Bronx,4.5,low,4,0,1
 e029a178-4289-4914-bf64-109d43b0ae35,BB-27 South-West Manhattan Tower,40.707228,-73.998439,Manhattan,0.0,low,0,0,0
-f9cb9d4c-10ad-42e4-8997-dbc9e12bd55a,E 14 St @ Irving Pl/Lexington Av,40.733978,-73.9888,Manhattan,3.0,low,2,0,2
-b331d9d1-c081-4476-8302-83445ac196e7,Dyer Ave @ 42 Street,40.7589811180163,-73.9939438000961,Manhattan,1.0,low,1,0,0
-ee1b1d85-e8ce-485f-a539-12962933eb9f,7 Ave @ 34 St,40.7510195668227,-73.9906285955498,Manhattan,4.0,low,4,0,0
-f96c7b05-c0a1-4d3c-93ae-b025bdea422a,Dyer Ave @ W 34 St,40.754,-73.9976,Manhattan,5.0,medium,5,0,0
-b5cf34ce-697e-42a1-b22f-8eb2c1f3e79e,1 Ave @ E. Houston St,40.723043,-73.988592,Manhattan,1.0,low,1,0,0
-ecdddb78-10be-47c6-ba27-e5d9da6b9a22,Water St @ John St,40.706852,-74.004992,Manhattan,4.5,low,4,0,1
-e5f14a79-fe4c-450e-b81e-21d8c9e1ea9b,Harlem Rvr Dr (FDR) @ 166 St,40.836133,-73.934883,Manhattan,1.0,low,1,0,0
-ed12f2da-9f65-44f0-a162-123c412716c6,Canal Street @ Allen Street,40.7150861999536,-73.9925114202795,Manhattan,2.3,low,2,1,0
-f865d9bf-0062-4d43-9c16-2a862d8af4f0,9 Ave @ 45 St,40.760533,-73.991205,Manhattan,3.9,low,3,3,0
-c75873dc-16d0-4e9c-b5b5-1c6ede0b0b63,FDR @ E 6 St,40.721494,-73.974554,Manhattan,4.0,low,4,0,0
-c61490de-9ab7-4321-919c-cf8ad9ca5100,2 Ave @ 59 St (QBB),40.760978,-73.964082,Manhattan,6.5,medium,6,0,1
+a74c9c59-b6e1-4f7d-b260-7f54954e6e47,C2-GE-12_W_WB_at_26th St-Ex23,40.661152,-74.000813,Brooklyn,3.0,low,3,0,0
+f4633287-e3eb-463e-a73c-0917e6243c5b, Belt Pkwy @  Guy R Brewer Blvd ,40.66674,-73.770962,Queens,2.0,low,2,0,0
+a828693f-10cc-43d9-9b01-15a725b75c05,C3-SIE-01-WB_at_Forest_Ave,40.625312,-74.17785,Staten Island,2.0,low,2,0,0
+fb62b0fd-deb9-4a64-b114-17a5f01418a4,Rockaway Blvd @ Van Wyck Expy W S/R,40.674459,-73.80218,Queens,4.0,low,4,0,0
+ebec9de9-3f56-477a-a413-2e0a09b2b6ba,Worth Street @ Lafayette Street,40.715579,-74.003036,Manhattan,4.0,low,4,0,0
+e6a7fd91-8669-4c27-a8d8-8a6941b62759,Flushing Bridge,40.762558,-73.83709,Queens,1.0,low,1,0,0
+ffae5a99-c403-41aa-9985-0633aee4aeff,"Henry Hudson pkwy @ Exit 14 ,165 St/ GWB  ramp",40.84148,-73.9455,Manhattan,3.0,low,3,0,0
+f388803c-7e1b-4d67-ad61-87b25934a8a2,10 Ave @ 23 St,40.747694,-74.004174,Manhattan,8.5,medium,8,0,1
+f9ed4dbb-7dd1-4b0c-80df-7f5586109599,Queens Midtown Tunnel @ 35 St exit,40.746038,-73.976804,Manhattan,1.0,low,1,0,0
+f68ca680-62ac-4ad5-aa9d-7a83742b15d3,Staten Island Expy @ Fingerboard,40.604174,-74.069091,Staten Island,0.0,low,0,0,0
+f75d3433-3ee8-4406-b747-ca47098debd9,Stillwell Ave @ 86 St,40.596706,-73.985239,Brooklyn,0.0,low,0,0,0
+dd29dfed-4e13-43ae-935b-54660df1bcae,MHB-29 Brklyn S URDWY @ Twr,40.705039,-73.989502,Brooklyn,0.0,low,0,0,0
+a4bb497d-7e15-47c4-9787-374b013efbbe,Madison Ave @ 79 St,40.776331,-73.962123,Manhattan,2.0,low,2,0,0
+a4c12003-9638-473d-bfe3-dddf509c80b8,6 Ave @ 58 St,40.765024,-73.976689,Manhattan,4.3,low,4,1,0
+a991a948-12b9-450a-a5ea-7ae01679f037,WBB -12 NIR-12 Manhattan Mid Span,40.71369,-73.972344,Manhattan,0.0,low,0,0,0
+f2326b69-830d-4d1b-9cbc-a678823315c5,Seagirt Blvd @ B 9 St,40.596501,-73.744193,Queens,0.0,low,0,0,0
+a95f7916-24ee-4d7e-bc71-6f9f1e009f23,Grand Concourse @ 161 St,40.826849,-73.922609,Bronx,1.5,low,1,0,1
+f9cb9d4c-10ad-42e4-8997-dbc9e12bd55a,E 14 St @ Irving Pl/Lexington Av,40.733978,-73.9888,Manhattan,2.2,low,1,4,0
+aa85b894-336d-42bb-9801-0359e452f845,1 Ave @ 62 St,40.761501,-73.960542,Manhattan,0.0,low,0,0,0
+bc01e999-cfba-409b-9542-19c7e86cf410,C3-WSE-05-NB_at_Arden_Ave-Ex4,40.560473,-74.199158,Staten Island,0.0,low,0,0,0
+bcb706e6-135a-4981-8a06-7545f6e05ddd,C3-SIE-11-EB_at_Renwick_Ave,40.610089,-74.105929,Staten Island,25.0,high,25,0,0
+f865d9bf-0062-4d43-9c16-2a862d8af4f0,9 Ave @ 45 St,40.760533,-73.991205,Manhattan,7.9,medium,7,3,0
+bed364f9-5249-4285-9b03-70b91ce75baf,C1-MDE-04-SB_at_Grand_Concrse-Ex3,40.815889,-73.931134,Bronx,10.0,medium,10,0,0
+b331d9d1-c081-4476-8302-83445ac196e7,Dyer Ave @ 42 Street,40.7589811180163,-73.9939438000961,Manhattan,0.0,low,0,0,0
+f96c7b05-c0a1-4d3c-93ae-b025bdea422a,Dyer Ave @ W 34 St,40.754,-73.9976,Manhattan,2.5,low,2,0,1
+b59bd3d2-0d72-4a65-8316-e79491c622e3,Adams St @ Willoughby St,40.692336,-73.988893,Brooklyn,2.0,low,2,0,0
+ed788fa2-c602-4676-b0fa-913d1a17a123,BB-65 North Rdwy @ Above Water St/Bklyn,40.703392,-73.99335,Brooklyn,0.0,low,0,0,0
+fa85ed07-ccc9-4dc7-97bd-fd55acc0a415,Grand Central Pkwy NSR @ 79 St,40.76648,-73.89041,Queens,0.0,low,0,0,0
+ecdddb78-10be-47c6-ba27-e5d9da6b9a22,Water St @ John St,40.706852,-74.004992,Manhattan,3.0,low,3,0,0
+ee1b1d85-e8ce-485f-a539-12962933eb9f,7 Ave @ 34 St,40.7510195668227,-73.9906285955498,Manhattan,5.0,medium,5,0,0
+b9ba6a87-0e0b-4c5a-ad6a-7ead399e0864,C1-MDE-11-NB_at_W.179th_St-Ex8,40.855126,-73.918007,Bronx,1.0,low,1,0,0
+b5cf34ce-697e-42a1-b22f-8eb2c1f3e79e,1 Ave @ E. Houston St,40.723043,-73.988592,Manhattan,1.3,low,1,1,0
+e5f14a79-fe4c-450e-b81e-21d8c9e1ea9b,Harlem Rvr Dr (FDR) @ 166 St,40.836133,-73.934883,Manhattan,4.0,low,4,0,0
+ed12f2da-9f65-44f0-a162-123c412716c6,Canal Street @ Allen Street,40.7150861999536,-73.9925114202795,Manhattan,2.8,low,1,1,3
+a8389158-7e9c-4e57-8127-841f710582f8,Linden Blvd @ Pennsylvania Ave,40.658591,-73.890605,Brooklyn,0.0,low,0,0,0
+d7d72762-bcd2-4672-9bf7-1558bc6895b5,Union tpke @ Little Neck Pkwy,40.743982,-73.717583,Queens,2.0,low,2,0,0
+c61490de-9ab7-4321-919c-cf8ad9ca5100,2 Ave @ 59 St (QBB),40.760978,-73.964082,Manhattan,1.0,low,1,0,0
+cb43382f-7b5f-43a7-918b-607a69b2fb3a,Pearl St @ Dover,40.709457,-74.00171,Manhattan,1.0,low,0,0,2
+f2029d59-52c0-44b9-8030-90e03f710f8f,Richmond Ave @ Amboy Rd - quad - ptz - 1.218,40.54332,-74.16428,Staten Island,2.0,low,0,0,4
+fec1c88c-46b6-41bb-89ab-7dc7eeb2daaf,College Point Blvd @ Roosevelt Ave,40.758092,-73.834234,Queens,4.5,low,4,0,1
+c6022d8a-69df-45be-aadd-ec39a18a18fb,Br Br-20 S Rdwy FDR Dr,40.708045,-73.999541,Manhattan,0.0,low,0,0,0
+ce3ef423-8d29-40c3-9e27-f150a12ca10a,Victory Blvd @ Gannon Ave -131.34,40.60958,-74.14953,Staten Island,0.0,low,0,0,0
+c79840eb-e25e-41cc-8a54-f8eaa6e29463,C2-BQE-25-WB_at_S.5th_St-Ex32,40.709063,-73.957028,Brooklyn,6.0,medium,6,0,0
+c4fa59c7-32b9-410e-b0f1-c10ce13e37ac,C2-GE-11_E_EB_at_37th_St_Ex23,40.655767,-74.006388,Brooklyn,15.0,high,15,0,0
+c75873dc-16d0-4e9c-b5b5-1c6ede0b0b63,FDR @ E 6 St,40.721494,-73.974554,Manhattan,2.0,low,2,0,0
 c65db13c-61ee-4e8c-859f-fa52a297114a,BB-27A Manhattan Tower South,40.707138,-73.998502,Manhattan,0.0,low,0,0,0
-cb43382f-7b5f-43a7-918b-607a69b2fb3a,Pearl St @ Dover,40.709457,-74.00171,Manhattan,2.0,low,1,0,2
+d24b0435-67e7-498a-91f6-f3a65bd86be2,Bruckner Expy @ Wilkinson Ave,40.851659,-73.826704,Bronx,3.0,low,3,0,0
+c74a2510-0ce0-48f2-8fbe-36fdd1a98379,Hamilton Ave @ Hamilton PL @ 15 St (S SR),40.669085,-73.997168,Brooklyn,0.0,low,0,0,0
 a69c70f4-cedf-440c-83f7-743e7a158d09,11 Ave @ W 40 St,40.759495,-73.999098,Manhattan,1.0,low,1,0,0
 afff9762-e6d4-4b4d-a2e7-60c13763dd16,Bowery @ Cooper Sq & 4 St,40.727155,-73.991628,Manhattan,0.0,low,0,0,0
-d47d2f63-cdc1-4f28-bc4c-e64ac07e4f1d,Union Sq @ 14 St,40.73483,-73.99087,Manhattan,2.0,low,2,0,0
-d7910856-9d2c-4142-b8cc-cbd6c4b3acac,Broadway @ 169 Street,40.841686,-73.939347,Manhattan,2.0,low,2,0,0
+c75333e2-1a9f-465d-8885-39b9c01e6fb4,C2-PE-04-Ctr_at_9th_Ave-Ex4,40.656004,-73.980776,Brooklyn,3.0,low,2,0,2
+d3ab8634-97be-4229-9aa3-c3637ff66ea9,Columbia St @ Degraw St,40.685735,-74.002365,Brooklyn,6.5,medium,6,0,1
+a9169e9f-4eb3-4ebd-8149-bc1413087193,Cross Island Pkwy @ Bayside Marina,40.779278,-73.768564,Queens,0.0,low,0,0,0
+d5ed6e53-5a1f-404f-8394-a1ed88a2c429,Astoria Blvd @ 108 St,40.760433,-73.861412,Queens,3.0,low,3,0,0
+d47d2f63-cdc1-4f28-bc4c-e64ac07e4f1d,Union Sq @ 14 St,40.73483,-73.99087,Manhattan,6.3,medium,6,1,0
+e179ded3-4cdc-4110-ac9c-f12c20f9ccad,Qns Blvd @ 65 Ave,40.727974,-73.857651,Queens,0.0,low,0,0,0
+d7910856-9d2c-4142-b8cc-cbd6c4b3acac,Broadway @ 169 Street,40.841686,-73.939347,Manhattan,0.0,low,0,0,0
+d4338b6b-ddf6-41e9-9a64-1f0dd0b8ebdf,Boston Rd. @ E 169 St,40.831378,-73.900286,Bronx,0.0,low,0,0,0
+d560faa5-0f60-4ac4-ae1e-b4af096d9adc,BB-16 South Rdwy @ Manhattan Anchorage,40.709355,-74.001053,Brooklyn,3.0,low,3,0,0
+ed670675-55d7-43e9-ac88-29f1290b843b,Woodhaven Blvd @ Myrtle Ave,40.702613,-73.855269,Queens,1.0,low,1,0,0
+ed0f8bd4-fe44-4f86-98a9-91f45b446200,3 Ave @ Union St,40.678345,-73.985427,Brooklyn,6.3,medium,6,1,0
+d67b0c15-549a-42f9-b99c-13023667f724,C1-SHE-02-SB_at_Cross_Brx_Expwy,40.837446,-73.880984,Bronx,2.0,low,2,0,0
+d681357c-1296-4bb0-901d-a1ebc8ab17c7,BB-50 South Rdwy @ West of Bklyn Twr,40.705361,-73.996088,Brooklyn,0.0,low,0,0,0
+df527f8d-1d60-4c90-9b22-badbb87e469d,Furman St @ Joralemon St,40.693905,-73.999247,Brooklyn,1.0,low,1,0,0
+dd6b80d0-dad3-42a3-8b70-7cc963105027,C5-BQE-38_E_at_Broadway,40.7487485,-73.895909,Queens,10.0,medium,10,0,0
 e438c68c-c1e4-4fc1-9d1e-28cab8acb42a,Henry Hudson Pkwy @ 70 St,40.779679,-73.988462,Manhattan,0.0,low,0,0,0
-d4bbce49-b087-4524-a835-08cb253926a7,10 Ave @ 57 St,40.769126,-73.98858,Manhattan,3.3,low,3,1,0
-d8e022cc-c262-45ac-a939-8e86e20853fd,Ft Washington @ 178 St,40.848657,-73.939207,Manhattan,2.3,low,2,1,0
-e73b2210-e5e7-42c0-a48f-5ce07b28da43,Park Ave @ 96 St,40.786516,-73.952456,Manhattan,2.0,low,2,0,0
-eafc65f5-6ff9-4203-905f-3995b9fbc9eb,1 Ave @ 23 St,40.7368873405677,-73.9785319648825,Manhattan,1.0,low,1,0,0
+d4bbce49-b087-4524-a835-08cb253926a7,10 Ave @ 57 St,40.769126,-73.98858,Manhattan,5.0,medium,5,0,0
+dc0cb00c-0b2e-4851-9f8a-67954e4adbdb,Roebling St @ South 4 St,40.710749,-73.959917,Brooklyn,6.0,medium,5,0,2
+d8e022cc-c262-45ac-a939-8e86e20853fd,Ft Washington @ 178 St,40.848657,-73.939207,Manhattan,3.0,low,3,0,0
+ded03849-7c56-43e5-8e82-05b61c175aca,C1-CBE-04_N - NB_at_Macombs Rd-Ex2A,40.844926,-73.917694,Bronx,5.0,medium,5,0,0
+fee01ae5-3f35-4fe1-a236-417d43b64101,Beach Channel Dr @ Beach 116 St,40.58174,-73.838443,Queens,1.0,low,1,0,0
+fde1748c-7c0f-4df8-8acd-120df29a9305,Atlantic Ave @ Eastern Pkwy,40.67635,-73.908282,Brooklyn,8.0,medium,8,0,0
+f134b133-75ef-40a8-8fbb-f9c51355e6b5,Old Fulton St @ Vine St/Hicks St - quad - 156.24,40.701936,-73.992574,Brooklyn,3.0,low,3,0,0
+e4767b49-3611-4be2-895f-1fc03261653b,MHB-33 Bklyn LRW @ Ex Ramp,40.6981774995555,-73.9865255355835,Brooklyn,0.0,low,0,0,0
+fc900cf1-98b4-4ddb-a511-1e8a9233935c,Whitestone Expy @ 28 Rd N of Linden Pl,40.772841,-73.830771,Queens,4.5,low,4,0,1
+f6ca5824-45da-48a9-8268-2725eed58b79,Fordham Rd @  Grand Concourse,40.862444,-73.897131,Bronx,0.0,low,0,0,0
+fbfe89f1-6410-4189-bbeb-7e5fce28bf82,School Rd @ Bay St,40.607106,-74.060997,Staten Island,4.0,low,4,0,0
+e2a52948-46af-41f0-9769-623e4a7d2900,C2-BQE-06_WB_at_Congress_St-Ex27,40.689202,-73.999062,Brooklyn,11.0,medium,11,0,0
+f0e5c9aa-7700-4918-834f-c106189bde4b,1 Ave @ 42 St,40.7488254014022,-73.9698439596283,Manhattan,1.0,low,1,0,0
 e5f322e7-e38c-4a3c-9b1b-8df2cb459884,FDR @ 48 St,40.751693,-73.965239,Manhattan,0.0,low,0,0,0
-f0e5c9aa-7700-4918-834f-c106189bde4b,1 Ave @ 42 St,40.7488254014022,-73.9698439596283,Manhattan,0.5,low,0,0,1
-ebac5b6e-bd3a-4046-926b-7446edab9bee,3 Ave @ E 14 St,40.733316,-73.987185,Manhattan,7.4,medium,6,3,1
-f3c6fe0c-75c8-4ce9-ad9a-5b7eb8e9087e,1 Ave @ 86 St,40.776869,-73.94937,Manhattan,0.0,low,0,0,0
-f5c6fd9c-8e5b-4c3c-8c3e-31233678f15b,Lexington Ave @ 96 St,40.785793,-73.951017,Manhattan,2.8,low,2,1,1
+e73b2210-e5e7-42c0-a48f-5ce07b28da43,Park Ave @ 96 St,40.786516,-73.952456,Manhattan,7.0,medium,7,0,0
+f9608ba1-608f-4dad-a8aa-9a9c1978b363,McDonald Ave @ 10th Ave / 20th St,40.6553,-73.9817,Brooklyn,4.0,low,4,0,0
+eafc65f5-6ff9-4203-905f-3995b9fbc9eb,1 Ave @ 23 St,40.7368873405677,-73.9785319648825,Manhattan,1.0,low,1,0,0
+f51e9c5b-2698-4777-a6be-1e1994b334c2,Victory Blvd @ Morani St-131.26,40.608,-74.1575,Staten Island,5.0,medium,5,0,0
+ebac5b6e-bd3a-4046-926b-7446edab9bee,3 Ave @ E 14 St,40.733316,-73.987185,Manhattan,0.0,low,0,0,0
+fbe41159-b7cd-4b91-a365-5656bae67ae7,Farmers Blvd @ 147 Ave @ 175 St,40.661198,-73.770991,Queens,0.0,low,0,0,0
+f3d82b25-6b10-44c7-ae89-30df075a7ac8,Broadway @ 46 St- Quad North,40.758722,-73.98536,Manhattan,8.9,medium,8,3,0
+ea36992f-a3bf-4cce-8942-05ff04e2ae5f,Park Ave @ 23 St,40.740189,-73.986363,Manhattan,3.0,low,3,0,0
+f5c6fd9c-8e5b-4c3c-8c3e-31233678f15b,Lexington Ave @ 96 St,40.785793,-73.951017,Manhattan,2.5,low,2,0,1
 f2fbddd2-a5bb-45fe-93ef-2a9b9940bbd5,FDR Dr @ 131 ST (3 Ave Br),40.808367,-73.934622,Manhattan,3.0,low,3,0,0
-83bf2591-579d-415b-a0d4-fe39868b46d1,8 Ave @ 42 St,40.7572405048358,-73.9897804546602,Manhattan,4.6,low,4,2,0
-f3d82b25-6b10-44c7-ae89-30df075a7ac8,Broadway @ 46 St- Quad North,40.758722,-73.98536,Manhattan,1.0,low,1,0,0
-f4d2c0f5-0148-45e7-95ba-a5185d8e8060,Park Ave @ 57 St,40.761615778381,-73.9707524905279,Manhattan,0.0,low,0,0,0
-e8a479f8-5170-4f1f-b258-b9745c966c71,Vanderbilt Ave @ E 45 St,40.754297,-73.976936,Manhattan,4.0,low,4,0,0
+ea3029f6-ce2c-463a-9e05-7218862f60a2,MLK Expy @ Walker St,40.63091,-74.14612,Staten Island,2.0,low,2,0,0
+f3d14ce1-8df5-4c5c-88b8-f17f56077e04,Flatbush Ave @ Willoughby,40.691214327643,-73.9822340011596,Brooklyn,3.8,low,3,1,1
 f2a7f677-64db-4dd9-9810-82e4910c7799,5 Ave @ 84 St,40.780233,-73.961397,Manhattan,0.0,low,0,0,0
-ea36992f-a3bf-4cce-8942-05ff04e2ae5f,Park Ave @ 23 St,40.740189,-73.986363,Manhattan,1.0,low,1,0,0
-f6799b6f-b7f9-451b-8c7a-eacc9e8c36a8,Lenox Ave @ 135 St,40.814104,-73.94086,Manhattan,3.2,low,2,4,0
-fc7db899-7a79-41f3-b9b1-b23ce64c5a5e,7 Ave @ 49 St,40.7604823513464,-73.983738054794,Manhattan,7.4,medium,6,3,1
-fb31c502-9b4a-4c19-9b26-5b84a1a39ec3,Amsterdam Ave @ 79 St,40.783141,-73.978322,Manhattan,4.0,low,4,0,0
-f4e822f7-d2a2-4146-851c-04b2fa6d5265,5 Ave @ 42 St,40.7534920464028,-73.9808970054167,Manhattan,7.3,medium,7,1,0
-f8e7c70d-bdcb-4394-b55c-d9bcef891fba,11 Ave @ 42 St,40.7607911152618,-73.9982590769288,Manhattan,2.0,low,2,0,0
-f78c30e5-2a4d-4a71-b5d4-482ba70d585f,FDR @ E 127 St,40.803143,-73.930444,Manhattan,4.0,low,4,0,0
-b6369867-aa5f-4df3-8af3-dcac2eb0dfc8,Canal St @ Broadway,40.719655,-74.001842,Manhattan,6.6,medium,6,2,0
-af2b479e-ec78-46b0-be35-6bbbd1691460,1 ave @ 40 st,40.74759,-73.9708,Manhattan,0.0,low,0,0,0
-f0b924fe-0df6-4ac2-85a2-5d2b96d081d5,7 Ave @ 57 St,40.765534775125,-73.9800400250842,Manhattan,6.0,medium,6,0,0
-b678c72f-c8cf-48dc-b97b-42c5bf3abd7b,MHB-24 Manh S URDWY @ Twr,40.708773,-73.991612,Manhattan,1.0,low,1,0,0
-b6847d0c-ee18-409e-a3b8-e68f8365047c,West St @ Clarkson,40.729832,-74.010658,Manhattan,8.0,medium,7,0,2
-f2964d50-042c-4021-8b52-992c08c6ff6f,8 Ave @ 34 St,40.7521973661027,-73.9934562042021,Manhattan,3.6999999999999997,low,1,9,0
+83bf2591-579d-415b-a0d4-fe39868b46d1,8 Ave @ 42 St,40.7572405048358,-73.9897804546602,Manhattan,9.0,medium,9,0,0
+f4d2c0f5-0148-45e7-95ba-a5185d8e8060,Park Ave @ 57 St,40.761615778381,-73.9707524905279,Manhattan,0.5,low,0,0,1
+f3c6fe0c-75c8-4ce9-ad9a-5b7eb8e9087e,1 Ave @ 86 St,40.776869,-73.94937,Manhattan,0.0,low,0,0,0
+e8a479f8-5170-4f1f-b258-b9745c966c71,Vanderbilt Ave @ E 45 St,40.754297,-73.976936,Manhattan,4.0,low,4,0,0
+ee4709ba-ce23-4f26-a970-02e5ce9cf7f2,College Point Blvd @ Booth Memorial Ave,40.747994,-73.833113,Queens,0.0,low,0,0,0
+e7c0ccc5-bf19-453f-a5cd-c02b9feb2123,Drumgoogle Rd E @ Wainwright Ave,40.55919,-74.171699,Staten Island,2.5,low,2,0,1
+f8dec92a-babd-4547-99d1-3808ee61ce79,C3-SIE-14-WB_at_Hyland_Blvd_Ex14,40.606423,-74.077846,Staten Island,0.0,low,0,0,0
+f8549617-2066-4d74-b2b9-b06165dd13e2,C1-TNE-02-Med_at_Randall_Ave,40.827977,-73.817743,Bronx,0.0,low,0,0,0
+fb31c502-9b4a-4c19-9b26-5b84a1a39ec3,Amsterdam Ave @ 79 St,40.783141,-73.978322,Manhattan,4.6,low,4,2,0
+f8e7c70d-bdcb-4394-b55c-d9bcef891fba,11 Ave @ 42 St,40.7607911152618,-73.9982590769288,Manhattan,2.5,low,2,0,1
+fb588f5e-c90e-4136-9817-ed4201267d97,C1-MDE-14-NB_at_Mosholu_Pkwy-Ex12,40.889129,-73.888492,Bronx,0.0,low,0,0,0
+f5d272cf-3bc6-48c3-94d0-808c4003a4e9,WBB-4 @ NOR Bklyn-Mid Span,40.713463,-73.97145,Brooklyn,3.0,low,3,0,0
+f6799b6f-b7f9-451b-8c7a-eacc9e8c36a8,Lenox Ave @ 135 St,40.814104,-73.94086,Manhattan,4.0,low,4,0,0
+f4e822f7-d2a2-4146-851c-04b2fa6d5265,5 Ave @ 42 St,40.7534920464028,-73.9808970054167,Manhattan,2.0,low,1,0,2
+fa287d30-44a9-48ef-90d6-5ab0a54eab15,Flatbush Ave and Atlantic Ave,40.6832090346707,-73.9769983291626,Brooklyn,3.0,low,3,0,0
+fc7db899-7a79-41f3-b9b1-b23ce64c5a5e,7 Ave @ 49 St,40.7604823513464,-73.983738054794,Manhattan,8.0,medium,7,0,2
+f78c30e5-2a4d-4a71-b5d4-482ba70d585f,FDR @ E 127 St,40.803143,-73.930444,Manhattan,6.0,medium,6,0,0
+b6369867-aa5f-4df3-8af3-dcac2eb0dfc8,Canal St @ Broadway,40.719655,-74.001842,Manhattan,1.0,low,1,0,0
+b6847d0c-ee18-409e-a3b8-e68f8365047c,West St @ Clarkson,40.729832,-74.010658,Manhattan,5.5,medium,4,0,3
+f664cb82-a0fc-467e-9a6a-ca34c89cc63c,Northern Blvd @ Main St,40.762967,-73.831958,Queens,4.0,low,4,0,0
+b678c72f-c8cf-48dc-b97b-42c5bf3abd7b,MHB-24 Manh S URDWY @ Twr,40.708773,-73.991612,Manhattan,0.0,low,0,0,0
+f0b924fe-0df6-4ac2-85a2-5d2b96d081d5,7 Ave @ 57 St,40.765534775125,-73.9800400250842,Manhattan,4.0,low,4,0,0
+af2b479e-ec78-46b0-be35-6bbbd1691460,1 ave @ 40 st,40.74759,-73.9708,Manhattan,2.0,low,2,0,0
+f2964d50-042c-4021-8b52-992c08c6ff6f,8 Ave @ 34 St,40.7521973661027,-73.9934562042021,Manhattan,1.6,low,1,2,0
