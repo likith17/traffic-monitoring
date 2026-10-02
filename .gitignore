@@ -50,3 +50,6 @@ dynamic_benchmark.csv
 *.synctex.gz
 progress_report_*.pdf
 
+
+# Stray ONNX external-data leftovers (models are self-contained)
+*.onnx.data
