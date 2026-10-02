@@ -275,6 +275,22 @@ def route(req: RouteRequest) -> JSONResponse:
                                   "lat": float(nd["lat"]), "lon": float(nd["lon"])})
     route_cameras.sort(key=lambda c: c["score"], reverse=True)
 
+    # Why did our route differ from the plain shortest path? Because it steered
+    # around these congested cameras: on the shortest path, NOT on our route.
+    our_set = set(our_path)
+    avoided_cameras = []
+    seen_av = set()
+    for n in baseline_path:
+        nd = work.nodes[n]
+        sc = nd.get("cam_score")
+        name = nd.get("cam_name")
+        if ("cam_id" in nd and sc is not None and sc >= 5.0
+                and n not in our_set and name not in seen_av):
+            seen_av.add(name)
+            avoided_cameras.append({"camera": name or "camera", "score": round(float(sc), 1),
+                                    "lat": float(nd["lat"]), "lon": float(nd["lon"])})
+    avoided_cameras.sort(key=lambda c: c["score"], reverse=True)
+
     payload = route_map_payload(
         work, our_path, baseline_path,
         start=(start_geo["lat"], start_geo["lon"]),
@@ -315,6 +331,7 @@ def route(req: RouteRequest) -> JSONResponse:
             for c in gate_info.get("blocked_cameras", [])
         ],
         "route_cameras": route_cameras[:8],
+        "avoided_cameras": avoided_cameras[:6],
         "staged_camera": staged_camera,
         "payload": payload,
         "external": external,

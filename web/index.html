@@ -130,17 +130,11 @@
       <div class="metrics" id="metrics">
         <hr class="divider">
         <div class="grid2">
-          <div class="metric"><b id="ourMin">–</b><span>Our ETA · minutes</span></div>
-          <div class="metric"><b id="saveMin">–</b><span>Saved vs. shortest</span></div>
+          <div class="metric"><b id="ourMin">–</b><span>Your route · minutes</span></div>
           <div class="metric"><b id="km">–</b><span>Distance · km</span></div>
-          <div class="metric"><b id="hops">–</b><span>Blocks</span></div>
         </div>
-        <div class="note" id="verdict"></div>
-        <ul class="blocked" id="blocked"></ul>
-        <div id="routeCamsWrap" style="display:none;margin-top:12px;">
-          <div class="sect-title" style="margin-bottom:8px;">Cameras on this route</div>
-          <ul class="blocked" id="routeCams" style="padding-left:16px;"></ul>
-        </div>
+        <div class="note" id="compare"></div>
+        <div class="note" id="why"></div>
       </div>
 
       <hr class="divider">
@@ -162,13 +156,13 @@
 
       <hr class="divider">
       <div class="legend">
-        <span class="k"><span class="dot" style="background:#16a34a"></span>low</span>
+        <span class="k"><b style="color:var(--ink);font-weight:600">Traffic:</b></span>
+        <span class="k"><span class="dot" style="background:#16a34a"></span>light</span>
         <span class="k"><span class="dot" style="background:#d97706"></span>medium</span>
-        <span class="k"><span class="dot" style="background:#dc2626"></span>high</span>
-        <span class="k"><span class="dot" style="background:#0891b2;border-radius:2px;width:18px;height:4px"></span>our route</span>
-        <span class="k"><span class="dot" style="background:#4f46e5;border-radius:2px;width:18px;height:4px;outline:1px solid #fff"></span>shortest path</span>
-        <span class="k"><span class="dot" style="background:#16a34a;border:3px solid #0891b2;width:12px;height:12px"></span>camera on route</span>
-        <span class="k"><span class="dot" style="background:transparent;border:3px solid #dc2626;width:12px;height:12px"></span>avoided (blocked)</span>
+        <span class="k"><span class="dot" style="background:#dc2626"></span>heavy</span>
+        <span class="k"><span class="dot" style="background:#0891b2;border-radius:2px;width:18px;height:4px"></span>your route</span>
+        <span class="k"><span class="dot" style="background:#64748b;border-radius:2px;width:18px;height:4px"></span>normal route</span>
+        <span class="k"><span class="dot" style="background:transparent;border:3px solid #dc2626;width:12px;height:12px"></span>traffic you avoided</span>
       </div>
     </aside>
   </div>
@@ -311,46 +305,53 @@
           headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})).json();
         if(!d.ok){ $('err').textContent=d.error||'Could not plan a route.'; $('err').style.display='block'; return; }
         routeLayer.clearLayers(); highlightLayer.clearLayers();
-        const p=d.payload;
-        // White casing under each line so both read clearly on the light basemap.
-        // Baseline (shortest path): indigo, dashed. Our route: cyan, solid, on top.
-        if(p.baseline_route?.length){
-          L.polyline(p.baseline_route,{color:'#ffffff',weight:8,opacity:.85}).addTo(routeLayer);
-          L.polyline(p.baseline_route,{color:'#4f46e5',weight:4.5,opacity:1,dashArray:'7 9',lineCap:'round'}).addTo(routeLayer);
+        const p=d.payload, ext=d.external;
+        // Normal route (Google/OSRM) in grey; your route in cyan on top. White
+        // casing under each so both read clearly on the light map.
+        if(ext && ext.coords && ext.coords.length){
+          L.polyline(ext.coords,{color:'#ffffff',weight:8,opacity:.85}).addTo(routeLayer);
+          L.polyline(ext.coords,{color:'#64748b',weight:4.5,opacity:.95}).addTo(routeLayer).bindTooltip('Normal route');
         }
         if(p.our_route?.length){
           L.polyline(p.our_route,{color:'#ffffff',weight:9,opacity:.9}).addTo(routeLayer);
-          L.polyline(p.our_route,{color:'#0891b2',weight:5.5,opacity:1}).addTo(routeLayer);
+          L.polyline(p.our_route,{color:'#0891b2',weight:6,opacity:1}).addTo(routeLayer).bindTooltip('Your route');
         }
         L.marker([p.start.lat,p.start.lon]).addTo(routeLayer).bindTooltip('Start');
-        L.marker([p.end.lat,p.end.lon]).addTo(routeLayer).bindTooltip('Incident');
+        L.marker([p.end.lat,p.end.lon]).addTo(routeLayer).bindTooltip('Destination');
         if(p.bounds) map.fitBounds(p.bounds,{padding:[40,40]});
-        $('ourMin').textContent=d.our_minutes; $('saveMin').textContent=d.saved_minutes;
-        $('km').textContent=d.km; $('hops').textContent=d.hops;
-        const v=$('verdict'); v.className='note '+(d.confirmed?'good':'warn');
-        v.textContent=d.confirmed?`Route confirmed clear by camera review.`:`Route could not be fully confirmed — dispatch with caution.`;
-        const bl=$('blocked'); bl.innerHTML='';
-        d.blocked_cameras.forEach(c=>{ const li=document.createElement('li');
-          const why = c.reason==='incident' ? 'incident' : 'congestion';
-          li.textContent=`Avoided ${c.camera} (${why} score ${c.score})`; bl.appendChild(li); });
-        // Cameras the chosen route passes, with their congestion scores.
-        const rc=$('routeCams'); rc.innerHTML='';
-        if(d.route_cameras && d.route_cameras.length){
-          d.route_cameras.forEach(c=>{ const li=document.createElement('li');
-            li.textContent=`${c.camera} — score ${c.score}`; rc.appendChild(li);
-            // Highlight each on-route camera: a cyan halo ring, filled by its level.
-            if(c.lat!=null) L.circleMarker([c.lat,c.lon], {radius:8, color:'#0891b2',
-              weight:3, fillColor:colorFor(c.score), fillOpacity:.95})
-              .bindTooltip(`On route: ${c.camera} · score ${c.score}`).addTo(highlightLayer);
-          });
-          $('routeCamsWrap').style.display='block';
-        } else { $('routeCamsWrap').style.display='none'; }
-        // Avoided / blocked high-congestion cameras: a bold red ring + marker.
-        (d.blocked_cameras||[]).forEach(c=>{
-          if(c.lat==null) return;
-          L.circleMarker([c.lat,c.lon], {radius:12, color:'#dc2626', weight:4,
-            fill:false}).bindTooltip(`Avoided: ${c.camera} · score ${c.score}`).addTo(highlightLayer);
-        });
+
+        $('ourMin').textContent=d.our_minutes; $('km').textContent=d.km;
+
+        // Comparison vs the normal route's own ETA (what Google/OSRM would show).
+        const cmp=$('compare');
+        if(ext && ext.provider && ext.duration_min){
+          const prov = ext.provider;
+          const diff = +(ext.duration_min - d.our_minutes).toFixed(1);
+          const head = `🟦 Your route <b>${d.our_minutes} min</b> &nbsp; ⬜ ${prov} <b>${ext.duration_min} min</b>`;
+          if(diff >= 0.3){ cmp.className='note good'; cmp.innerHTML=`${head}<br>You save about <b>${diff} min</b>.`; }
+          else if(diff <= -0.3){ cmp.className='note'; cmp.innerHTML=`${head}<br>About ${Math.abs(diff)} min slower here.`; }
+          else { cmp.className='note'; cmp.innerHTML=`${head}<br>About the same right now.`; }
+          cmp.style.display='block';
+        } else { cmp.style.display='none'; }
+
+        // Highlight the cameras that explain the route, and say why in plain words.
+        (d.avoided_cameras||[]).forEach(c=>{ if(c.lat!=null)
+          L.circleMarker([c.lat,c.lon],{radius:11,color:'#dc2626',weight:3,fillColor:colorFor(c.score),fillOpacity:.9})
+            .bindTooltip(`Avoided traffic here: ${c.camera}`).addTo(highlightLayer); });
+        (d.blocked_cameras||[]).forEach(c=>{ if(c.lat!=null)
+          L.circleMarker([c.lat,c.lon],{radius:14,color:'#dc2626',weight:4,fill:false})
+            .bindTooltip(`Blockage avoided: ${c.camera}`).addTo(highlightLayer); });
+
+        const why=$('why'); const lines=[];
+        if(d.blocked_cameras && d.blocked_cameras.length)
+          lines.push(`⛔ Went around a blockage at <b>${d.blocked_cameras[0].camera}</b> (shown by the red ring).`);
+        if(d.avoided_cameras && d.avoided_cameras.length){
+          const names=d.avoided_cameras.slice(0,3).map(c=>c.camera).join(', ');
+          lines.push(`🚦 Your route avoids heavy traffic at: <b>${names}</b> (red rings on the map).`);
+        } else if(!(d.blocked_cameras && d.blocked_cameras.length)){
+          lines.push(`✓ Roads along your route are clear right now, so it matches the normal route.`);
+        }
+        why.className='note'; why.innerHTML=lines.join('<br><br>'); why.style.display='block';
         $('metrics').style.display='block';
       } catch(e){ $('err').textContent='Request failed: '+e.message; $('err').style.display='block'; }
       finally{ b.disabled=false; b.textContent='Find route'; }
