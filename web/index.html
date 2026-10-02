@@ -331,7 +331,8 @@
         v.textContent=d.confirmed?`Route confirmed clear by camera review.`:`Route could not be fully confirmed — dispatch with caution.`;
         const bl=$('blocked'); bl.innerHTML='';
         d.blocked_cameras.forEach(c=>{ const li=document.createElement('li');
-          li.textContent=`Avoided ${c.camera} (${c.reason}, score ${c.score})`; bl.appendChild(li); });
+          const why = c.reason==='incident' ? 'incident' : 'congestion';
+          li.textContent=`Avoided ${c.camera} (${why} score ${c.score})`; bl.appendChild(li); });
         // Cameras the chosen route passes, with their congestion scores.
         const rc=$('routeCams'); rc.innerHTML='';
         if(d.route_cameras && d.route_cameras.length){
