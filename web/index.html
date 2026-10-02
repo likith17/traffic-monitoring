@@ -158,8 +158,8 @@
         <span class="k"><span class="dot" style="background:#16a34a"></span>low</span>
         <span class="k"><span class="dot" style="background:#d97706"></span>medium</span>
         <span class="k"><span class="dot" style="background:#dc2626"></span>high</span>
-        <span class="k"><span class="dot" style="background:#0891b2;border-radius:2px;width:16px;height:4px"></span>our route</span>
-        <span class="k"><span class="dot" style="background:#94a3b8;border-radius:2px;width:16px;height:4px"></span>shortest</span>
+        <span class="k"><span class="dot" style="background:#0891b2;border-radius:2px;width:18px;height:4px"></span>our route</span>
+        <span class="k"><span class="dot" style="background:#4f46e5;border-radius:2px;width:18px;height:4px;outline:1px solid #fff"></span>shortest path</span>
       </div>
     </aside>
   </div>
@@ -301,8 +301,16 @@
         if(!d.ok){ $('err').textContent=d.error||'Could not plan a route.'; $('err').style.display='block'; return; }
         routeLayer.clearLayers();
         const p=d.payload;
-        if(p.baseline_route?.length) L.polyline(p.baseline_route,{color:'#94a3b8',weight:4,opacity:.7,dashArray:'6 6'}).addTo(routeLayer);
-        if(p.our_route?.length) L.polyline(p.our_route,{color:'#0891b2',weight:5,opacity:.95}).addTo(routeLayer);
+        // White casing under each line so both read clearly on the light basemap.
+        // Baseline (shortest path): indigo, dashed. Our route: cyan, solid, on top.
+        if(p.baseline_route?.length){
+          L.polyline(p.baseline_route,{color:'#ffffff',weight:8,opacity:.85}).addTo(routeLayer);
+          L.polyline(p.baseline_route,{color:'#4f46e5',weight:4.5,opacity:1,dashArray:'7 9',lineCap:'round'}).addTo(routeLayer);
+        }
+        if(p.our_route?.length){
+          L.polyline(p.our_route,{color:'#ffffff',weight:9,opacity:.9}).addTo(routeLayer);
+          L.polyline(p.our_route,{color:'#0891b2',weight:5.5,opacity:1}).addTo(routeLayer);
+        }
         L.marker([p.start.lat,p.start.lon]).addTo(routeLayer).bindTooltip('Start');
         L.marker([p.end.lat,p.end.lon]).addTo(routeLayer).bindTooltip('Incident');
         if(p.bounds) map.fitBounds(p.bounds,{padding:[40,40]});
