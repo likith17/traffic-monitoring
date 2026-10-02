@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emergency Routing — Smart Response</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    :root {
+      --bg:#0b1220; --panel:#131c2e; --panel2:#0f1626; --line:rgba(148,163,184,.18);
+      --ink:#e2e8f0; --muted:#94a3b8; --cyan:#22d3ee; --green:#34d399;
+      --amber:#fbbf24; --red:#f87171; --slate:#94a3b8;
+      --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+    * { box-sizing:border-box; }
+    html,body { height:100%; margin:0; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--ink);
+           display:flex; flex-direction:column; }
+    header { padding:12px 18px; border-bottom:1px solid var(--line);
+             display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+    header h1 { font-size:16px; margin:0; letter-spacing:.2px; }
+    header .sub { color:var(--muted); font-size:12.5px; }
+    header .status { margin-left:auto; color:var(--muted); font-size:12px; }
+
+    .main { flex:1; display:flex; min-height:0; }
+    #map { flex:1; min-width:0; background:#0f1626; }
+    .side { width:340px; max-width:42vw; border-left:1px solid var(--line);
+            background:var(--panel); padding:16px; overflow-y:auto; }
+
+    label { display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+            color:var(--muted); margin:10px 0 4px; }
+    input { width:100%; padding:9px 11px; border-radius:8px; border:1px solid var(--line);
+            background:var(--panel2); color:var(--ink); font-size:14px; }
+    button { width:100%; margin-top:14px; padding:11px; border:none; border-radius:8px;
+             background:var(--cyan); color:#06202a; font-weight:700; font-size:14px;
+             cursor:pointer; }
+    button:disabled { opacity:.55; cursor:default; }
+
+    .metrics { margin-top:16px; display:none; }
+    .row { display:flex; gap:10px; }
+    .tile { flex:1; background:var(--panel2); border:1px solid var(--line);
+            border-radius:10px; padding:11px 12px; }
+    .tile b { display:block; font-size:21px; font-variant-numeric:tabular-nums; }
+    .tile span { font-size:11px; color:var(--muted); }
+    .verdict { margin-top:12px; font-size:13px; border-radius:8px; padding:10px 12px;
+               border:1px solid var(--line); background:var(--panel2); }
+    .verdict.good { border-left:3px solid var(--green); }
+    .verdict.warn { border-left:3px solid var(--amber); }
+    .blocked { margin-top:10px; font-size:12.5px; color:var(--muted); }
+    .blocked li { margin:2px 0; }
+    .legend { margin-top:18px; font-size:12px; color:var(--muted);
+              border-top:1px solid var(--line); padding-top:12px; }
+    .legend .k { display:inline-flex; align-items:center; gap:6px; margin-right:12px; }
+    .swatch { width:11px; height:11px; border-radius:50%; display:inline-block; }
+    .err { color:var(--red); font-size:13px; margin-top:12px; display:none; }
+    .leaflet-container { background:#0f1626; }
+    @media (max-width:720px){ .main{flex-direction:column;} .side{width:auto;max-width:none;
+      border-left:none;border-top:1px solid var(--line);} #map{min-height:48vh;} }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Emergency Routing</h1>
+    <span class="sub">Vision-confirmed dispatch · Manhattan</span>
+    <span class="status" id="status">loading…</span>
+  </header>
+
+  <div class="main">
+    <div id="map"></div>
+    <aside class="side">
+      <label for="start">From</label>
+      <input id="start" value="Times Square" autocomplete="off">
+      <label for="end">To (the incident)</label>
+      <input id="end" value="Wall Street" autocomplete="off">
+      <button id="go">Find vision-confirmed route</button>
+      <div class="err" id="err"></div>
+
+      <div class="metrics" id="metrics">
+        <div class="row">
+          <div class="tile"><b id="ourMin">–</b><span>Our ETA (min)</span></div>
+          <div class="tile"><b id="saveMin">–</b><span>Saved vs. shortest path</span></div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <div class="tile"><b id="km">–</b><span>Distance (km)</span></div>
+          <div class="tile"><b id="hops">–</b><span>Blocks</span></div>
+        </div>
+        <div class="verdict" id="verdict"></div>
+        <ul class="blocked" id="blocked"></ul>
+      </div>
+
+      <div class="legend">
+        <div><span class="k"><span class="swatch" style="background:#34d399"></span>low</span>
+        <span class="k"><span class="swatch" style="background:#fbbf24"></span>medium</span>
+        <span class="k"><span class="swatch" style="background:#f87171"></span>high</span></div>
+        <div style="margin-top:8px;">
+          <span class="k"><span class="swatch" style="background:#22d3ee;border-radius:2px;width:16px;height:4px"></span>our route</span>
+          <span class="k"><span class="swatch" style="background:#94a3b8;border-radius:2px;width:16px;height:4px"></span>shortest path</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const map = L.map('map', { zoomControl: true }).setView([40.75, -73.98], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const colorFor = s => s == null ? '#64748b' : s >= 15 ? '#f87171' : s >= 5 ? '#fbbf24' : '#34d399';
+    let routeLayer = L.layerGroup().addTo(map);
+
+    // Load camera congestion points.
+    fetch('/api/cameras').then(r => r.json()).then(cams => {
+      const layer = L.layerGroup();
+      cams.forEach(c => {
+        L.circleMarker([c.lat, c.lon], {
+          radius: 4, color: colorFor(c.score), fillColor: colorFor(c.score),
+          fillOpacity: .85, weight: 1
+        }).bindTooltip(`${c.name}${c.score != null ? ' · score ' + c.score.toFixed(1) : ''}`)
+          .addTo(layer);
+      });
+      layer.addTo(map);
+      document.getElementById('status').textContent = `${cams.length} cameras`;
+    });
+
+    const $ = id => document.getElementById(id);
+    function showErr(msg){ const e=$('err'); e.textContent=msg; e.style.display='block'; }
+
+    async function findRoute() {
+      $('err').style.display='none'; $('metrics').style.display='none';
+      const btn=$('go'); btn.disabled=true; btn.textContent='Planning…';
+      try {
+        const res = await fetch('/api/route', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ start:$('start').value, end:$('end').value, compare:true })
+        });
+        const d = await res.json();
+        if (!d.ok) { showErr(d.error || 'Could not plan a route.'); return; }
+
+        routeLayer.clearLayers();
+        const p = d.payload;
+        if (p.baseline_route?.length)
+          L.polyline(p.baseline_route, {color:'#94a3b8', weight:4, opacity:.7, dashArray:'6 6'}).addTo(routeLayer);
+        if (p.our_route?.length)
+          L.polyline(p.our_route, {color:'#22d3ee', weight:5, opacity:.95}).addTo(routeLayer);
+        L.marker([p.start.lat, p.start.lon]).addTo(routeLayer).bindTooltip('Start');
+        L.marker([p.end.lat, p.end.lon]).addTo(routeLayer).bindTooltip('Incident');
+        if (p.bounds) map.fitBounds(p.bounds, {padding:[40,40]});
+
+        $('ourMin').textContent = d.our_minutes;
+        $('saveMin').textContent = d.saved_minutes;
+        $('km').textContent = d.km;
+        $('hops').textContent = d.hops;
+        const v=$('verdict');
+        v.className = 'verdict ' + (d.confirmed ? 'good':'warn');
+        v.textContent = d.confirmed
+          ? `Route confirmed clear by camera review. ${d.start_label} → ${d.end_label}.`
+          : `Route could not be fully confirmed — dispatch with caution.`;
+        const bl=$('blocked'); bl.innerHTML='';
+        d.blocked_cameras.forEach(c => {
+          const li=document.createElement('li');
+          li.textContent = `Avoided ${c.camera} (${c.reason}, score ${c.score})`;
+          bl.appendChild(li);
+        });
+        $('metrics').style.display='block';
+      } catch (e) {
+        showErr('Request failed: ' + e.message);
+      } finally {
+        btn.disabled=false; btn.textContent='Find vision-confirmed route';
+      }
+    }
+    $('go').addEventListener('click', findRoute);
+  </script>
+</body>
+</html>
