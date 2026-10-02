@@ -59,9 +59,12 @@ RUN chown -R app:app /app
 USER app
 
 # PORT is read at runtime so the same image works on any host: Cloud Run and
-# Fly set $PORT, Hugging Face Spaces expects 7860 (set PORT=7860 there), and it
-# defaults to 8000 locally.
+# Fly set $PORT, Hugging Face Spaces routes to app_port in its README (8000
+# here), and it defaults to 8000 locally.
 ENV PORT=8000
+# A writable HOME for the non-root user, so any library that writes a cache
+# (osmnx, matplotlib) does not fail on hosts like HF Spaces.
+ENV HOME=/tmp
 EXPOSE 8000
 
 # Lets Docker and orchestrators tell "starting" apart from "wedged".
