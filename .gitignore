@@ -39,3 +39,6 @@ perception_audit.csv
 
 # Dynamic-conditions benchmark output (diagnostic, regenerated each run).
 dynamic_benchmark.csv
+
+# Local secrets (API keys): GEOAPIFY_KEY, ANTHROPIC_API_KEY, etc. Never commit.
+.env

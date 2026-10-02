@@ -19,6 +19,7 @@ onnxruntime==1.27.0
 # Streamlit interface; Streamlit is kept below as a fallback for now.
 fastapi==0.142.2
 uvicorn[standard]==0.54.0
+python-dotenv==1.2.4
 
 # Legacy Streamlit dashboard (dashboard.py) - still runnable, slated for removal.
 streamlit==1.52.1

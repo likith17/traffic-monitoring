@@ -21,10 +21,14 @@ import requests
 
 # Geoapify gives Google-style autocomplete across all of NYC when GEOAPIFY_KEY is
 # set (free tier, no billing). Without a key the code falls back to Nominatim, so
-# search still works - just with weaker type-ahead.
-GEOAPIFY_KEY = (os.environ.get("GEOAPIFY_KEY") or "").strip()
+# search still works - just with weaker type-ahead. The key is read at call time
+# (not import time) so loading a .env after import still takes effect.
 GEOAPIFY_AUTOCOMPLETE = "https://api.geoapify.com/v1/geocode/autocomplete"
 GEOAPIFY_SEARCH = "https://api.geoapify.com/v1/geocode/search"
+
+
+def _geoapify_key() -> str:
+    return (os.environ.get("GEOAPIFY_KEY") or "").strip()
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 # Nominatim usage policy requires an identifying agent.
@@ -68,7 +72,8 @@ def in_coverage(lat: float, lon: float) -> bool:
 
 def _geoapify(url: str, text: str, limit: int) -> list[dict[str, Any]]:
     """Call a Geoapify geocoding endpoint, biased to NYC. [] on any failure."""
-    if not GEOAPIFY_KEY:
+    key = _geoapify_key()
+    if not key:
         return []
     west, south, east, north = COVERAGE
     try:
@@ -78,7 +83,7 @@ def _geoapify(url: str, text: str, limit: int) -> list[dict[str, Any]]:
             "format": "json",
             "filter": f"rect:{west},{south},{east},{north}",
             "bias": "proximity:-73.985,40.758",  # midtown, so nearby hits rank first
-            "apiKey": GEOAPIFY_KEY,
+            "apiKey": key,
         }, timeout=REQUEST_TIMEOUT_S)
         r.raise_for_status()
         out = []
@@ -273,7 +278,7 @@ def suggest_places(query: str, max_results: int = 7) -> list[dict[str, Any]]:
         _add(cam)
 
     # Primary source: Geoapify autocomplete when configured, else Nominatim.
-    if GEOAPIFY_KEY:
+    if _geoapify_key():
         for hit in _geoapify(GEOAPIFY_AUTOCOMPLETE, query, max_results):
             _add(hit)
     elif len(results) < 3:
@@ -297,7 +302,7 @@ def geocode_manhattan(query: str) -> dict[str, Any]:
 
     # Geoapify first when configured (covers the whole city well), else Nominatim.
     result = None
-    if GEOAPIFY_KEY:
+    if _geoapify_key():
         hits = _geoapify(GEOAPIFY_SEARCH, query, 1)
         if hits:
             result = hits[0]

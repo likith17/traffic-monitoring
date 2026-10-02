@@ -21,6 +21,11 @@ from __future__ import annotations
 import base64
 from pathlib import Path
 
+from dotenv import load_dotenv
+# Load keys (GEOAPIFY_KEY, ANTHROPIC_API_KEY, ...) from a local .env if present,
+# before anything reads them. A real shell/host environment variable still wins.
+load_dotenv()
+
 import cv2
 import numpy as np
 import pandas as pd
