@@ -62,7 +62,7 @@ def torch_counts(model, frame: np.ndarray) -> dict[str, int]:
 def main() -> int:
     from ultralytics import YOLO
 
-    torch_model = YOLO("weights/yolov12s.pt")
+    torch_model = YOLO("weights/yolov12m.pt")
     onnx_det = get_detector()
 
     frames = fetch_frames(N_CAMERAS)

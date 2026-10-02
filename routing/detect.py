@@ -24,7 +24,7 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
-ONNX_PATH = Path("weights/yolov12s.onnx")
+ONNX_PATH = Path("weights/yolov12m.onnx")
 
 # Ultralytics' predict defaults, mirrored so detections match the .pt model.
 DEFAULT_CONF = 0.25
