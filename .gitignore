@@ -53,3 +53,8 @@ progress_report_*.pdf
 
 # Stray ONNX external-data leftovers (models are self-contained)
 *.onnx.data
+
+# Progress reports / write-ups stay out of the repo
+progress_report_*
+DL_Report.pdf
+*.tex
