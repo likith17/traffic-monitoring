@@ -46,6 +46,7 @@ WORKDIR /app
 # cached OSM street graph. Everything the dashboard needs to start with no
 # network access.
 COPY routing/ routing/
+COPY web/ web/
 COPY weights/yolov12s.onnx weights/
 COPY data/ data/
 COPY .streamlit/config.toml .streamlit/
@@ -57,13 +58,16 @@ COPY manhattan_cameras.csv camera_stats.csv segment_stats.csv ./
 RUN chown -R app:app /app
 USER app
 
-EXPOSE 8501
+# PORT is read at runtime so the same image works on any host: Cloud Run and
+# Fly set $PORT, Hugging Face Spaces expects 7860 (set PORT=7860 there), and it
+# defaults to 8000 locally.
+ENV PORT=8000
+EXPOSE 8000
 
 # Lets Docker and orchestrators tell "starting" apart from "wedged".
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-    CMD python -c "import urllib.request,sys; \
-sys.exit(0 if urllib.request.urlopen('http://localhost:8501/_stcore/health', timeout=4).status==200 else 1)"
+    CMD python -c "import os,urllib.request,sys; p=os.environ.get('PORT','8000'); \
+sys.exit(0 if urllib.request.urlopen(f'http://localhost:{p}/api/health', timeout=4).status==200 else 1)"
 
-CMD ["python", "-m", "streamlit", "run", "dashboard.py", \
-     "--server.headless", "true", "--server.address", "0.0.0.0", \
-     "--server.port", "8501"]
+# FastAPI app (app.py). Shell form so ${PORT} expands at runtime.
+CMD uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}
