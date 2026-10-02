@@ -1,0 +1,4 @@
+# Hugging Face Spaces requires files over 10 MB to be tracked with Git LFS.
+# These two are the only large files the app ships (model ~36 MB, graph ~17 MB).
+*.onnx    filter=lfs diff=lfs merge=lfs -text
+*.graphml filter=lfs diff=lfs merge=lfs -text
