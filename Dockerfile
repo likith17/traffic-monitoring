@@ -43,15 +43,14 @@ COPY --from=builder /install /usr/local
 WORKDIR /app
 
 # Application code, the ONNX model, the pre-computed camera scores and the
-# cached OSM street graph. Everything the dashboard needs to start with no
-# network access.
+# cached OSM street graph. Everything the app needs to start with no network
+# access.
 COPY routing/ routing/
 COPY web/ web/
-COPY weights/yolov12s.onnx weights/
+COPY weights/yolov12m.onnx weights/
 COPY data/ data/
-COPY .streamlit/config.toml .streamlit/
 COPY *.py ./
-COPY manhattan_cameras.csv camera_stats.csv segment_stats.csv ./
+COPY manhattan_cameras.csv camera_stats.csv ./
 
 # Run as a non-root user. Nothing here needs root, and a container process
 # that cannot write outside its own files is one less thing to worry about.

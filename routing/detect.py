@@ -122,7 +122,7 @@ class Detector:
         if not onnx_path.exists():
             raise FileNotFoundError(
                 f"{onnx_path} missing - run `python -m routing.detect --export` "
-                "once to convert weights/yolov12s.pt."
+                "once to convert weights/yolov12m.pt."
             )
 
         self.session = ort.InferenceSession(
@@ -325,7 +325,7 @@ def get_detector(onnx_path: str | Path = ONNX_PATH) -> Detector:
     return _DETECTOR
 
 
-def export_from_pt(pt_path: str = "weights/yolov12s.pt") -> str:
+def export_from_pt(pt_path: str = "weights/yolov12m.pt") -> str:
     """Convert the PyTorch weights to ONNX. Needs torch + ultralytics, so it
     runs on a development machine, not inside the slim container."""
     from ultralytics import YOLO
@@ -338,7 +338,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="ONNX YOLOv12 detector")
     parser.add_argument("--export", action="store_true",
-                        help="re-export weights/yolov12s.pt to ONNX")
+                        help="re-export weights/yolov12m.pt to ONNX")
     args = parser.parse_args()
 
     if args.export:

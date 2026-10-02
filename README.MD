@@ -98,7 +98,7 @@ camera_stats.csv
       +-------------------------------------------------+
       |
       v
-dashboard.py  (Streamlit)
+app.py (FastAPI)  +  web/index.html (Leaflet)
 ```
 
 **Perception.** Each camera snapshot goes through YOLOv12. Detections collapse into one congestion score with weights chosen for road impact rather than object count: a vehicle counts 1.0 because it occupies a lane, a pedestrian 0.3 because they mostly do not, a traffic signal 0.5 because it marks an intersection where queueing happens. Under 5 is low, 5–14 medium, 15 and above high.
@@ -277,22 +277,16 @@ This downloads about 15 packages and takes two to five minutes on a normal conne
 **Step 5 — start the app.**
 
 ```bash
-streamlit run dashboard.py
+python -m uvicorn app:app --port 8000
 ```
 
-Your browser should open automatically at **http://localhost:8501**. If it does not, open that address yourself. The terminal will show a line beginning `You can now view your Streamlit app in your browser.`
-
-The first load takes 10–20 seconds because it reads the street network into memory. After that it is fast.
+Open **http://localhost:8000** in your browser. The server reads the street network and detector into memory once at startup (10–30 seconds), then responds fast.
 
 **Leave that terminal open** — closing it stops the app. To stop it deliberately, press `Ctrl+C` in the terminal.
 
 **Step 6 — check it actually works.**
 
-In the browser, on the **Route planner** tab: type `Times Square` in the From box, `Wall Street` in the To box, and click **Plan route**. Within a few seconds you should see a map with a blue route line, an estimated time, and a paragraph explaining the choice. If you see that, everything is installed correctly.
-
-You will see two harmless warnings in the terminal that are safe to ignore:
-- `missing ScriptRunContext` — appears once at startup.
-- `FlashAttention is not available on this device` — only if you have the development dependencies installed; it means your hardware lacks an optional speedup and the code is using the standard path instead.
+In the browser: type `Times Square` in the From box, `Wall Street` in the To box, and click **Find route**. Within a few seconds you should see the cyan route line, the ETA versus the normal route, and the cameras it steered around. Click any camera dot to see live YOLO detection. If you see that, everything is installed correctly.
 
 ### Option B: run it with Docker
 
@@ -302,56 +296,50 @@ Use this if you would rather not install Python, or you want to check the contai
 git clone https://github.com/likith17/traffic-monitoring.git
 cd traffic-monitoring
 docker build -t emergency-routing .
-docker run -p 8501:8501 emergency-routing
+docker run -p 8000:8000 emergency-routing
 ```
 
-Then open **http://localhost:8501** yourself — unlike Option A, Docker will not open the browser for you.
+Then open **http://localhost:8000** yourself — unlike Option A, Docker will not open the browser for you.
 
-The `build` step takes 5–15 minutes the first time because it downloads Python and all the packages. Later builds reuse that work and take seconds. `-p 8501:8501` connects the container's port to your machine's, which is what makes `localhost:8501` reach it.
+The `build` step takes 5–15 minutes the first time because it downloads Python and all the packages. Later builds reuse that work and take seconds. `-p 8000:8000` connects the container's port to your machine's, which is what makes `localhost:8000` reach it.
 
 Press `Ctrl+C` to stop. To run it in the background instead, add `-d`:
 
 ```bash
-docker run -d -p 8501:8501 --name er emergency-routing
+docker run -d -p 8000:8000 --name er emergency-routing
 docker logs er     # see its output
 docker stop er     # stop it
 docker rm er       # remove the stopped container
 ```
 
-The image is CPU-only, runs as a non-root user, and contains no secrets. If you want the LLM explanations, pass the key at run time — never build it into the image:
+The image is CPU-only, runs as a non-root user, and contains no secrets. For search and incident features, pass the keys at run time — never build them into the image:
 
 ```bash
-docker run -p 8501:8501 \
-  -e LLM_PROVIDER=anthropic -e ANTHROPIC_API_KEY=sk-ant-... \
+docker run -p 8000:8000 \
+  -e GEOAPIFY_KEY=... -e LLM_PROVIDER=anthropic -e ANTHROPIC_API_KEY=sk-ant-... \
   emergency-routing
 ```
 
-### Optional: turn on the LLM explanations
+### Optional: turn on search and incident features with API keys
 
-Everything works without this. Routing, the camera vision check, the benchmark and the OSRM comparison need no credentials at all — the only difference is that route explanations come from a fixed template instead of being written in prose, and the "Ask the city" chat tab is disabled.
+Everything core works without keys — routing, the camera vision check, live YOLO detection, the benchmark and the OSRM comparison. Two optional keys unlock more:
 
-To enable it, get a key from [console.anthropic.com](https://console.anthropic.com) (API keys → Create key), then copy the example file and edit it:
+- **`GEOAPIFY_KEY`** — Google-style address autocomplete across NYC (free tier, no billing; get one at [geoapify.com](https://www.geoapify.com)). Without it, search falls back to the slower Nominatim lookup.
+- **`ANTHROPIC_API_KEY`** (+ `LLM_PROVIDER=anthropic`) — the vision-language incident check. Without it, incident detection degrades to the tracking gate.
+
+Copy the template to `.env` and fill in what you have:
 
 ```bash
-# Windows
-copy .streamlit\secrets.toml.example .streamlit\secrets.toml
-
-# macOS / Linux
-cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+cp .env.example .env
 ```
 
-Open `.streamlit/secrets.toml` and replace the placeholder with your key:
-
-```toml
-LLM_PROVIDER = "anthropic"
-ANTHROPIC_API_KEY = "sk-ant-your-real-key-here"
+```
+GEOAPIFY_KEY=your-geoapify-key
+LLM_PROVIDER=anthropic
+ANTHROPIC_API_KEY=sk-ant-your-real-key
 ```
 
-**Both lines are required.** With only the key, the code defaults to OpenAI and ignores it — this is the most common mistake here.
-
-Restart the app (`Ctrl+C`, then `streamlit run dashboard.py`) because secrets are read once at startup. To confirm it worked, plan a route and look at the explanation: the offline version always begins *"Route decision summary (automatic, no LLM configured)"*. If that line is gone, the LLM is running.
-
-`secrets.toml` is excluded from git and from the Docker image, so your key cannot be committed or shipped by accident.
+The app loads `.env` at startup. `.env` is gitignored and never enters the Docker image, so keys cannot be committed or shipped by accident. On a host (Cloud Run, Hugging Face), set these as environment variables / secrets instead of shipping `.env`.
 
 ### Optional: refresh the data yourself
 
@@ -362,7 +350,7 @@ python fetch_cameras.py          # rebuild the list of cameras (~10 seconds)
 python update_camera_stats.py    # score every camera (10-20 minutes)
 ```
 
-The second command downloads a snapshot from each of ~370 cameras and runs object detection on it, printing one line per camera. It is slow because it is deliberately polite to the city's servers. Restart the app afterwards to pick up the new scores.
+The second command downloads a snapshot from each of ~976 cameras (all five boroughs) and runs object detection on it, printing one line per camera. It is slow because it is deliberately polite to the city's servers. Restart the app afterwards to pick up the new scores.
 
 ### Optional: reproduce the benchmark
 
@@ -402,7 +390,7 @@ python -m routing.streets         # street network loads and routes
 python -m routing.navigator       # mid-drive recalculation around a blockage
 python -m routing.vision_gate     # camera check rejects a blocked route, and reroutes around an incident
 python -m routing.tracking        # multi-frame tracker: flow and queue on a scripted sequence
-python -m routing.geocode         # place search stays inside Manhattan
+python -m routing.geocode         # NYC place search (landmarks, cameras, geocoder)
 ```
 
 The ONNX-versus-PyTorch parity test is the one that guards the riskiest code in the project. It needs the development dependencies, which include PyTorch and are a large download (~2 GB):
@@ -419,12 +407,12 @@ python -m tests.test_detect_parity
 | `python: command not found` | Python is not installed, or not on PATH | Reinstall Python with "Add to PATH" ticked; or try `python3` |
 | `pip: command not found` | The virtual environment is not active | Re-run the activate command from step 3; check for `(.venv)` in your prompt |
 | `running scripts is disabled on this system` | Windows PowerShell blocks scripts by default | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then activate again |
-| `ModuleNotFoundError: No module named 'streamlit'` | Dependencies installed outside the environment | Activate the environment, then re-run `pip install -r requirements.txt` |
-| `Port 8501 is already in use` | The app is already running elsewhere | Close the other terminal, or run `streamlit run dashboard.py --server.port 8502` |
-| `FileNotFoundError: weights/yolov12s.onnx` | Repository downloaded incompletely | Re-clone; if you downloaded a ZIP, confirm `weights/` contains a 37 MB `.onnx` file |
+| `ModuleNotFoundError: No module named 'fastapi'` | Dependencies installed outside the environment | Activate the environment, then re-run `pip install -r requirements.txt` |
+| `Port 8000 is already in use` | The app is already running elsewhere | Close the other terminal, or run `python -m uvicorn app:app --port 8001` |
+| `FileNotFoundError: weights/yolov12m.onnx` | Repository downloaded incompletely | Re-clone; if you downloaded a ZIP, confirm `weights/` contains a ~76 MB `.onnx` file |
 | `data/manhattan_streets.graphml missing` | The cached street network is absent | `python -m routing.streets --build` (needs internet, takes a few minutes) |
 | Search box is slow or empty | Place lookup is rate-limited by OpenStreetMap | Expected. Landmarks and camera names still answer instantly; pause a moment for address results |
-| `Anthropic API error 401: invalid x-api-key` | The key is wrong, or still the placeholder | Open `.streamlit/secrets.toml` and confirm you replaced `PASTE-YOUR-KEY-HERE` with a real key |
+| `Anthropic API error 401: invalid x-api-key` | The key is wrong, or still the placeholder | Open `.env` and confirm `ANTHROPIC_API_KEY` is a real key |
 | Explanations say "no LLM configured" | `LLM_PROVIDER` is missing | Both `LLM_PROVIDER` and `ANTHROPIC_API_KEY` are needed; restart afterwards |
 | Docker: `Virtualization support not detected` | Windows is missing the Virtual Machine Platform feature | In an **admin** terminal: `wsl --install --no-distribution`, then reboot. See the note in [Problems hit along the way](#problems-hit-along-the-way) — this is usually not a BIOS problem |
 | Docker: `failed to copy ... EOF` from cloudfront | Docker Hub's CDN is dropping the download | Add `"registry-mirrors": ["https://mirror.gcr.io"]` in Docker Desktop → Settings → Docker Engine, then Apply & Restart |
@@ -451,25 +439,28 @@ routing/
   congestion_logger.py        accumulate (features, speed) pairs over time
   incident_detect.py incident detection via tracking gate + vision model
   incident_demo.py   end-to-end demo of rerouting around an incident
-  geocode.py         Manhattan-bounded place search
+  geocode.py         NYC place search (Geoapify autocomplete + Nominatim)
   external_route.py  Google Directions / OSRM comparison
   geo.py             routes -> lat/lon polylines
-  map_view.py        Folium map rendering
   explain.py         LLM route justification with offline fallback
+  dynamic_traffic.py time-varying congestion env + time-dependent oracle
+  congestion_fit.py  does any feature predict measured speed? (Phase 2)
+  model_compare.py   YOLOv12-S vs -M recall/latency study (dev)
   simulate.py        benchmark against the static baseline
 
 tests/
   test_detect_parity.py   ONNX vs PyTorch equivalence
 
-dashboard.py         Streamlit UI (route planner, live cameras, incident check)
-fetch_cameras.py     build the camera index
+app.py               FastAPI backend (serves the API + the Leaflet page)
+web/index.html       Leaflet front-end (map, search, routes, live camera)
+fetch_cameras.py     build the camera index (5 boroughs)
 update_camera_stats.py   score every camera (--temporal for multi-frame)
-compute_stats.py     offline analysis of recorded clips
 scripts/run_congestion_logger.bat   hourly collector for the scheduled task
+deploy/hf/           Hugging Face Spaces deploy files
 
-data/manhattan_streets.graphml   cached street network
-weights/yolov12s.onnx            deployed inference model
-weights/yolov12s.pt              source weights, for re-export and training
+data/manhattan_streets.graphml   cached 5-borough street network
+weights/yolov12m.onnx            deployed inference model (self-contained)
+weights/yolov12m.pt              source weights, for re-export and training
 camera_stats.csv                 current congestion scores
 routing_benchmark.csv            per-episode benchmark output
 ```
@@ -496,10 +487,10 @@ Being straight about the limits, because most of these are the obvious follow-up
 
 **No monitoring or retraining loop.** There is no drift detection on camera scores and no scheduled re-scoring. For a demo that is fine. For anything real, stale congestion data is the first thing that would silently degrade.
 
-**1.5 GB is still not small.** Less than half of what it was, but Streamlit, pandas, pyarrow, OpenCV and osmnx account for most of the remainder. Dropping osmnx from the runtime — it is used for exactly one call, loading the cached GraphML — would remove geopandas, scipy and pyogrio, worth roughly another 250 MB. That is the next thing I would do.
+**The image is still not tiny.** Dropping Streamlit and Folium for FastAPI + Leaflet trimmed it, but pandas, OpenCV and osmnx account for most of the remainder. Dropping osmnx from the runtime — it is used for exactly one call, loading the cached GraphML — would remove geopandas, scipy and pyogrio, worth roughly another 250 MB. That is the next thing I would do.
 
 ---
 
 ## Stack
 
-YOLOv12 · ONNX Runtime · NetworkX · OSMnx · Streamlit · Folium · Docker
+YOLOv12 · ONNX Runtime · NetworkX · OSMnx · FastAPI · Leaflet · Docker

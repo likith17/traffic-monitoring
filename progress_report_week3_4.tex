@@ -1,0 +1,236 @@
+\documentclass[12pt]{article}
+
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{setspace}
+\singlespacing
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection\quad}{0em}{}[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection\quad}{0em}{}
+\titlespacing{\section}{0pt}{14pt}{6pt}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\begin{document}
+
+% ── Header ───────────────────────────────────────────────────────────────────
+\begin{center}
+  {\Large\bfseries Emergency Routing for Smart Response\\[4pt]
+  Two-Week Progress Report\par}
+  \vspace{8pt}
+  \rule{0.4\textwidth}{0.4pt}
+  \vspace{8pt}
+
+  \begin{tabular}{rl}
+    Student: & Likith Podalakuru (B01099631) \\
+    Advisor: & Professor Yincheng Jin \\
+    Reporting period: & Two weeks from September 14, 2026 to September 27, 2026 \\
+  \end{tabular}
+\end{center}
+
+% ── 1. Summary ───────────────────────────────────────────────────────────────
+\section{Summary of This Period}
+
+With the deployable system validated last period, this period began the research
+plan itself and carried it through the first three phases, plus a perception
+accuracy audit that both hardened the system and shaped what the later phases can
+honestly claim. The work added multi-frame perception with vehicle tracking,
+built the ground-truth pipeline and data collection that learning-based congestion
+scoring requires, added incident detection with a vision-language model and wired
+it into routing, and measured where the congestion score actually loses accuracy
+so that fixes are justified by data rather than asserted.
+
+The most important outcome this period is not a single number but a correction of
+ambition to evidence. Phase 2 set out to replace the hand-chosen congestion
+weights with a learned model; building the ground truth for it revealed that the
+only available real target, the city speed feed, covers highways and not the
+surface streets most cameras watch, so a learned model cannot yet be fit
+honestly. Rather than fit one to thin data and report a flattering result, I built
+the collector that accumulates a real dataset over time and documented the limit
+plainly. Phase 3, by contrast, is already useful end to end: a vision-confirmed
+incident now reroutes the vehicle, not just heavy traffic.
+
+% ── 2. Work completed this period ────────────────────────────────────────────
+\section{Work Completed This Period}
+
+The effort broke down across the following workstreams:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item Phase 1: multi-frame tracking with a ByteTrack-style associator, temporal
+    median scoring, and a single- versus multi-frame stability evaluation.
+  \item Phase 2: camera-to-speed-sensor ground truth, a score-versus-speed
+    calibration check, and the over-time feature-and-speed collector.
+  \item Phase 3: vision-language incident detection and its integration into the
+    dispatch vision gate, with a reproducible demo and a dashboard panel.
+  \item Perception accuracy audit and a frame-quality guard against dead or
+    placeholder cameras.
+  \item Automation and reliability: scheduled hourly collection, and wiring the
+    frame guard through the scoring paths.
+  \item Documentation: the research-upgrade write-up, updated limitations, and
+    runnable examples.
+\end{itemize}
+
+Three of these items are worth describing in more detail, because they are where
+the period's judgment, and not just its code, was spent.
+
+\subsection{Phase 1: Multi-Frame Perception with Tracking}
+
+A single camera frame is a noisy measure of congestion. To quantify this rather
+than assume it, I polled live cameras several times each and measured how far one
+frame lands from the median of the group: a lone frame misses the multi-frame
+median by about 45 percent of the score, because a momentary gap or a passing
+truck swings a single count. Detections now feed a compact ByteTrack-style
+tracker that follows vehicles across frames, using the two-stage association that
+keeps a vehicle through brief occlusion. From the tracks it derives features a
+single frame cannot express: the number of distinct vehicles (flow) and how many
+sit still (queue length). Scoring can now take the median over several frames
+instead of trusting one. The honest scope is stated in the code: all motion is
+measured in image pixels, and without per-camera calibration that pixel motion
+cannot be converted to a real speed, so the system reports a relative speed proxy
+and never claims kilometres per hour.
+
+\subsection{Phase 2: Ground Truth, and Why the Model Is Not Yet Fit}
+
+Replacing the heuristic weights needs a real target to learn against. The chosen
+target is New York City's live traffic-speed feed, and I built the matcher that
+pairs each camera with its nearest instrumented road link. Measuring the coverage
+before building on it was the decisive step: only 35 of about 370 cameras sit
+within 60 metres of a sensored link, and those are the highway and bridge cameras,
+because the sensors do not cover surface streets. A go/no-go check on that subset
+found that the current score tracks measured speed only weakly on a single
+snapshot (a rank correlation of about $-0.22$, not statistically significant),
+for a visible reason: on fast roads the vehicle count barely varies while speed
+swings widely. The honest conclusion is that the problem is too little data across
+too few conditions, not a missing model. I therefore built a collector that
+samples the sensored-road cameras and appends their perception features paired
+with the measured speed, and set it to run automatically each hour so a real
+dataset accumulates across rush hours, midday, and night. Early data already shows
+the expected contrast: a free-flowing highway at night reads near zero on both
+score and speed, while a congested daytime camera read a high score at about three
+miles per hour. A learned fit is deferred until the collected data supports one.
+
+\subsection{Phase 3: Incident Detection Wired into Routing}
+
+Counting vehicles says a street is busy, not that a car has crashed, stalled in a
+live lane, or that the road is flooded, which are the events an emergency router
+most needs to avoid. I added a vision path to the existing model layer that sends
+a camera frame to a vision-language model, and an incident detector in the
+project's established shape: a cheap tracking gate decides when a frame is worth a
+closer look, and the model then returns a strict, machine-readable verdict with a
+category and a confidence. A confirmed blocking incident now cuts that segment in
+the dispatch vision gate and forces a replan exactly as a high congestion score
+does, so the router avoids active hazards and not only jams. This is demonstrated
+end to end by a reproducible script and surfaced in the dashboard. The scope is
+deliberately modest and stated: it reads one still frame, a model can be wrong, so
+a positive is an advisory flag for a dispatcher to verify; plain congestion is
+kept a separate category so a jam is never mislabelled a crash; and with no vision
+model configured the system degrades to score-only blocking rather than failing.
+
+% ── 3. Current capabilities ──────────────────────────────────────────────────
+\section{New Capabilities Added This Period}
+
+Beyond the end-to-end system reported last period, the project now also:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item Tracks vehicles across multiple frames and scores congestion from the
+    median of several frames, reporting flow and queue-length features a single
+    image cannot give.
+  \item Matches cameras to real speed sensors and continuously logs perception
+    features against measured speed, building the dataset that a learned
+    congestion model will require.
+  \item Detects blocking incidents from camera imagery with a vision-language
+    model and reroutes around any it confirms, with a graceful fallback when no
+    model is configured.
+  \item Audits its own perception accuracy on live frames, and refuses to treat a
+    dark or placeholder camera frame as a clear road.
+\end{itemize}
+
+% ── 4. Findings ──────────────────────────────────────────────────────────────
+\section{Measured Findings}
+
+This period's results are diagnostic rather than a single headline, and each is
+measured on live data:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Single frames are noisy.} A lone frame deviates from the
+    multi-frame median by roughly 45 percent of the score, which is what justifies
+    temporal aggregation.
+  \item \textbf{Ground truth is narrow.} Only 35 of about 370 cameras sit on a
+    speed-sensored road, so direct speed calibration is valid only for that
+    highway subset; surface streets cannot be speed-labelled from this feed.
+  \item \textbf{Score sensitivity.} Across an 18-camera sample the total vehicle
+    count moved from 47 to 37 to 21 as the detection confidence threshold rose
+    from 0.15 to 0.25 to 0.40, so the count is sensitive to an arbitrary cutoff
+    and temporal median is the right mitigation.
+  \item \textbf{A fixed-fixture leak.} Traffic lights and stop signs, which are
+    present in every frame regardless of traffic, occasionally dominate a score:
+    one camera reported a positive congestion score with zero vehicles in view,
+    entirely from detected traffic lights.
+\end{itemize}
+
+% ── 5. Limitations ───────────────────────────────────────────────────────────
+\section{Updated Status of Known Limitations}
+
+The limitations that motivate the plan are now partly addressed and, where not,
+measured more precisely:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Single-frame analysis (Phase 1): mitigated, not eliminated.}
+    Multi-frame tracking removes the single-frame \emph{noise}, but a camera still
+    sees one viewpoint, so what it points at remains a limit.
+  \item \textbf{Manually assigned congestion weights (Phase 2): pipeline built,
+    fit deferred.} The ground-truth matcher and collector exist; the weights stay
+    heuristic until the accumulating data supports an honest fit, for the coverage
+    reason measured above.
+  \item \textbf{Confidence-threshold sensitivity and fixed-fixture leak (new).}
+    Both are now quantified. Reworking the traffic-signal term in the score is a
+    deliberate next decision rather than a silent change, since the weights are
+    load-bearing for the benchmark.
+  \item \textbf{Dead cameras (new, fixed).} A dark or placeholder frame previously
+    read as a clear road; it is now flagged and excluded from scoring so a broken
+    camera cannot make a street look attractive.
+  \item \textbf{Learned routing does not yet beat A* (Phase 4).} Unchanged, and
+    still the target of the routing phase.
+\end{itemize}
+
+% ── 6. Research plan ─────────────────────────────────────────────────────────
+\section{Research Plan Going Forward}
+
+The five-phase plan is unchanged; phases one through three are now implemented or
+underway, and the remaining phases are next:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=3pt]
+  \item Multi-frame perception and tracking. \textbf{Implemented this period.}
+  \item Learning-based congestion estimation. \textbf{Pipeline and data collection
+    built; the learned fit awaits sufficient data.}
+  \item Incident detection with vision-language models. \textbf{Implemented and
+    integrated into routing this period; real-world verdict validation is the
+    remaining step.}
+  \item Advanced routing under dynamic conditions. Move beyond tabular Q-learning
+    toward function-approximation or graph-based methods that scale to the full
+    network and treat traffic as uncertain rather than fixed, so the learned
+    router can demonstrate the advantage the current benchmark does not reward.
+  \item Model and evaluation improvements. Evaluate newer detectors on accuracy
+    versus cost, build more realistic incident scenarios, and attempt limited
+    real-world validation.
+\end{enumerate}
+
+% ── 7. Next steps ────────────────────────────────────────────────────────────
+\section{Immediate Next Steps}
+
+The next period concentrates on Phase 4 while the Phase 2 data continues to
+accumulate. The first actions are to validate the incident detector's verdicts
+against real daytime camera imagery with a vision model enabled, so its accuracy,
+and especially its false-positive rate, is known before it is trusted in dispatch;
+to let the hourly collector run across varied conditions and then test whether the
+multi-frame flow features track measured speed better than raw counts do; and to
+begin Phase 4 by framing dynamic routing as function approximation over the
+congestion-weighted graph, with an evaluation that varies traffic during the drive
+so a learned policy has a genuine opportunity to outperform static A*.
+
+\end{document}
