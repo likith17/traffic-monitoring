@@ -223,7 +223,7 @@ def route(req: RouteRequest) -> JSONResponse:
             return JSONResponse(
                 {"ok": False,
                  "error": f"Could not place the {label} ('{geo.get('label', '?')}'). "
-                          "Try a Manhattan landmark, address, or intersection."},
+                          "Try a NYC landmark, address, or intersection."},
                 status_code=422,
             )
 

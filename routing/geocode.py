@@ -11,12 +11,20 @@
 
 from __future__ import annotations
 
+import os
 import time
 from functools import lru_cache
 from typing import Any
 
 import pandas as pd
 import requests
+
+# Geoapify gives Google-style autocomplete across all of NYC when GEOAPIFY_KEY is
+# set (free tier, no billing). Without a key the code falls back to Nominatim, so
+# search still works - just with weaker type-ahead.
+GEOAPIFY_KEY = (os.environ.get("GEOAPIFY_KEY") or "").strip()
+GEOAPIFY_AUTOCOMPLETE = "https://api.geoapify.com/v1/geocode/autocomplete"
+GEOAPIFY_SEARCH = "https://api.geoapify.com/v1/geocode/search"
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 # Nominatim usage policy requires an identifying agent.
@@ -47,14 +55,44 @@ def _throttle(blocking: bool = True) -> bool:
     _last_request_at = time.monotonic()
     return True
 
-# Coverage box around the DOT cameras (west, south, east, north), padded a
-# touch so riverside addresses still hit.
-COVERAGE = (-74.03, 40.69, -73.90, 40.88)
+# Coverage box over all five NYC boroughs (west, south, east, north), padded a
+# touch so riverside and bridge addresses still hit. Expanded from the old
+# Manhattan-only box so search and routing span the whole city.
+COVERAGE = (-74.27, 40.47, -73.68, 40.93)
 
 
 def in_coverage(lat: float, lon: float) -> bool:
     west, south, east, north = COVERAGE
     return south <= lat <= north and west <= lon <= east
+
+
+def _geoapify(url: str, text: str, limit: int) -> list[dict[str, Any]]:
+    """Call a Geoapify geocoding endpoint, biased to NYC. [] on any failure."""
+    if not GEOAPIFY_KEY:
+        return []
+    west, south, east, north = COVERAGE
+    try:
+        r = requests.get(url, params={
+            "text": text,
+            "limit": limit,
+            "format": "json",
+            "filter": f"rect:{west},{south},{east},{north}",
+            "bias": "proximity:-73.985,40.758",  # midtown, so nearby hits rank first
+            "apiKey": GEOAPIFY_KEY,
+        }, timeout=REQUEST_TIMEOUT_S)
+        r.raise_for_status()
+        out = []
+        for h in r.json().get("results", []):
+            lat, lon = h.get("lat"), h.get("lon")
+            if lat is None or lon is None or not in_coverage(lat, lon):
+                continue
+            label = (h.get("address_line1") or h.get("formatted")
+                     or h.get("name") or text)
+            out.append({"label": label, "lat": float(lat), "lon": float(lon),
+                        "source": "geoapify"})
+        return out
+    except Exception:
+        return []
 
 
 def _nominatim(query: str) -> dict[str, Any] | None:
@@ -204,12 +242,13 @@ LANDMARKS: list[dict[str, Any]] = [
 
 
 def suggest_places(query: str, max_results: int = 7) -> list[dict[str, Any]]:
-    """Google-Maps-style suggestions while typing.
+    """Google-Maps-style suggestions while typing, across all of NYC.
 
-    Priority: curated landmarks → DOT camera names (instant, offline) →
-    Nominatim (only if we still need more hits).  Every returned dict has
-    lat / lon / label inside the coverage area, so picking a suggestion can
-    never produce an "outside Manhattan" error.
+    With a Geoapify key, that provider's autocomplete is the main source (real
+    addresses, POIs and intersections city-wide). A couple of instant local hits
+    (curated landmarks, DOT camera names) are shown first when they match, so the
+    box responds with zero latency. Without a key it falls back to landmarks,
+    camera names and Nominatim. Every result sits inside the NYC coverage box.
     """
     query = (query or "").strip()
     if len(query) < 2:
@@ -226,35 +265,44 @@ def suggest_places(query: str, max_results: int = 7) -> list[dict[str, Any]]:
         seen.add(key)
         results.append({**hit, "source": hit.get("source", "landmark")})
 
+    # Instant local matches first (no network), so typing feels immediate.
     for lm in LANDMARKS:
         if q in lm["label"].lower():
             _add(lm)
-
-    for cam in _camera_matches(query, limit=max_results):
+    for cam in _camera_matches(query, limit=3):
         _add(cam)
 
-    # Only hit the network when local suggestions aren't enough — keeps
-    # type-ahead snappy and respects Nominatim's 1 req/s limit.
-    if len(results) < 3:
-        for hit in _nominatim_suggest(f"{query}, Manhattan, New York", limit=max_results):
+    # Primary source: Geoapify autocomplete when configured, else Nominatim.
+    if GEOAPIFY_KEY:
+        for hit in _geoapify(GEOAPIFY_AUTOCOMPLETE, query, max_results):
+            _add(hit)
+    elif len(results) < 3:
+        for hit in _nominatim_suggest(f"{query}, New York City", limit=max_results):
             _add(hit)
 
     return results[:max_results]
 
 
 def geocode_manhattan(query: str) -> dict[str, Any]:
-    """Resolve a free-text place to coordinates inside the coverage area.
+    """Resolve a free-text place to coordinates inside the NYC coverage area.
 
-    Returns {"outcome": "ok", "lat", "lon", "label", "source"} on success,
-    {"outcome": "outside"} when the place exists but is out of Manhattan,
+    (Name kept for compatibility; it now covers all five boroughs.) Returns
+    {"outcome": "ok", "lat", "lon", "label", "source"} on success,
+    {"outcome": "outside"} when the place exists but is out of NYC,
     {"outcome": "not_found"} when nothing matches at all.
     """
     query = (query or "").strip()
     if not query:
         return {"outcome": "not_found"}
 
-    # Bias the online search towards Manhattan without polluting the label.
-    result = _nominatim(f"{query}, Manhattan, New York")
+    # Geoapify first when configured (covers the whole city well), else Nominatim.
+    result = None
+    if GEOAPIFY_KEY:
+        hits = _geoapify(GEOAPIFY_SEARCH, query, 1)
+        if hits:
+            result = hits[0]
+    if result is None:
+        result = _nominatim(f"{query}, New York City")
     if result is None:
         result = _nominatim(query)
 
