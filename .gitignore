@@ -49,3 +49,6 @@ dynamic_benchmark.csv
 *.out
 *.synctex.gz
 progress_report_*.pdf
+
+# Candidate model weights under evaluation (not adopted yet)
+yolov12m.pt
