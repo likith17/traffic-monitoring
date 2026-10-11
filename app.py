@@ -34,7 +34,7 @@ from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
-from routing.graph import nearest_node, build_default_graph
+from routing.graph import nearest_node, build_default_graph, haversine_m
 from routing.planners import astar_route, route_metrics, static_baseline_route
 from routing.vision_gate import plan_confirmed_route
 from routing.geo import route_map_payload
@@ -235,6 +235,24 @@ def route(req: RouteRequest) -> JSONResponse:
 
     src = nearest_node(g, start_geo["lat"], start_geo["lon"])
     dst = nearest_node(g, end_geo["lat"], end_geo["lon"])
+
+    # Coverage guard: the street graph is the 5 NYC boroughs only. If a geocoded
+    # point is far from the nearest routable intersection (New Jersey, Long
+    # Island, open water), we would otherwise snap it onto the city's edge and
+    # draw a route that doesn't start where the user asked. Reject it clearly.
+    for label, geo, node in (("start", start_geo, src), ("end", end_geo, dst)):
+        snap_m = haversine_m(geo["lat"], geo["lon"],
+                             g.nodes[node]["lat"], g.nodes[node]["lon"])
+        if snap_m > 2000:
+            return JSONResponse(
+                {"ok": False,
+                 "error": f"The {label} ('{geo.get('label', '?')}') is outside the "
+                          f"NYC street coverage - the nearest road we can route is "
+                          f"{snap_m/1000:.1f} km away. This router covers the five NYC "
+                          f"boroughs only; New Jersey and Long Island are not included."},
+                status_code=422,
+            )
+
     if src == dst:
         return JSONResponse(
             {"ok": False, "error": "Start and destination resolve to the same "
