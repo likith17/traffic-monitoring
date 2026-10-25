@@ -7,11 +7,13 @@
 # site-packages directory, so compilers and wheel caches stay behind.
 #
 # Build:  docker build -t emergency-routing .
-# Run:    docker run -p 8501:8501 emergency-routing
+# Run:    docker run -p 8000:8000 --env-file .env emergency-routing
 #
-# Never bake API keys in - pass them at run time:
-#   docker run -p 8501:8501 \
-#     -e LLM_PROVIDER=anthropic -e ANTHROPIC_API_KEY=sk-ant-... emergency-routing
+# Runs free and self-contained by default: routing, congestion and the map need
+# no keys and no network. Optional extras are passed at run time, never baked in:
+#   GEOAPIFY_KEY   - address autocomplete (free tier); without it, Nominatim.
+#   VLM_ENABLED=1  - turns on incident detection; point it at an open-source
+#                    model via Ollama (OPENAI_BASE_URL=http://host:11434/v1).
 
 # ---------- builder ----------------------------------------------------------
 FROM python:3.11-slim AS builder
@@ -64,6 +66,9 @@ ENV PORT=8000
 # A writable HOME for the non-root user, so any library that writes a cache
 # (osmnx, matplotlib) does not fail on hosts like HF Spaces.
 ENV HOME=/tmp
+# Free and dependency-free by default: no outbound AI call unless an operator
+# opts in with VLM_ENABLED=1 at run time.
+ENV VLM_ENABLED=0
 EXPOSE 8000
 
 # Lets Docker and orchestrators tell "starting" apart from "wedged".

@@ -287,6 +287,18 @@ def _chat_openai_vision(
         return None, f"Unexpected vision API response: {e}"
 
 
+def vlm_enabled() -> bool:
+    """Master switch for the vision-language incident check.
+
+    Off by default so a public deployment has no paid or external AI dependency
+    and cannot run up a bill: incident detection then degrades to the honest
+    score-only heuristic. Turn it on with VLM_ENABLED=1 (truthy: 1/true/yes/on)
+    once a backend is configured - an open-source model served by Ollama on the
+    same host is the zero-cost option; see .env.example.
+    """
+    return (os.environ.get("VLM_ENABLED") or "").strip().lower() in ("1", "true", "yes", "on")
+
+
 def vision_completion(
     prompt: str,
     images: list[bytes],
@@ -297,10 +309,15 @@ def vision_completion(
     """Ask the configured vision-language model about one or more JPEG frames.
 
     images are raw JPEG bytes. Routes to Anthropic or the OpenAI-compatible API
-    exactly like chat_completion, and returns (reply_text, None) on success or
-    (None, error_string) on any failure, so callers can fall back cleanly when
-    no vision model is configured.
+    (which also covers Ollama and OpenRouter) based on LLM_PROVIDER, and returns
+    (reply_text, None) on success or (None, error_string) on any failure, so
+    callers can fall back cleanly when no vision model is available.
+
+    Returns a disabled result when VLM_ENABLED is not set, so the deployed image
+    makes no outbound AI call unless an operator explicitly opts in.
     """
+    if not vlm_enabled():
+        return None, "vision model disabled (set VLM_ENABLED=1 to turn it on)"
     if not images:
         return None, "vision_completion called with no images."
     provider = (os.environ.get("LLM_PROVIDER") or "openai").strip().lower()
