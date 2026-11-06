@@ -92,6 +92,7 @@ def recurring_pattern(
     peak_points: float = 60.0,
     radius_m: float = 3500.0,
     seed: int = 20260101,
+    centers: list | None = None,
 ) -> list[RecurrentCorridor]:
     """The city's stable congestion rhythm: fixed across episodes.
 
@@ -104,13 +105,20 @@ def recurring_pattern(
     that are not there yet when you leave but will be when you arrive.
 
     Centres are drawn from interior intersections (not camera nodes, matching the
-    benchmark's origin/destination pool). Seeded with a FIXED default so the
-    pattern is the same every episode - it is the history, not the weather of one
-    day. Spreading peaks deterministically keeps the rhythm genuinely learnable.
+    benchmark's origin/destination pool), unless an explicit `centers` list is
+    given. On the real street graph the caller passes the city's high-flow
+    corridors, since recurring congestion concentrates on arterials and bridge
+    approaches rather than on random side streets. Seeded with a FIXED default so
+    the pattern is the same every episode - it is the history, not the weather of
+    one day. Spreading peaks deterministically keeps the rhythm genuinely
+    learnable.
     """
     rng = random.Random(seed)
-    interior = [n for n in g.nodes if "cam_id" not in g.nodes[n]]
-    centers = rng.sample(interior, min(n_corridors, len(interior)))
+    if centers is None:
+        interior = [n for n in g.nodes if "cam_id" not in g.nodes[n]]
+        centers = rng.sample(interior, min(n_corridors, len(interior)))
+    else:
+        centers = list(centers)[:n_corridors]
     corridors: list[RecurrentCorridor] = []
     n = len(centers)
     for i, c in enumerate(centers):

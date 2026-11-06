@@ -32,7 +32,7 @@ from dataclasses import dataclass
 
 import networkx as nx
 
-from routing.graph import CONGESTION_PER_POINT, haversine_m
+from routing.graph import CONGESTION_PER_POINT, FREE_FLOW_KMH, haversine_m
 
 
 @dataclass
@@ -83,12 +83,20 @@ class DynamicTraffic:
             self._mid[(u, v)] = ((ulat + vlat) / 2.0, (ulon + vlon) / 2.0)
 
     def extra_points(self, u: tuple, v: tuple, t: float) -> float:
-        """Total time-varying congestion points on edge (u, v) at clock t."""
+        """Total time-varying congestion points on edge (u, v) at clock t.
+
+        An event that is not active at clock t contributes nothing, so that case
+        is skipped before any distance math. On a large graph most events are
+        inactive at any given moment, so this check is what keeps the per-edge
+        cost cheap enough to route the full street network.
+        """
         if not self.events:
             return 0.0
         mlat, mlon = self._mid[(u, v)]
         total = 0.0
         for ev in self.events:
+            if t <= ev.t_start or t >= ev.t_end:
+                continue
             clat, clon = self._pos[ev.center]
             d = haversine_m(mlat, mlon, clat, clon)
             total += ev.extra_points_at(d, t)
@@ -166,6 +174,95 @@ def time_dependent_route(
         path.append(prev[path[-1]])
     path.reverse()
     return path
+
+
+def _goal_heuristic(dyn: DynamicTraffic, dst: tuple):
+    """Admissible time-to-go estimate for A*: straight line at the top speed.
+
+    No route can reach the goal faster than flying straight to it at the fastest
+    speed any edge allows, so this never overestimates and A* stays optimal while
+    exploring far fewer nodes than plain Dijkstra, which is what makes routing on
+    the full 55,000-node street graph fast enough to benchmark.
+    """
+    speed_ms = float(dyn.g.graph.get("max_speed_kmh", FREE_FLOW_KMH)) / 3.6
+    dlat, dlon = dyn._pos[dst]
+
+    def h(n: tuple) -> float:
+        la, lo = dyn._pos[n]
+        return haversine_m(la, lo, dlat, dlon) / speed_ms
+
+    return h
+
+
+def _reconstruct(came: dict, src: tuple, dst: tuple) -> list[tuple]:
+    path = [dst]
+    while path[-1] != src:
+        path.append(came[path[-1]])
+    path.reverse()
+    return path
+
+
+def fixed_time_astar(dyn: DynamicTraffic, src: tuple, dst: tuple, t: float) -> list[tuple]:
+    """Shortest path if conditions stayed frozen at clock t for the whole trip.
+
+    This is what a planner sees on a snapshot of current congestion, computed
+    without copying the graph: the edge cost is read straight from the dynamic
+    model at the fixed clock t. Used for the static plan (t = departure) and for
+    each reactive replan (t = now).
+    """
+    import heapq
+    h = _goal_heuristic(dyn, dst)
+    best = {src: 0.0}
+    came: dict = {}
+    pq = [(h(src), 0.0, src)]
+    while pq:
+        _, g, u = heapq.heappop(pq)
+        if u == dst:
+            return _reconstruct(came, src, dst)
+        if g > best.get(u, float("inf")):
+            continue
+        for v in dyn.g.successors(u):
+            ng = g + dyn.edge_time(u, v, t)
+            if ng < best.get(v, float("inf")):
+                best[v] = ng
+                came[v] = u
+                heapq.heappush(pq, (ng + h(v), ng, v))
+    if src != dst:
+        raise nx.NetworkXNoPath(f"No fixed-time route {src} -> {dst}")
+    return [src]
+
+
+def time_dependent_astar(
+    dyn: DynamicTraffic, src: tuple, dst: tuple, t0: float = 0.0
+) -> list[tuple]:
+    """Earliest-arrival route using the full forecast, goal-directed with A*.
+
+    Same earliest-arrival objective as time_dependent_route, but with the
+    straight-line heuristic so it scales to the real street graph. Each edge is
+    relaxed using its cost at the clock the vehicle would actually reach it,
+    t0 + (time elapsed so far).
+    """
+    import heapq
+    h = _goal_heuristic(dyn, dst)
+    best = {src: 0.0}            # elapsed time from src (so clock = t0 + elapsed)
+    came: dict = {}
+    pq = [(h(src), 0.0, src)]
+    while pq:
+        _, elapsed, u = heapq.heappop(pq)
+        if u == dst:
+            return _reconstruct(came, src, dst)
+        if elapsed > best.get(u, float("inf")):
+            continue
+        clock = t0 + elapsed
+        for v in dyn.g.successors(u):
+            ng = elapsed + dyn.edge_time(u, v, clock)
+            if ng < best.get(v, float("inf")):
+                best[v] = ng
+                came[v] = u
+                heapq.heappush(pq, (ng + h(v), ng, v))
+    if src != dst:
+        raise nx.NetworkXNoPath(f"No time-dependent route {src} -> {dst}")
+    return [src]
 
 
 def random_events(
